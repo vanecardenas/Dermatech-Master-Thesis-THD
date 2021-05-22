@@ -1,0 +1,33 @@
+.toolbar {
+    background-color: #434850;
+}
+
+.toolbar .logo {
+    height: 100%;
+    margin-right: 10px;
+}
+
+.step-card {
+    height: fit-content;
+    width: 90%;
+    margin-top: 15vh;
+}
+
+.background {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    background-color: #DAE5F1;
+}
+
+.single-step-button {
+    width: 35%;
+    margin: 2em 0 !important;
+    background-color: #DAE5F1; // TODO: replace with primary color from design
+    color: black;
+}
+
+.step-card-content {
+    margin: 0 16px;
+}

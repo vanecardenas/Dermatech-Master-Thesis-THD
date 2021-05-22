@@ -1,0 +1,41 @@
+<mat-toolbar color="primary" class="toolbar">
+  <mat-toolbar-row>
+    <img class="logo" src="/assets/logo-dermatech.jpeg">
+    <span>Dermatech</span>
+  </mat-toolbar-row>
+</mat-toolbar>
+<div class="background">
+  <mat-card class="step-card">
+    <mat-card-header>
+      <mat-card-title>Selection of surgical techniques for your patients in only three steps!</mat-card-title>
+      <mat-card-subtitle>Welcome to Dermatech</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content class="step-card-content">
+      <div class="fake-stepper">
+        <mat-horizontal-stepper linear labelPosition="bottom" [disableRipple]="true" #stepper>
+          <mat-step completed="false">
+            <ng-template matStepLabel>Location of the lesion</ng-template>
+          </mat-step>
+          <mat-step completed="false">
+            <ng-template matStepLabel>Type of the lesion</ng-template>
+          </mat-step>
+          <mat-step completed="false">
+            <ng-template matStepLabel>Visualization of surgical technique</ng-template>
+          </mat-step>
+        </mat-horizontal-stepper>
+      </div>
+      <p>
+        This application supports you with up-to-date information and knowledge on surgical techniques when choosing the one for your patient
+      </p>
+      <p>
+        You will be guided step by step through the necessary selection steps: Selection of sex of the patient, location of the lesion, selection of the type of  lesion and visualization of the technique and surgical approach
+      </p>
+      <p>
+        To navigate between the steps, use the lower area of the application or the progress indicator in the header
+      </p>
+    </mat-card-content>
+    <mat-card-actions class="flex-row-center">
+      <button mat-raised-button color="primary" class="single-step-button">Start</button>
+    </mat-card-actions>
+  </mat-card>  
+</div>
