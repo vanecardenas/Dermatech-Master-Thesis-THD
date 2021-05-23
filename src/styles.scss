@@ -36,7 +36,13 @@ $dermatech-theme: mat.define-light-theme((
 /* You can add global styles to this file, and also import other style files */
 
 html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif;}
+
+body,
+.lesion-stepper .mat-horizontal-content-container,
+.fake-stepper .mat-step-header .mat-step-icon {
+  background-color: #DAE5F1 !important;
+}
 
 .flex-row-center {
   display: flex !important;
@@ -48,12 +54,35 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   pointer-events: none;
 }
 
-.fake-stepper .mat-step-header .mat-step-icon {
-  background-color: #DAE5F1 !important;
-}
-
 .fake-stepper .mat-label-selected, .fake-stepper .mat-step-label.mat-step-label-active {
   font-size: inherit;
   font-weight: inherit;
   color: rgba(0, 0, 0, 0.54) !important;
+}
+
+.step-card-content {
+  margin: 0 16px;
+}
+
+.step-card {
+  height: fit-content;
+  width: 90%;
+}
+
+.head-container {
+  height: 66vh;
+}
+
+.head-container canvas {
+  height: 100% !important;
+  width: auto !important;
+  margin: auto;
+}
+
+.step-background {
+  height: calc(100% - 64px);
+  width: 100%;
+  background-color: #DAE5F1;
+  display: flex;
+  justify-content: center;
 }
