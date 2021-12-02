@@ -6,6 +6,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { DecalGeometry } from 'three/examples/jsm/geometries/DecalGeometry';
+import { Mesh, PerspectiveCamera, Scene, WebGLRenderer } from 'three/src/Three';
 
 @Component({
   selector: 'app-head-model',
@@ -13,27 +14,32 @@ import { DecalGeometry } from 'three/examples/jsm/geometries/DecalGeometry';
   styleUrls: ['./head-model.component.scss'],
 })
 export class HeadModelComponent {
+  // @ts-ignore
   private headContainer: ElementRef;
   private drawn = false;
 
-  @ViewChild('headContainer', {static: false}) set headContainerUpdate(headContainerUpdate: ElementRef) {
-    console.log("SET HEADCONTAINER UPDATE")
-    this.headContainer = headContainerUpdate
-    this.initializeHeadModel()
-  };
+  @ViewChild('headContainer', { static: false }) set headContainerUpdate(
+    headContainerUpdate: ElementRef
+  ) {
+    console.log('SET HEADCONTAINER UPDATE');
+    this.headContainer = headContainerUpdate;
+    this.initializeHeadModel();
+  }
 
   constructor() {}
 
   cleanCanvas() {
-    console.log('REMVING CANVAS')
-    this.headContainer.nativeElement.innerHTML="";
+    console.log('REMVING CANVAS');
+    this.headContainer.nativeElement.innerHTML = '';
   }
 
   initializeHeadModel() {
     // DECAL == shoot-impact --> color-splash
     const headContainer = this.headContainer.nativeElement;
-    let renderer, scene, camera;
-    let mesh;
+    let renderer: WebGLRenderer;
+    let scene: Scene;
+    let camera: PerspectiveCamera;
+    let mesh: Mesh;
     let raycaster;
     let line;
 
@@ -85,9 +91,9 @@ export class HeadModelComponent {
       renderer.setPixelRatio(window.devicePixelRatio);
       renderer.setSize(window.innerWidth, window.innerHeight);
       headContainer.appendChild(renderer.domElement);
-    
+
       scene = new THREE.Scene();
-      scene.background = new THREE.Color("white");
+      scene.background = new THREE.Color('white');
 
       camera = new THREE.PerspectiveCamera(
         45,
@@ -216,7 +222,7 @@ export class HeadModelComponent {
       const loader = new GLTFLoader();
 
       loader.load('assets/model/LeePerrySmith.glb', function (gltf) {
-        mesh = gltf.scene.children[0];
+        mesh = gltf.scene.children[0] as Mesh;
         mesh.material = new THREE.MeshPhongMaterial({
           specular: 0x111111,
           map: textureLoader.load('assets/model/Map-COL.jpg'),

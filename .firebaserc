@@ -1,5 +1,14 @@
 {
+  "targets": {
+    "dermatech-test": {
+      "hosting": {
+        "dermatech": [
+          "dermatech-test"
+        ]
+      }
+    }
+  },
   "projects": {
-    "default": "surgical-technique-tool"
+    "default": "dermatech-test"
   }
 }
