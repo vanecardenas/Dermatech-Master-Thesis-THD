@@ -1,8 +1,9 @@
-  <mat-card class="step-card">
-      <mat-card-header>
-          <mat-card-title>Select the location of the lesion</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <div class="head-container" #headContainer></div>
-        </mat-card-content>
-  </mat-card>
+<mat-card class="step-card">
+  <mat-card-header>
+    <mat-card-title>Select the location of the lesion</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <div class="head-container" #headContainer></div>
+    <button mat-button (click)="toggleDrawing()">Toggle Drawing</button>
+  </mat-card-content>
+</mat-card>
