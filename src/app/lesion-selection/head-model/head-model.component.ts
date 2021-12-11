@@ -155,7 +155,7 @@ export class HeadModelComponent {
     this.camera.updateProjectionMatrix();
 
     this.renderer.setSize(window.innerWidth, window.innerHeight);
-    this.render();
+    this.animate();
   }
 
   removeDecals() {
@@ -166,8 +166,8 @@ export class HeadModelComponent {
     this.decals.length = 0;
   }
 
-  render() {
-    requestAnimationFrame(this.render.bind(this));
+  animate() {
+    requestAnimationFrame(this.animate.bind(this));
     this.renderer.render(this.scene, this.camera);
   }
 
@@ -208,7 +208,7 @@ export class HeadModelComponent {
     window.addEventListener('resize', this.onWindowResize.bind(this));
 
     this.onWindowResize();
-    this.render();
+    this.animate();
   }
 
   shoot() {
