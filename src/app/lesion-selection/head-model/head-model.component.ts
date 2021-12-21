@@ -184,7 +184,7 @@ export class HeadModelComponent {
     this.scene.add(new THREE.HemisphereLight(0xcabebe, 0x756f6f, 1));
 
     // Line indicator for mouse intersection with the head model
-    const geometry = new THREE.BufferGeometry();
+    const geometry: BufferGeometry = new THREE.BufferGeometry();
     geometry.setFromPoints([new THREE.Vector3(), new THREE.Vector3()]);
     this.line = new THREE.Line(geometry, new THREE.LineBasicMaterial());
     this.scene.add(this.line);
