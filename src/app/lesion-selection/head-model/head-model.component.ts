@@ -77,11 +77,16 @@ export class HeadModelComponent {
   });
   lastFoundTexturePoint: any;
   firstPointOfStroke: any;
-  mouseDownColorId: any;
-  mousePoint: any;
+  mousePoint: { x: number; y: number } = {
+    x: window.innerWidth / 2,
+    y: window.innerHeight / 2,
+  };
   paintableMaterial: any;
   colorMaterial: any;
-  oldMousePoint: any;
+  oldMousePoint: { x: number; y: number } = {
+    x: window.innerWidth / 2,
+    y: window.innerHeight / 2,
+  };
   paintPoints: any[] = [];
   brushSize = 1.3;
   brushHardness = 0;
@@ -139,17 +144,25 @@ export class HeadModelComponent {
       event.preventDefault();
       this.checkIntersection(event.clientX, event.clientY);
       if (this.intersection.intersects) {
+        console.log('INTERESECTED');
+        this.oldMousePoint.x = event.clientX;
+        this.mousePoint.x = event.clientX;
+        this.oldMousePoint.y = window.innerHeight - event.clientY;
+        this.mousePoint.y = window.innerHeight - event.clientY;
+
+        // this.mouseXOnMouseDown = this.mousePoint.x - windowHalfX; // why -windowHalfX?
+        // this.mouseYOnMouseDown = mousePoint.y - windowHalfY; // why -windowHalfY?
+        // this.targetRotationOnMouseDownX = -targetRotationX;
+        // this.targetRotationOnMouseDownY = -targetRotationY;
         this.firstPointOfStroke = true;
         this.mouseDown = true;
       }
     });
     window.addEventListener('pointerup', (event) => {
       this.mouseDown = false;
-      this.mouseDownColorId = null;
     });
     window.addEventListener('pointerout', (event) => {
       this.mouseDown = false;
-      this.mouseDownColorId = null;
     });
     window.addEventListener('pointermove', this.onPointerMove.bind(this));
     window.addEventListener('resize', this.onWindowResize.bind(this));
@@ -293,7 +306,7 @@ export class HeadModelComponent {
   }
 
   onPointerMove(event: PointerEvent) {
-    if (event.isPrimary && this.mouseDown) {
+    if (event.isPrimary && this.mouseDown && this.drawingEnabled) {
       this.checkIntersection(event.clientX, event.clientY);
     }
   }
@@ -321,8 +334,8 @@ export class HeadModelComponent {
 
   render() {
     this.camera.lookAt(this.scene.position);
-
-    if (this.headMesh) {
+    // @ts-ignore
+    if (this.headMesh && this.headMesh.material && this.headMesh.material.map) {
       // @ts-ignore
       this.headMesh.material.map.needsUpdate = true;
       // this.headMesh.rotation.x +=
@@ -338,13 +351,11 @@ export class HeadModelComponent {
 
         if (this.intersection.intersects && this.firstPointOfStroke) {
           // select colorMaterial, get color at mousePoint --> prepare drawing?
+          console.log(
+            'this.intersection.intersects && this.firstPointOfStroke'
+          );
           this.headMesh.material = this.colorMaterial;
           this.renderer.render(this.scene, this.camera);
-          this.mouseDownColorId = this.getColor(
-            this.mousePoint.x,
-            this.mousePoint.y,
-            ctx
-          );
           this.headMesh.material = this.paintableMaterial;
         } else {
           // just select colorMaterial, not get color at mousePoint --> already in drawing with set color?
@@ -354,15 +365,17 @@ export class HeadModelComponent {
 
         let paintPoints = [];
         let startTexturePoint = this.getTexturePosition(
-          this.oldMousePoint.x, // old mouse point, retrieved in onDocumentMouseDown
+          this.oldMousePoint.x, // old mouse point, retrieved in pointerdown
           this.oldMousePoint.y,
           ctx
         );
+        console.log('startTexturePoint', startTexturePoint);
         let endTexturePoint = this.getTexturePosition(
-          this.mousePoint.x, // current mouse point, retrieved in onDocumentMouseDown
+          this.mousePoint.x, // current mouse point, retrieved in pointerdown
           this.mousePoint.y,
           ctx
         );
+        console.log('endTexturePoint', endTexturePoint);
 
         //ignore missed colors
         if (isNaN(startTexturePoint.x)) {
