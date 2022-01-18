@@ -1,9 +1,19 @@
-<mat-card class="step-card">
-  <mat-card-header>
-    <mat-card-title>Select the location of the lesion</mat-card-title>
-  </mat-card-header>
-  <mat-card-content>
-    <div class="head-container" #headContainer></div>
-    <button mat-button (click)="toggleDrawing()">Toggle Drawing</button>
-  </mat-card-content>
-</mat-card>
+<div
+  id="circularcursor"
+  [style.top]="cursorTop"
+  [style.left]="cursorLeft"
+  [style.display]="drawingEnabled && cursorInCanvas ? 'block' : 'none'"
+></div>
+<button mat-raised-button class="floating-control" (click)="toggleDrawing()">
+  Toggle Drawing
+</button>
+<button mat-raised-button class="floating-control" (click)="saveDrawing()">
+  Save Drawing
+</button>
+<button mat-raised-button class="floating-control" (click)="clearDrawing()">
+  Clear Drawing
+</button>
+<div
+  id="container"
+  [ngStyle]="{ cursor: drawingEnabled && cursorInCanvas ? 'none' : 'inherit' }"
+></div>

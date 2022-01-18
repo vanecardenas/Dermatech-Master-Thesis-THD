@@ -1,0 +1,23 @@
+#container {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  //   z-index: -100;
+}
+
+.floating-control {
+  z-index: 10;
+}
+
+#circularcursor {
+  background-color: transparent;
+  border: 1px solid black;
+  height: 8px;
+  width: 8px;
+  border-radius: 50%;
+  -moz-border-radius: 50%;
+  -webkit-border-radius: 50%;
+  position: absolute;
+  z-index: 20;
+  pointer-events: none;
+}
