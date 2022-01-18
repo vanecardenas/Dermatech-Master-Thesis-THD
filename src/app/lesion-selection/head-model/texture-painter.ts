@@ -8,7 +8,7 @@ import {
   Mesh,
   Vector3,
   Scene,
-  OrthographicCamera,
+  // OrthographicCamera,
   Geometry,
   Face3,
   Vector2,
@@ -35,13 +35,20 @@ export class TexturePainter {
   cursorUnits = this.cursorSize / this.frustumSize / this.aspect;
   cameraPosition: Vector3;
   scene!: Scene;
-  ortho!: OrthographicCamera;
+  // ortho!: OrthographicCamera;
   canvas!: HTMLCanvasElement;
   texture!: Texture;
   ctx!: CanvasRenderingContext2D | null;
   bg!: HTMLImageElement;
-  // cursor!: Mesh;
   drawingEnabled = false;
+  currentStroke = 0;
+  protected currentStrokePoints: Vector3[] = [];
+  protected currentStrokeLocations: {
+    vectors: Vector2[];
+    clip: Vector2[];
+  }[] = [];
+  protected drawingPoints: Vector3[][] = [];
+  protected drawingLocations: { vectors: Vector2[]; clip: Vector2[] }[][] = [];
 
   constructor(
     renderer: WebGLRenderer,
@@ -97,65 +104,16 @@ export class TexturePainter {
     this.scene = new THREE.Scene();
     this.scene.background = null;
 
-    this.ortho = new THREE.OrthographicCamera(
-      (this.frustumSize * this.aspect) / -2,
-      (this.frustumSize * this.aspect) / 2,
-      this.frustumSize / 2,
-      this.frustumSize / -2,
-      0,
-      10
-    );
-    this.ortho.position.z = 50;
-    this.ortho.lookAt(this.scene.position);
-
-    // var cursorTexture = new THREE.Texture(
-    //   undefined,
-    //   THREE.UVMapping,
-    //   THREE.MirroredRepeatWrapping,
-    //   THREE.MirroredRepeatWrapping
+    // this.ortho = new THREE.OrthographicCamera(
+    //   (this.frustumSize * this.aspect) / -2,
+    //   (this.frustumSize * this.aspect) / 2,
+    //   this.frustumSize / 2,
+    //   this.frustumSize / -2,
+    //   0,
+    //   10
     // );
-    // var cursorMaterial = new THREE.MeshBasicMaterial({
-    //   map: cursorTexture,
-    //   transparent: true,
-    // });
-    // var cursorGeometry = new THREE.PlaneBufferGeometry(
-    //   this.cursorSize,
-    //   this.cursorSize,
-    //   1,
-    //   1
-    // );
-
-    // this.cursor = new THREE.Mesh(cursorGeometry, cursorMaterial);
-    // this.cursor.position.copy(this.ortho.position);
-    // this.cursor.rotation.copy(this.ortho.rotation);
-    // this.scene.add(this.cursor);
-
-    // var canvasCursor = document.createElement('canvas');
-    // canvasCursor.width = canvasCursor.height = 128;
-    // var context = canvasCursor.getContext('2d');
-
-    // cursorTexture.image = canvasCursor;
-
-    // if (context) {
-    //   context.lineWidth = 8;
-    //   context.strokeStyle = 'rgba(0, 0, 0, 0.7)';
-
-    //   context.clearRect(0, 0, canvasCursor.width, canvasCursor.height);
-
-    //   context.ellipse(
-    //     canvasCursor.width / 2, // x
-    //     canvasCursor.height / 2, // y
-    //     canvasCursor.width / 2 - context.lineWidth / 2 - 8, // radiusX
-    //     canvasCursor.height / 2 - context.lineWidth / 2 - 8, // radiusY
-    //     0, // rotation
-    //     0, // angle start
-    //     Math.PI * 2 // angle end
-    //   );
-
-    //   context.stroke();
-    // }
-
-    // cursorTexture.needsUpdate = true;
+    // this.ortho.position.z = 50;
+    // this.ortho.lookAt(this.scene.position);
   }
 
   bindListeners() {
@@ -186,19 +144,19 @@ export class TexturePainter {
     if (!this.camera.position.equals(this.cameraPosition))
       this.cameraUpdated = true;
     this.renderer.autoClear = false;
-    this.renderer.render(this.scene, this.ortho);
+    // this.renderer.render(this.scene, this.camera);
   }
 
   resize() {
     this.aspect = window.innerWidth / window.innerHeight;
     this.cursorUnits = this.cursorSize / this.frustumSize / this.aspect;
 
-    this.ortho.left = (-this.frustumSize * this.aspect) / 2;
-    this.ortho.right = (this.frustumSize * this.aspect) / 2;
-    this.ortho.top = this.frustumSize / 2;
-    this.ortho.bottom = -this.frustumSize / 2;
+    // this.ortho.left = (-this.frustumSize * this.aspect) / 2;
+    // this.ortho.right = (this.frustumSize * this.aspect) / 2;
+    // this.ortho.top = this.frustumSize / 2;
+    // this.ortho.bottom = -this.frustumSize / 2;
 
-    this.ortho.updateProjectionMatrix();
+    // this.ortho.updateProjectionMatrix();
 
     this.cameraUpdated = true;
   }
@@ -232,13 +190,13 @@ export class TexturePainter {
     }
   }
 
-  faceDraw(vectors: Vector2[]) {
-    var width = this.canvas.width;
-    var height = this.canvas.height;
-    var length = vectors.length / 2;
+  faceDraw(vectors: Vector2[], undo: boolean = false) {
+    let width = this.canvas.width;
+    let height = this.canvas.height;
+    let length = vectors.length / 2;
 
     if (this.ctx) {
-      this.ctx.fillStyle = 'rgb(111, 106, 118)';
+      this.ctx.fillStyle = undo ? 'rgb(197, 200, 217)' : 'rgb(111, 106, 118)';
 
       // move to the first point
       this.ctx.beginPath();
@@ -263,16 +221,17 @@ export class TexturePainter {
     faces: {
       vectors: Vector2[];
       clip: Vector2[];
-    }[]
+    }[],
+    undo: boolean = false
   ) {
-    if (!this.ctx || !this.mouseIsDown || !faces) return;
+    if (!this.ctx || (!this.mouseIsDown && !undo) || !faces) return;
 
     faces.forEach((face) => {
       if (this.ctx) {
         this.ctx.save();
 
         this.faceClip(face.clip);
-        this.faceDraw(face.vectors); // face.points
+        this.faceDraw(face.vectors, undo); // face.points
 
         this.ctx.restore();
       }
@@ -283,7 +242,7 @@ export class TexturePainter {
 
   // world-functions
   calculateClipVertex(vertex: Vector3) {
-    var v1 = vertex.clone();
+    let v1 = vertex.clone();
     this.mesh.localToWorld(v1); // local-space to world-space
     return v1.project(this.camera); // world-space to clip-space;
   }
@@ -300,9 +259,9 @@ export class TexturePainter {
   }
 
   faceIntersectsClip(clip: Box3, face: Face3) {
-    var vA = this.getClipVertex(face.a);
-    var vB = this.getClipVertex(face.b);
-    var vC = this.getClipVertex(face.c);
+    let vA = this.getClipVertex(face.a);
+    let vB = this.getClipVertex(face.b);
+    let vC = this.getClipVertex(face.c);
 
     // Ignoring for TS check, as intersectsTriangle is missing in Box3 type, but it exists
     // @ts-ignore
@@ -319,38 +278,37 @@ export class TexturePainter {
   }
 
   getDirections(directions: Vector3[], origin: Vector3) {
-    for (var i = 0; i < 4; i++) {
-      var sign = i < 2 ? 1 : -1;
-      var x = (i % 2) * sign * this.cursorUnits;
-      var y = ((i + 1) % 2) * sign * this.cursorUnits;
+    for (let i = 0; i < 4; i++) {
+      let sign = i < 2 ? 1 : -1;
+      let x = (i % 2) * sign * this.cursorUnits;
+      let y = ((i + 1) % 2) * sign * this.cursorUnits;
       directions.push(this.getDirectionFromCamera(x, y, origin));
     }
 
-    for (var i = 0; i < 4; i++) {
-      var x = (i % 3 == 0 ? -1 : 1) * this.cursorUnits;
-      var y = (i < 2 ? 1 : -1) * this.cursorUnits;
+    for (let i = 0; i < 4; i++) {
+      let x = (i % 3 == 0 ? -1 : 1) * this.cursorUnits;
+      let y = (i < 2 ? 1 : -1) * this.cursorUnits;
       directions.push(this.getDirectionFromCamera(x, y, origin));
     }
   }
 
   getDrawLocations() {
-    var point: Vector3;
-    var node: Vector2;
-    var locations = [];
-    var intersects = [];
-    var directions: Vector3[] = [];
+    let locations = [];
+    let points: Vector3[] = [];
+    let intersects = [];
+    let directions: Vector3[] = [];
 
-    var ray: Ray = new THREE.Ray();
-    var vA: Vector3 = new THREE.Vector3();
-    var vB: Vector3 = new THREE.Vector3();
-    var vC: Vector3 = new THREE.Vector3();
-    var origin: Vector3 = (
+    let ray: Ray = new THREE.Ray();
+    let vA: Vector3 = new THREE.Vector3();
+    let vB: Vector3 = new THREE.Vector3();
+    let vC: Vector3 = new THREE.Vector3();
+    let origin: Vector3 = (
       new THREE.Vector3() as Vector3
     ).setFromMatrixPosition(this.camera.matrixWorld);
 
-    var faces = (this.mesh.geometry as Geometry).faces;
-    var vertices = (this.mesh.geometry as Geometry).vertices;
-    var uvs = (this.mesh.geometry as Geometry).faceVertexUvs[0];
+    let faces = (this.mesh.geometry as Geometry).faces;
+    let vertices = (this.mesh.geometry as Geometry).vertices;
+    let uvs = (this.mesh.geometry as Geometry).faceVertexUvs[0];
 
     // set clip-space.
     let min: Vector3 = new THREE.Vector3(
@@ -371,9 +329,9 @@ export class TexturePainter {
     if (this.cameraUpdated) this.verticesReset();
 
     // get faces that intersect with mouse clip-space.
-    for (var i = 0; i < faces.length; i++) {
-      var face = faces[i];
-      var deltaAngle = this.getDirectionFromCamera(0, 0, origin).dot(
+    for (let i = 0; i < faces.length; i++) {
+      let face = faces[i];
+      let deltaAngle = this.getDirectionFromCamera(0, 0, origin).dot(
         face.normal
       );
 
@@ -384,14 +342,13 @@ export class TexturePainter {
     }
 
     // set draw locations for each intersecting face.
-    for (var i = 0; i < intersects.length; i++) {
-      var uvclip: Vector2[] = [];
-      var vectors: Vector2[] = [];
-      var points: Vector3[] = [];
+    for (let i = 0; i < intersects.length; i++) {
+      let uvclip: Vector2[] = [];
+      let vectors: Vector2[] = [];
 
       // vertices in uv texture-space.
-      for (var k = 0; k < 3; k++) {
-        node = uvs[intersects[i]][k].clone();
+      for (let k = 0; k < 3; k++) {
+        const node = uvs[intersects[i]][k].clone();
         // Ignoring next line for TS check, as providing correct types still causes "possibly null" error, is not fixed by if-clause
         // TODO: later investigation
         // @ts-ignore
@@ -416,7 +373,7 @@ export class TexturePainter {
         if (!ray.intersectsPlane(plane)) break;
 
         // find brush projected point in world-space.
-        point = ray.intersectPlane(plane, new THREE.Vector3());
+        const point = ray.intersectPlane(plane, new THREE.Vector3());
         points.push(point);
         // brush center in uv texture-space.
         const uv: Vector2 = THREE.Triangle.getUV(
@@ -435,7 +392,7 @@ export class TexturePainter {
 
       if (vectors.length != 8) continue;
 
-      var loc = {
+      let loc = {
         vectors: vectors,
         clip: uvclip,
       };
@@ -443,18 +400,33 @@ export class TexturePainter {
       // push to list of canvas draw locations.
       locations.push(loc);
     }
-
-    // TODO: Remove console.log
-    // @ts-ignore
-    console.log('points', points);
-    console.log('location', locations);
+    this.currentStrokePoints.push(...points);
+    this.currentStrokeLocations.push(...locations);
     return locations;
+  }
+
+  undoLastStroke() {
+    this.drawingPoints.pop();
+    const lastStrokeLocations = this.drawingLocations.pop();
+    if (lastStrokeLocations) {
+      this.draw(lastStrokeLocations, true);
+    }
+  }
+
+  clearDrawing() {
+    this.drawingLocations.forEach((locations) => {
+      this.draw(locations, true);
+    });
+    this.drawingPoints = [];
+    this.drawingLocations = [];
+    this.currentStrokePoints = [];
+    this.currentStrokeLocations = [];
   }
 
   // mouse methods
   updateMouse(evt: MouseEvent) {
-    var rect = this.renderer.domElement.getBoundingClientRect();
-    var array = [
+    let rect = this.renderer.domElement.getBoundingClientRect();
+    let array = [
       (evt.clientX - rect.left) / rect.width,
       (evt.clientY - rect.top) / rect.height,
     ];
@@ -479,12 +451,24 @@ export class TexturePainter {
     evt.preventDefault();
     if (evt.button != 0) return;
     this.mouseIsDown = true;
+    this.currentStroke += 1;
     this.onMouseMove(evt);
   }
 
   onMouseUp(evt: MouseEvent) {
     evt.preventDefault();
     if (evt.button != 0) return;
+    if (
+      this.currentStrokeLocations.length > 0 &&
+      this.currentStrokePoints.length > 0
+    ) {
+      this.drawingPoints.push([...this.currentStrokePoints]);
+      this.currentStrokePoints = [];
+      this.drawingLocations.push([...this.currentStrokeLocations]);
+      this.currentStrokeLocations = [];
+    }
+    console.log(this.drawingPoints);
+    console.log(this.drawingLocations);
     this.mouseIsDown = false;
   }
 }

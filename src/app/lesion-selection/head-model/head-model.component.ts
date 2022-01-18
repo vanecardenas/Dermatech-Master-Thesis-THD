@@ -117,12 +117,16 @@ export class HeadModelComponent {
     this.painter.resize();
   }
 
+  undoLastStroke() {
+    this.painter.undoLastStroke();
+  }
+
   clearDrawing() {
-    this.painter.clearDrawLocations();
+    this.painter.clearDrawing();
   }
 
   saveDrawing() {
-    this.painter.locations;
+    // this.painter.locations;
   }
 
   render() {
