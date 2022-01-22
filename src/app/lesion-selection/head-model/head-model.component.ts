@@ -7,6 +7,9 @@ import { PerspectiveCamera, Scene, WebGLRenderer } from 'three/src/Three';
 
 import { TexturePainter } from './texture-painter';
 
+import { MatDialog } from '@angular/material/dialog';
+import { SaveDrawingComponent } from '../save-drawing/save-drawing.component';
+
 @Component({
   selector: 'app-head-model',
   templateUrl: './head-model.component.html',
@@ -32,6 +35,8 @@ export class HeadModelComponent {
     this.cursorTop = event.pageY - 5 + 'px';
     this.cursorLeft = event.pageX - 5 + 'px';
   }
+
+  constructor(public dialog: MatDialog) {}
 
   ngAfterViewInit() {
     this.container = document.getElementById('container');
@@ -126,7 +131,16 @@ export class HeadModelComponent {
   }
 
   saveDrawing() {
-    // this.painter.locations;
+    this.dialog.open(SaveDrawingComponent, {
+      // height: '400px',
+      // width: '600px',
+      data: { drawing: this.painter.drawing, onSave: () => this.resetScene() },
+    });
+  }
+
+  resetScene() {
+    this.painter.clearDrawing();
+    this.controls.reset();
   }
 
   render() {

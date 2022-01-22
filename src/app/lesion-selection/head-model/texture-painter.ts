@@ -423,6 +423,13 @@ export class TexturePainter {
     this.currentStrokeLocations = [];
   }
 
+  get drawing() {
+    return {
+      locations: this.drawingLocations.flat(),
+      points: this.drawingPoints.flat(),
+    };
+  }
+
   // mouse methods
   updateMouse(evt: MouseEvent) {
     let rect = this.renderer.domElement.getBoundingClientRect();
@@ -467,8 +474,6 @@ export class TexturePainter {
       this.drawingLocations.push([...this.currentStrokeLocations]);
       this.currentStrokeLocations = [];
     }
-    console.log(this.drawingPoints);
-    console.log(this.drawingLocations);
     this.mouseIsDown = false;
   }
 }

@@ -1,39 +1,27 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { AngularFirestore } from '@angular/fire/compat/firestore';
-
-interface Drawing {
-  id: string;
-}
+import {
+  AngularFirestore,
+  AngularFirestoreCollection,
+} from '@angular/fire/compat/firestore';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DatabaseService {
-  private readonly drawingsSubject = new BehaviorSubject<Drawing[]>([]);
-  // expose as read-only observable
-  drawings = this.drawingsSubject.asObservable();
+  private drawingCollection: AngularFirestoreCollection<DatabaseDrawing>;
+  drawings: Observable<DatabaseDrawing[]>;
 
-  constructor(private firestore: AngularFirestore) {
+  constructor(private readonly firestore: AngularFirestore) {
     // We are getting the drawings from the firestore database and map them to a local array.
-    firestore
-      .collection('drawings')
-      .valueChanges({ idField: 'id' })
-      .subscribe((drawings: Drawing[]) => {
-        this.drawingsSubject.next([...drawings]);
-      });
+    this.drawingCollection = firestore.collection<DatabaseDrawing>('drawings');
+    this.drawings = this.drawingCollection.valueChanges({
+      idField: 'id',
+    });
     this.firestore = firestore;
   }
 
-  addDrawing(drawing: Drawing) {
-    this.firestore
-      .collection('drawings')
-      .add(drawing)
-      .then(() => {
-        console.log('Drawing added');
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+  addDrawing(drawing: DatabaseDrawing) {
+    return this.firestore.collection<DatabaseDrawing>('drawings').add(drawing);
   }
 }

@@ -1,0 +1,36 @@
+<h2 mat-dialog-title>Save your Drawing</h2>
+<mat-dialog-content>
+  <mat-form-field appearance="outline">
+    <mat-label>Name of the drawing</mat-label>
+    <input
+      matInput
+      name="drawingNameInput"
+      [(ngModel)]="drawingName"
+      placeholder="Kind of Lesion"
+    />
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Author of the drawing</mat-label>
+    <input
+      matInput
+      name="drawingAuthorInput"
+      [(ngModel)]="drawingAuthor"
+      placeholder="Dr. Strange"
+    />
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Comments to the drawing</mat-label>
+    <textarea
+      matInput
+      name="drawingCommentInput"
+      [(ngModel)]="drawingComments"
+      placeholder="Anything to let users know?"
+    ></textarea>
+  </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-raised-button color="primary" (click)="saveDrawing()">
+    Save
+  </button>
+  <button mat-button mat-dialog-close>Cancel</button>
+</mat-dialog-actions>
