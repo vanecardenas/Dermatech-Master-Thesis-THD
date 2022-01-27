@@ -1,6 +1,7 @@
 /**
  * @author ScieCode / https://sciecode.github.io/
  */
+import { Input } from '@angular/core';
 import * as THREE from 'three';
 import {
   WebGLRenderer,
@@ -50,6 +51,9 @@ export class TexturePainter {
   protected drawingPoints: Vector3[][] = [];
   protected drawingLocations: { vectors: Vector2[]; clip: Vector2[] }[][] = [];
 
+  protected headColor = 'rgb(197, 200, 217)';
+  protected drawColor = 'rgb(111, 106, 118)';
+
   constructor(
     renderer: WebGLRenderer,
     camera: PerspectiveCamera,
@@ -98,6 +102,10 @@ export class TexturePainter {
     );
 
     this.bg.src = this.textureSource;
+  }
+
+  setDrawColor(color: string) {
+    this.drawColor = color;
   }
 
   initializeCursor() {
@@ -196,7 +204,7 @@ export class TexturePainter {
     let length = vectors.length / 2;
 
     if (this.ctx) {
-      this.ctx.fillStyle = undo ? 'rgb(197, 200, 217)' : 'rgb(111, 106, 118)';
+      this.ctx.fillStyle = undo ? this.headColor : this.drawColor;
 
       // move to the first point
       this.ctx.beginPath();

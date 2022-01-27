@@ -4,6 +4,15 @@
   [style.left]="cursorLeft"
   [style.display]="drawingEnabled && cursorInCanvas ? 'block' : 'none'"
 ></div>
+<ngx-colors
+  ngx-colors-trigger
+  class="floating-control"
+  colorsAnimation="popup"
+  format="rgba"
+  [hideTextInput]="false"
+  (change)="onColorChange()"
+  [(ngModel)]="drawColor"
+></ngx-colors>
 <button mat-raised-button class="floating-control" (click)="toggleDrawing()">
   Toggle Drawing
 </button>

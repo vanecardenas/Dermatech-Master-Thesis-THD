@@ -1,10 +1,9 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
+import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { environment } from '../environments/environment';
+
+import { NgxColorsModule } from 'ngx-colors';
 
 import {
   SETTINGS as AUTH_SETTINGS,
@@ -12,8 +11,8 @@ import {
 } from '@angular/fire/compat/auth';
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
 
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -23,11 +22,14 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+import { environment } from '../environments/environment';
+
 import { WelcomeStepComponent } from './welcome-step/welcome-step.component';
 import { HeadModelComponent } from './lesion-selection/head-model/head-model.component';
 import { LesionSelectionComponent } from './lesion-selection/lesion-selection.component';
 import { SaveDrawingComponent } from './lesion-selection/save-drawing/save-drawing.component';
-import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -53,6 +55,7 @@ import { FormsModule } from '@angular/forms';
     MatSnackBarModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,
+    NgxColorsModule,
   ],
   providers: [
     {
