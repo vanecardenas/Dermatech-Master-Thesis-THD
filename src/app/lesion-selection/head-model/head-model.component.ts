@@ -89,12 +89,7 @@ export class HeadModelComponent {
       mesh.updateMatrix();
       this.scene.add(mesh);
       mesh.scale.set(10, 10, 10);
-      this.painter = new TexturePainter(
-        this.renderer,
-        this.camera,
-        mesh,
-        this.drawColor
-      );
+      this.painter = new TexturePainter(this.renderer, this.camera, mesh);
       this.painter.drawingEnabled = this.drawingEnabled;
       window.addEventListener('resize', () => this.onWindowResize(), false);
       this.render();
