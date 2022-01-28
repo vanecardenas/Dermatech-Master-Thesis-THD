@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { NgxColorsModule } from 'ngx-colors';
@@ -12,6 +12,7 @@ import {
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 
+import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatCardModule } from '@angular/material/card';
@@ -31,6 +32,7 @@ import { WelcomeStepComponent } from './welcome-step/welcome-step.component';
 import { HeadModelComponent } from './lesion-selection/head-model/head-model.component';
 import { LesionSelectionComponent } from './lesion-selection/lesion-selection.component';
 import { SaveDrawingComponent } from './lesion-selection/save-drawing/save-drawing.component';
+import { LoginComponent } from './login/login.component';
 
 @NgModule({
   declarations: [
@@ -39,12 +41,15 @@ import { SaveDrawingComponent } from './lesion-selection/save-drawing/save-drawi
     HeadModelComponent,
     LesionSelectionComponent,
     SaveDrawingComponent,
+    LoginComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
     FormsModule,
+    ReactiveFormsModule,
+    FlexLayoutModule,
     MatToolbarModule,
     MatCardModule,
     MatButtonModule,
