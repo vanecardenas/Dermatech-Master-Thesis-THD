@@ -9,9 +9,10 @@
   class="floating-control"
   colorsAnimation="popup"
   format="rgba"
-  [hideTextInput]="false"
+  [hideTextInput]="true"
   (change)="onColorChange()"
   [(ngModel)]="drawColor"
+  colorPickerControls="no-alpha"
 ></ngx-colors>
 <button mat-raised-button class="floating-control" (click)="toggleDrawing()">
   Toggle Drawing
