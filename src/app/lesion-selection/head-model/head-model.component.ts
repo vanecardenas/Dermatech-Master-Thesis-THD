@@ -28,7 +28,7 @@ export class HeadModelComponent {
   painter!: TexturePainter;
   drawingEnabled = false;
   cursorInCanvas = false;
-  drawColor = '#000000';
+  drawColor = 'rgb(111, 106, 118)';
 
   // Circular Brush Cursor to track the mouse position
   @HostListener('document:mousemove', ['$event'])
@@ -90,6 +90,7 @@ export class HeadModelComponent {
       this.scene.add(mesh);
       mesh.scale.set(10, 10, 10);
       this.painter = new TexturePainter(this.renderer, this.camera, mesh);
+      this.painter.setDrawColor(this.drawColor);
       this.painter.drawingEnabled = this.drawingEnabled;
       window.addEventListener('resize', () => this.onWindowResize(), false);
       this.render();

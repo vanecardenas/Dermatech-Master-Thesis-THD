@@ -13,6 +13,7 @@ export class SaveDrawingComponent {
   drawingName = '';
   drawingAuthor = '';
   drawingComments = '';
+  uploadingData = false;
 
   constructor(
     private databaseService: DatabaseService,
@@ -45,16 +46,30 @@ export class SaveDrawingComponent {
   }
 
   async saveDrawing() {
-    const locations = this.data.drawing.locations.map((location) =>
-      this.convertLocation(location)
-    );
-    const points = this.data.drawing.points.map((point) =>
-      this.convertPoint(point)
-    );
+    let convertedStrokes: DatabaseStroke[] = [];
+    this.data.drawing.forEach((stroke) => {
+      const convertedLocations = stroke.locations.map((location) =>
+        this.convertLocation(location)
+      );
+      const convertedPoints = stroke.points.map((point) =>
+        this.convertPoint(point)
+      );
+      let sampledPoints = [];
+      // Only take every 8th point to reduce the size in the database
+      for (let i = 0; i < convertedPoints.length; ) {
+        sampledPoints.push(convertedPoints[i]);
+        i = i + 8;
+      }
+
+      convertedStrokes.push({
+        color: stroke.color,
+        locations: convertedLocations,
+        points: sampledPoints,
+      });
+    });
 
     const drawing = {
-      locations: locations,
-      points: points,
+      strokes: convertedStrokes,
       name: this.drawingName,
       author: this.drawingAuthor,
       comments: this.drawingComments,
@@ -62,6 +77,7 @@ export class SaveDrawingComponent {
 
     console.log('Saving drawing:', drawing);
     try {
+      this.uploadingData = true;
       await this.databaseService.addDrawing(drawing);
       this.dialogRef.close();
       this._snackBar.open('Successfully added you drawing', 'Close', {

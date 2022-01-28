@@ -48,8 +48,11 @@ export class TexturePainter {
     vectors: Vector2[];
     clip: Vector2[];
   }[] = [];
-  protected drawingPoints: Vector3[][] = [];
-  protected drawingLocations: { vectors: Vector2[]; clip: Vector2[] }[][] = [];
+  protected strokes: {
+    color: string;
+    points: Vector3[];
+    locations: { vectors: Vector2[]; clip: Vector2[] }[];
+  }[] = [];
 
   protected headColor = 'rgb(197, 200, 217)';
   protected drawColor = 'rgb(111, 106, 118)';
@@ -414,28 +417,23 @@ export class TexturePainter {
   }
 
   undoLastStroke() {
-    this.drawingPoints.pop();
-    const lastStrokeLocations = this.drawingLocations.pop();
-    if (lastStrokeLocations) {
-      this.draw(lastStrokeLocations, true);
+    const lastStroke = this.strokes.pop();
+    if (lastStroke) {
+      this.draw(lastStroke.locations, true);
     }
   }
 
   clearDrawing() {
-    this.drawingLocations.forEach((locations) => {
-      this.draw(locations, true);
+    this.strokes.forEach((stroke) => {
+      this.draw(stroke.locations, true);
     });
-    this.drawingPoints = [];
-    this.drawingLocations = [];
+    this.strokes = [];
     this.currentStrokePoints = [];
     this.currentStrokeLocations = [];
   }
 
-  get drawing() {
-    return {
-      locations: this.drawingLocations.flat(),
-      points: this.drawingPoints.flat(),
-    };
+  get drawing(): Drawing {
+    return this.strokes;
   }
 
   // mouse methods
@@ -477,9 +475,12 @@ export class TexturePainter {
       this.currentStrokeLocations.length > 0 &&
       this.currentStrokePoints.length > 0
     ) {
-      this.drawingPoints.push([...this.currentStrokePoints]);
+      this.strokes.push({
+        color: this.drawColor,
+        points: [...this.currentStrokePoints],
+        locations: [...this.currentStrokeLocations],
+      });
       this.currentStrokePoints = [];
-      this.drawingLocations.push([...this.currentStrokeLocations]);
       this.currentStrokeLocations = [];
     }
     this.mouseIsDown = false;
