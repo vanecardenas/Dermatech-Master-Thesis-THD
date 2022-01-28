@@ -1,0 +1,63 @@
+<div class="login-card-container" fxLayoutAlign="center center">
+  <mat-card class="login-card">
+    <mat-card-header>
+      <mat-card-title>Welcome! Please log in to use Dermatech</mat-card-title>
+      <mat-card-subtitle
+        >Please provide email and password for your user account
+        below.</mat-card-subtitle
+      >
+    </mat-card-header>
+    <mat-card-content>
+      <div fxLayout="column" fxLayoutAlign="space-around stretch">
+        <mat-form-field appearance="outline">
+          <mat-label>Enter your email</mat-label>
+          <input
+            matInput
+            placeholder="user@example.com"
+            [formControl]="email"
+            required
+            type="email"
+          />
+          <mat-error *ngIf="email.invalid">{{
+            getEmailErrorMessage()
+          }}</mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Enter your password</mat-label>
+          <input
+            matInput
+            placeholder="Password"
+            [formControl]="password"
+            required
+            [type]="hidePassword ? 'password' : 'text'"
+          />
+          <button
+            mat-icon-button
+            matSuffix
+            (click)="hidePassword = !hidePassword"
+            [attr.aria-label]="'Hide password'"
+            [attr.aria-pressed]="hidePassword"
+          >
+            <mat-icon>{{
+              hidePassword ? "visibility_off" : "visibility"
+            }}</mat-icon>
+          </button>
+          <mat-error *ngIf="password.invalid">{{
+            getPasswordErrorMessage()
+          }}</mat-error>
+        </mat-form-field>
+      </div>
+    </mat-card-content>
+    <mat-card-actions fxLayout>
+      <button
+        fxFlexFill
+        [disabled]="!password.valid || !email.valid"
+        mat-raised-button
+        color="primary"
+        (click)="login()"
+      >
+        Login
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>
