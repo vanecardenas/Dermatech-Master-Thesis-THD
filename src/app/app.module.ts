@@ -23,6 +23,8 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatRippleModule } from '@angular/material/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -60,6 +62,8 @@ import { LoginComponent } from './login/login.component';
     MatInputModule,
     MatSnackBarModule,
     MatProgressSpinnerModule,
+    MatRippleModule,
+    MatButtonToggleModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,
     NgxColorsModule,

@@ -43,6 +43,7 @@ body {
 body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
+  background-color: #dae5f1;
 }
 
 body,
@@ -51,14 +52,12 @@ body,
   background-color: #dae5f1 !important;
 }
 
-.flex-row-center {
-  display: flex !important;
-  flex-direction: row;
-  justify-content: center;
-}
-
 .fake-stepper {
   pointer-events: none;
+}
+
+.fake-stepper .mat-step-label {
+  white-space: pre-wrap !important;
 }
 
 .fake-stepper .mat-label-selected,
@@ -66,15 +65,6 @@ body,
   font-size: inherit;
   font-weight: inherit;
   color: rgba(0, 0, 0, 0.54) !important;
-}
-
-.step-card-content {
-  margin: 0 16px;
-}
-
-.step-card {
-  height: fit-content;
-  width: 90%;
 }
 
 .head-container {
@@ -87,10 +77,23 @@ body,
   margin: auto;
 }
 
-.step-background {
-  height: calc(100% - 64px);
-  width: 100%;
-  background-color: #dae5f1;
-  display: flex;
-  justify-content: center;
+.floating-control {
+  z-index: 10;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.hover-elevation {
+  @include mat.elevation-transition();
+  @include mat.elevation(2);
+
+  &:hover {
+    @include mat.elevation(8);
+  }
+}
+
+.base-elevation {
+  @include mat.elevation(2);
 }

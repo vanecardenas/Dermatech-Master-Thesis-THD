@@ -1,4 +1,12 @@
-<div class="login-card-container" fxLayoutAlign="center center">
+<div
+  class="login-card-container"
+  fxLayout="column"
+  fxLayoutAlign="space-around center"
+>
+  <div fxLayout="column" fxLayoutAlign="space-between center">
+    <img src="/assets/logo.png" style="max-height: 150px; aspect-ratio: auto" />
+    <h1>Dermatech</h1>
+  </div>
   <mat-card class="login-card">
     <mat-card-header>
       <mat-card-title>Welcome! Please log in to use Dermatech</mat-card-title>
@@ -53,11 +61,29 @@
         fxFlexFill
         [disabled]="!password.valid || !email.valid"
         mat-raised-button
-        color="primary"
+        class="login-button"
         (click)="login()"
       >
         Login
       </button>
     </mat-card-actions>
   </mat-card>
+  <div
+    fxLayout="row"
+    style="margin-bottom: 20px"
+    fxLayoutAlign="space-between center"
+  >
+    <img
+      src="/assets/logo-centroderm.svg"
+      style="max-height: 100px; aspect-ratio: auto"
+    />
+    <img
+      src="/assets/x-symbol.svg"
+      style="max-height: 75px; aspect-ratio: auto; margin: 0px 25px"
+    />
+    <img
+      src="/assets/THD-Logo-compact.png"
+      style="max-height: 85px; aspect-ratio: auto; margin: 0px 20px"
+    />
+  </div>
 </div>

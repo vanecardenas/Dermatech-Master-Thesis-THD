@@ -112,7 +112,6 @@ export class HeadModelComponent {
   }
 
   toggleDrawing() {
-    this.drawingEnabled = !this.drawingEnabled;
     this.painter.drawingEnabled = this.drawingEnabled;
     this.controls.enabled = !this.drawingEnabled;
   }

@@ -1,31 +1,82 @@
+<img
+  class="floating-control cursor-pointer"
+  style="position: sticky; height: 90px"
+  [routerLink]="['/']"
+  src="/assets/logo-dermatech.jpg"
+  alt="logo"
+/>
 <div
   id="circularcursor"
   [style.top]="cursorTop"
   [style.left]="cursorLeft"
   [style.display]="drawingEnabled && cursorInCanvas ? 'block' : 'none'"
 ></div>
-<ngx-colors
-  ngx-colors-trigger
-  class="floating-control"
-  colorsAnimation="popup"
-  format="rgba"
-  [hideTextInput]="true"
-  (change)="onColorChange()"
-  [(ngModel)]="drawColor"
-  colorPickerControls="no-alpha"
-></ngx-colors>
-<button mat-raised-button class="floating-control" (click)="toggleDrawing()">
-  Toggle Drawing
-</button>
-<button mat-raised-button class="floating-control" (click)="saveDrawing()">
-  Save Drawing
-</button>
-<button mat-raised-button class="floating-control" (click)="undoLastStroke()">
-  Undo
-</button>
-<button mat-raised-button class="floating-control" (click)="clearDrawing()">
-  Clear Drawing
-</button>
+<div
+  style="width: 145px; margin-top: 5%; margin-left: 10px"
+  fxLayout="column"
+  fxLayoutGap="10px"
+  fxLayoutAlign="space-between center"
+>
+  <mat-button-toggle-group
+    fxFlexFill
+    class="floating-control base-elevation"
+    [(ngModel)]="drawingEnabled"
+    (change)="toggleDrawing()"
+  >
+    <mat-button-toggle fxFlex [value]="false"> Move </mat-button-toggle>
+    <mat-button-toggle fxFlex [value]="true"> Draw </mat-button-toggle>
+  </mat-button-toggle-group>
+  <button
+    fxFlexFill
+    mat-raised-button
+    class="floating-control"
+    ngx-colors-trigger
+    colorsAnimation="popup"
+    format="rgba"
+    [hideTextInput]="true"
+    (change)="onColorChange()"
+    [(ngModel)]="drawColor"
+    colorPickerControls="no-alpha"
+  >
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+      <ngx-colors></ngx-colors>
+      Drawing Color
+    </div>
+  </button>
+  <button
+    fxFlexFill
+    fxLayout="row"
+    fxLayoutAlign="space-between center"
+    mat-raised-button
+    class="floating-control"
+    (click)="undoLastStroke()"
+  >
+    <mat-icon>undo</mat-icon>
+    Undo Stroke
+  </button>
+  <button
+    fxFlexFill
+    fxLayout="row"
+    fxLayoutAlign="space-between center"
+    mat-raised-button
+    class="floating-control"
+    (click)="clearDrawing()"
+  >
+    <mat-icon>clear</mat-icon>
+    Clear Drawing
+  </button>
+  <button
+    fxFlexFill
+    fxLayout="row"
+    fxLayoutAlign="space-between center"
+    mat-raised-button
+    class="floating-control"
+    (click)="saveDrawing()"
+  >
+    <mat-icon>save</mat-icon>
+    Save Drawing
+  </button>
+</div>
 <div
   id="container"
   [ngStyle]="{ cursor: drawingEnabled && cursorInCanvas ? 'none' : 'inherit' }"

@@ -1,3 +1,13 @@
 .login-card-container {
   height: 100%;
 }
+
+.login-button {
+  background-color: #434850;
+  color: white;
+}
+
+.login-button.mat-button-disabled {
+  background-color: #dee3e9;
+  color: #6e747e;
+}
