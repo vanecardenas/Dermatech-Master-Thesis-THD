@@ -1,7 +1,7 @@
 import { Component, HostListener } from '@angular/core';
 import * as THREE from 'three';
 
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { OrbitControls } from './OrbitControls.js';
 import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { PerspectiveCamera, Scene, WebGLRenderer } from 'three/src/Three';
 
@@ -26,6 +26,7 @@ export class HeadModelComponent {
   camera!: PerspectiveCamera;
   scene!: Scene;
   painter!: TexturePainter;
+  controlMode: 'rotate' | 'pan' = 'rotate';
   drawingEnabled = false;
   cursorInCanvas = false;
   drawColor = 'rgb(111, 106, 118)';
@@ -62,11 +63,9 @@ export class HeadModelComponent {
     this.camera.position.z = 150;
     this.camera.lookAt(this.scene.position);
 
-    this.controls = new OrbitControls(this.camera);
+    this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.controls.enableZoom = true;
-    this.controls.enablePan = true;
-    this.controls.mouseButtons.LEFT = THREE.MOUSE.RIGHT;
-    this.controls.mouseButtons.RIGHT = THREE.MOUSE.LEFT;
+    this.controls.enablePan = false;
     this.controls.update();
 
     this.scene.add(new THREE.HemisphereLight(0xffffff, 0x867f7f, 1));
@@ -111,6 +110,22 @@ export class HeadModelComponent {
     );
   }
 
+  toggleControlMode() {
+    console.log(this.controlMode);
+    if (this.controlMode === 'rotate') {
+      this.controls.enablePan = false;
+      this.controls.enableRotate = true;
+      this.controls.mouseButtons.LEFT = THREE.MOUSE.LEFT;
+      this.controls.mouseButtons.RIGHT = THREE.MOUSE.RIGHT;
+    } else {
+      this.controls.enablePan = true;
+      this.controls.enableRotate = false;
+      this.controls.mouseButtons.LEFT = THREE.MOUSE.RIGHT;
+      this.controls.mouseButtons.RIGHT = THREE.MOUSE.LEFT;
+    }
+    this.controls.update();
+  }
+
   toggleDrawing() {
     this.painter.drawingEnabled = this.drawingEnabled;
     this.controls.enabled = !this.drawingEnabled;
@@ -125,6 +140,10 @@ export class HeadModelComponent {
 
   undoLastStroke() {
     this.painter.undoLastStroke();
+  }
+
+  resetControls() {
+    this.controls.reset();
   }
 
   clearDrawing() {

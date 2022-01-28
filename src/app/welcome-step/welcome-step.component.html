@@ -53,18 +53,14 @@
     </mat-card-content>
   </mat-card>
   <div fxFlexFill fxLayout="row" fxLayoutGap="10px">
-    <mat-card
-      class="cursor-pointer hover-elevation"
-      mat-ripple
-      fxFlex
-      (click)="startLesionSupport()"
-    >
+    <mat-card fxFlex (click)="startLesionSupport()">
       <mat-card-header>
         <mat-card-title>Lesion Decision Support</mat-card-title>
-        <mat-card-subtitle
+        <mat-card-subtitle> NOT IMPLEMENTED YET.</mat-card-subtitle>
+        <!-- <mat-card-subtitle
           >Draw a lesion be guided to the best surgical
           technique</mat-card-subtitle
-        >
+        > -->
       </mat-card-header>
     </mat-card>
     <mat-card
@@ -77,6 +73,19 @@
         <mat-card-title>Add new Lesion Type</mat-card-title>
         <mat-card-subtitle
           >Add a new type of lesion to the database</mat-card-subtitle
+        >
+      </mat-card-header>
+    </mat-card>
+    <mat-card
+      class="cursor-pointer hover-elevation"
+      mat-ripple
+      fxFlex
+      [routerLink]="'/lesion-selection'"
+    >
+      <mat-card-header>
+        <mat-card-title>Add new Surgical Technique</mat-card-title>
+        <mat-card-subtitle
+          >Add a new surgical technique to the database</mat-card-subtitle
         >
       </mat-card-header>
     </mat-card>

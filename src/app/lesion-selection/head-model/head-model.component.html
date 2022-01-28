@@ -11,12 +11,28 @@
   [style.left]="cursorLeft"
   [style.display]="drawingEnabled && cursorInCanvas ? 'block' : 'none'"
 ></div>
+<mat-button-toggle-group
+  class="floating-control"
+  [(ngModel)]="drawingEnabled"
+  (change)="toggleDrawing()"
+  style="
+    border-radius: 50px;
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    margin-left: -130px;
+  "
+>
+  <mat-button-toggle [value]="false"> New Lesion Type </mat-button-toggle>
+  <mat-button-toggle [value]="true"> New Surgical Technique </mat-button-toggle>
+</mat-button-toggle-group>
 <div
   style="width: 145px; margin-top: 5%; margin-left: 10px"
   fxLayout="column"
   fxLayoutGap="10px"
   fxLayoutAlign="space-between center"
 >
+  <h4 class="floating-control">Movement Controls</h4>
   <mat-button-toggle-group
     fxFlexFill
     class="floating-control base-elevation"
@@ -26,6 +42,28 @@
     <mat-button-toggle fxFlex [value]="false"> Move </mat-button-toggle>
     <mat-button-toggle fxFlex [value]="true"> Draw </mat-button-toggle>
   </mat-button-toggle-group>
+  <mat-button-toggle-group
+    fxFlexFill
+    class="floating-control base-elevation"
+    [(ngModel)]="controlMode"
+    (change)="toggleControlMode()"
+    [disabled]="drawingEnabled"
+  >
+    <mat-button-toggle fxFlex value="rotate"> Rotate </mat-button-toggle>
+    <mat-button-toggle fxFlex value="pan"> Pan </mat-button-toggle>
+  </mat-button-toggle-group>
+  <button
+    fxFlexFill
+    fxLayout="row"
+    fxLayoutAlign="space-between center"
+    mat-raised-button
+    class="floating-control"
+    (click)="resetControls()"
+  >
+    <mat-icon>person</mat-icon>
+    Reset View
+  </button>
+  <h4 class="floating-control section-header">Drawing Controls</h4>
   <button
     fxFlexFill
     mat-raised-button
@@ -70,7 +108,8 @@
     fxLayout="row"
     fxLayoutAlign="space-between center"
     mat-raised-button
-    class="floating-control"
+    color="primary"
+    class="floating-control save-button"
     (click)="saveDrawing()"
   >
     <mat-icon>save</mat-icon>
