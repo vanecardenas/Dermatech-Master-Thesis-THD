@@ -27,6 +27,8 @@ export class HeadModelComponent {
   scene!: Scene;
   painter!: TexturePainter;
   controlMode: 'rotate' | 'pan' = 'rotate';
+  wasPanEnabled = false;
+  wasRotateEnabled = true;
   drawingEnabled = false;
   cursorInCanvas = false;
   drawColor = 'rgb(111, 106, 118)';
@@ -111,7 +113,6 @@ export class HeadModelComponent {
   }
 
   toggleControlMode() {
-    console.log(this.controlMode);
     if (this.controlMode === 'rotate') {
       this.controls.enablePan = false;
       this.controls.enableRotate = true;
@@ -128,7 +129,15 @@ export class HeadModelComponent {
 
   toggleDrawing() {
     this.painter.drawingEnabled = this.drawingEnabled;
-    this.controls.enabled = !this.drawingEnabled;
+    if (this.painter.drawingEnabled) {
+      this.wasPanEnabled = this.controls.enablePan;
+      this.wasRotateEnabled = this.controls.enableRotate;
+      this.controls.enablePan = false;
+      this.controls.enableRotate = false;
+    } else {
+      this.controls.enablePan = this.wasPanEnabled;
+      this.controls.enableRotate = this.wasRotateEnabled;
+    }
   }
 
   onWindowResize() {
@@ -164,8 +173,6 @@ export class HeadModelComponent {
   }
 
   onColorChange() {
-    console.log('colorChange fired');
-    console.log(this.drawColor);
     if (this.painter) {
       this.painter.setDrawColor(this.drawColor);
     }
