@@ -97,3 +97,15 @@ body,
 .base-elevation {
   @include mat.elevation(2);
 }
+
+.no-elevation {
+  @include mat.elevation(0);
+  box-shadow: none;
+}
+
+.corner-label {
+  height: 43px;
+  display: flex !important;
+  align-items: center !important;
+  border-radius: 0px 0px 10px 0px !important;
+}

@@ -1,1 +1,51 @@
-<router-outlet></router-outlet>
+<div class="example-container" [class.example-is-mobile]="mobileQuery.matches">
+  <div style="position: absolute" fxLayout="row" fxLayoutAlign="start center">
+    <img
+      class="floating-control cursor-pointer base-elevation"
+      style="height: 75px"
+      (click)="snav.toggle()"
+      src="/assets/logo-dermatech.jpg"
+      alt="logo"
+    />
+    <!-- <mat-card class="floating-control corner-label">
+      <h3>Associate Lesions and Surgical Techniques</h3>
+    </mat-card> -->
+  </div>
+
+  <mat-sidenav-container
+    class="example-sidenav-container"
+    [style.marginTop.px]="mobileQuery.matches ? 75 : 0"
+  >
+    <mat-sidenav
+      #snav
+      [mode]="mobileQuery.matches ? 'over' : 'side'"
+      [fixedInViewport]="mobileQuery.matches"
+      fixedTopGap="75"
+    >
+      <mat-nav-list>
+        <div style="height: 75px"></div>
+        <a mat-list-item routerLink="."
+          ><mat-icon class="menu-icon">home</mat-icon>Home</a
+        >
+        <a mat-list-item routerLink="/associate-lesion-technique"
+          ><mat-icon class="menu-icon">link</mat-icon>Association of Lesions &
+          Techniques</a
+        >
+        <a mat-list-item routerLink="/add-lesion"
+          ><mat-icon class="menu-icon">local_hospital</mat-icon>Add Lesion</a
+        >
+        <a mat-list-item routerLink="/add-technique"
+          ><mat-icon class="menu-icon">healing</mat-icon>Add Surgical
+          Technique</a
+        >
+        <a mat-list-item (click)="logout()">
+          <mat-icon class="menu-icon">logout</mat-icon>Logout
+        </a>
+      </mat-nav-list>
+    </mat-sidenav>
+
+    <mat-sidenav-content class="sidenav-content">
+      <router-outlet></router-outlet>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>

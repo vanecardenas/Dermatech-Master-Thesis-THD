@@ -25,25 +25,38 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatRippleModule } from '@angular/material/core';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatListModule } from '@angular/material/list';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { environment } from '../environments/environment';
 
 import { WelcomeStepComponent } from './welcome-step/welcome-step.component';
-import { HeadModelComponent } from './lesion-selection/head-model/head-model.component';
-import { LesionSelectionComponent } from './lesion-selection/lesion-selection.component';
-import { SaveDrawingComponent } from './lesion-selection/save-drawing/save-drawing.component';
+import { HeadModelComponent } from './shared/head-model/head-model.component';
+import { AddLesionComponent } from './add-lesion/add-lesion.component';
+import { SaveDrawingComponent } from './shared/save-drawing/save-drawing.component';
 import { LoginComponent } from './login/login.component';
+import { MultiselectAutocompleteComponent } from './shared/multiselect-autocomplete/multiselect-autocomplete.component';
+import { AddTechniqueComponent } from './add-technique/add-technique.component';
+import { AssociateLesionTechniqueComponent } from './associate-lesion-technique/associate-lesion-technique.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     WelcomeStepComponent,
     HeadModelComponent,
-    LesionSelectionComponent,
+    AddLesionComponent,
     SaveDrawingComponent,
     LoginComponent,
+    MultiselectAutocompleteComponent,
+    AddTechniqueComponent,
+    AssociateLesionTechniqueComponent,
   ],
   imports: [
     BrowserModule,
@@ -52,6 +65,8 @@ import { LoginComponent } from './login/login.component';
     FormsModule,
     ReactiveFormsModule,
     FlexLayoutModule,
+    MatSidenavModule,
+    MatListModule,
     MatToolbarModule,
     MatCardModule,
     MatButtonModule,
@@ -62,7 +77,12 @@ import { LoginComponent } from './login/login.component';
     MatInputModule,
     MatSnackBarModule,
     MatProgressSpinnerModule,
+    MatSlideToggleModule,
     MatRippleModule,
+    MatExpansionModule,
+    MatChipsModule,
+    MatAutocompleteModule,
+    MatCheckboxModule,
     MatButtonToggleModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,

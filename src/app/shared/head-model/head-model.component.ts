@@ -1,4 +1,4 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, Input } from '@angular/core';
 import * as THREE from 'three';
 
 import { OrbitControls } from './OrbitControls.js';
@@ -32,6 +32,8 @@ export class HeadModelComponent {
   drawingEnabled = false;
   cursorInCanvas = false;
   drawColor = 'rgb(111, 106, 118)';
+  @Input() drawingKind: 'lesion' | 'technique' = 'lesion';
+  step = 0;
 
   // Circular Brush Cursor to track the mouse position
   @HostListener('document:mousemove', ['$event'])
@@ -112,6 +114,18 @@ export class HeadModelComponent {
     );
   }
 
+  setStep(index: number) {
+    this.step = index;
+  }
+
+  nextStep() {
+    this.step++;
+  }
+
+  prevStep() {
+    this.step--;
+  }
+
   toggleControlMode() {
     if (this.controlMode === 'rotate') {
       this.controls.enablePan = false;
@@ -159,11 +173,17 @@ export class HeadModelComponent {
     this.painter.clearDrawing();
   }
 
+  toggleDrawingKind() {}
+
   saveDrawing() {
     this.dialog.open(SaveDrawingComponent, {
       // height: '400px',
       // width: '600px',
-      data: { drawing: this.painter.drawing, onSave: () => this.resetScene() },
+      data: {
+        drawing: this.painter.drawing,
+        onSave: () => this.resetScene(),
+        kind: this.drawingKind,
+      },
     });
   }
 

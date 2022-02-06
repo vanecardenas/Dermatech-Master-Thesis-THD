@@ -6,9 +6,11 @@ import {
 
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { LesionSelectionComponent } from './lesion-selection/lesion-selection.component';
+import { AddLesionComponent } from './add-lesion/add-lesion.component';
 import { WelcomeStepComponent } from './welcome-step/welcome-step.component';
 import { LoginComponent } from './login/login.component';
+import { AddTechniqueComponent } from './add-technique/add-technique.component';
+import { AssociateLesionTechniqueComponent } from './associate-lesion-technique/associate-lesion-technique.component';
 
 const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['login']);
 const redirectLoggedInToWelcome = () => redirectLoggedInTo(['welcome']);
@@ -25,8 +27,18 @@ const routes: Routes = [
     ...canActivate(redirectUnauthorizedToLogin),
   },
   {
-    path: 'lesion-selection',
-    component: LesionSelectionComponent,
+    path: 'associate-lesion-technique',
+    component: AssociateLesionTechniqueComponent,
+    ...canActivate(redirectUnauthorizedToLogin),
+  },
+  {
+    path: 'add-lesion',
+    component: AddLesionComponent,
+    ...canActivate(redirectUnauthorizedToLogin),
+  },
+  {
+    path: 'add-technique',
+    component: AddTechniqueComponent,
     ...canActivate(redirectUnauthorizedToLogin),
   },
   {

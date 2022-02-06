@@ -1,15 +1,7 @@
-<mat-toolbar color="primary" class="toolbar">
-  <mat-toolbar-row fxLayout>
-    <img class="logo" src="/assets/logo.png" />
-    <span>Dermatech</span>
-    <span fxFlex></span>
-    <button mat-button (click)="logout()">Logout</button>
-  </mat-toolbar-row>
-</mat-toolbar>
 <div
   fxLayout="column"
   fxLayoutAlign=" center"
-  style="padding: 5%"
+  style="padding: 5%; margin-top: 75px"
   fxLayoutGap="10px"
 >
   <mat-card class="step-card welcome-card">
@@ -52,42 +44,14 @@
       the progress indicator in the header.
     </mat-card-content>
   </mat-card>
-  <div fxFlexFill fxLayout="row" fxLayoutGap="10px">
-    <mat-card fxFlex (click)="startLesionSupport()">
-      <mat-card-header>
-        <mat-card-title>Lesion Decision Support</mat-card-title>
-        <mat-card-subtitle> NOT IMPLEMENTED YET.</mat-card-subtitle>
-        <!-- <mat-card-subtitle
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Lesion Decision Support</mat-card-title>
+      <mat-card-subtitle> NOT IMPLEMENTED YET.</mat-card-subtitle>
+      <!-- <mat-card-subtitle
           >Draw a lesion be guided to the best surgical
           technique</mat-card-subtitle
         > -->
-      </mat-card-header>
-    </mat-card>
-    <mat-card
-      class="cursor-pointer hover-elevation"
-      mat-ripple
-      fxFlex
-      [routerLink]="'/lesion-selection'"
-    >
-      <mat-card-header>
-        <mat-card-title>Add new Lesion Type</mat-card-title>
-        <mat-card-subtitle
-          >Add a new type of lesion to the database</mat-card-subtitle
-        >
-      </mat-card-header>
-    </mat-card>
-    <mat-card
-      class="cursor-pointer hover-elevation"
-      mat-ripple
-      fxFlex
-      [routerLink]="'/lesion-selection'"
-    >
-      <mat-card-header>
-        <mat-card-title>Add new Surgical Technique</mat-card-title>
-        <mat-card-subtitle
-          >Add a new surgical technique to the database</mat-card-subtitle
-        >
-      </mat-card-header>
-    </mat-card>
-  </div>
+    </mat-card-header>
+  </mat-card>
 </div>

@@ -20,8 +20,10 @@ interface DatabaseStroke {
 
 interface DatabaseDrawing {
   id?: string;
-  strokes: DatabaseStroke[];
+  strokes?: DatabaseStroke[];
   name: string;
-  author?: string;
-  comments?: string;
+  author: string;
+  description?: string;
+  strokeId?: string;
+  sampledStrokeId?: string;
 }

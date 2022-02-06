@@ -1,33 +1,13 @@
-<img
-  class="floating-control cursor-pointer"
-  style="position: sticky; height: 90px"
-  [routerLink]="['/']"
-  src="/assets/logo-dermatech.jpg"
-  alt="logo"
-/>
 <div
   id="circularcursor"
   [style.top]="cursorTop"
   [style.left]="cursorLeft"
   [style.display]="drawingEnabled && cursorInCanvas ? 'block' : 'none'"
 ></div>
-<mat-button-toggle-group
-  class="floating-control"
-  [(ngModel)]="drawingEnabled"
-  (change)="toggleDrawing()"
-  style="
-    border-radius: 50px;
-    position: absolute;
-    top: 10px;
-    left: 50%;
-    margin-left: -130px;
-  "
->
-  <mat-button-toggle [value]="false"> New Lesion Type </mat-button-toggle>
-  <mat-button-toggle [value]="true"> New Surgical Technique </mat-button-toggle>
-</mat-button-toggle-group>
+
+<!-- LEFT CONTROL BOX MOVING / DRAWING -->
 <div
-  style="width: 145px; margin-top: 5%; margin-left: 10px"
+  style="position: absolute; width: 145px; top: calc(5% + 75px); left: 10px"
   fxLayout="column"
   fxLayoutGap="10px"
   fxLayoutAlign="space-between center"
@@ -61,7 +41,7 @@
     (click)="resetControls()"
   >
     <mat-icon>person</mat-icon>
-    Reset View
+    Reset view
   </button>
   <h4 class="floating-control section-header">Drawing Controls</h4>
   <button
@@ -78,7 +58,7 @@
   >
     <div fxLayout="row" fxLayoutAlign="space-between center">
       <ngx-colors></ngx-colors>
-      Drawing Color
+      Drawing color
     </div>
   </button>
   <button
@@ -90,7 +70,7 @@
     (click)="undoLastStroke()"
   >
     <mat-icon>undo</mat-icon>
-    Undo Stroke
+    Undo stroke
   </button>
   <button
     fxFlexFill
@@ -101,9 +81,10 @@
     (click)="clearDrawing()"
   >
     <mat-icon>clear</mat-icon>
-    Clear Drawing
+    Clear drawing
   </button>
   <button
+    *ngIf="drawingKind === 'lesion'"
     fxFlexFill
     fxLayout="row"
     fxLayoutAlign="space-between center"
@@ -113,10 +94,65 @@
     (click)="saveDrawing()"
   >
     <mat-icon>save</mat-icon>
-    Save Drawing
+    Save lesion
   </button>
+</div>
+<!-- RIGHT CONTROL BOX STEP OVERVIEW, SURGICAL TECHNIQUES -->
+<div
+  style="position: absolute; width: 145px; top: calc(5% + 75px); right: 10px"
+  fxLayout="column"
+  fxLayoutGap="10px"
+  fxLayoutAlign="space-between center"
+  class="floating-control"
+>
+  <h4 class="floating-control">Step Overview</h4>
+  <mat-accordion>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title> Step 1 </mat-panel-title>
+        <mat-icon>account_circle</mat-icon>
+      </mat-expansion-panel-header>
+      <mat-panel-description
+        >Cut open the head carefully.</mat-panel-description
+      >
+      <mat-action-row>
+        <button mat-button color="primary" (click)="nextStep()">
+          Go to Step
+        </button>
+      </mat-action-row>
+    </mat-expansion-panel>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title> Step 2 </mat-panel-title>
+        <mat-icon>account_circle</mat-icon>
+      </mat-expansion-panel-header>
+      <mat-panel-description
+        >Cut open the head carefully.</mat-panel-description
+      >
+      <mat-action-row>
+        <button mat-button color="primary" (click)="nextStep()">
+          Go to Step
+        </button>
+      </mat-action-row>
+    </mat-expansion-panel>
+  </mat-accordion>
 </div>
 <div
   id="container"
   [ngStyle]="{ cursor: drawingEnabled && cursorInCanvas ? 'none' : 'inherit' }"
 ></div>
+<!-- BOTTOM STEP CONTROLS -->
+<div
+  style="position: absolute; bottom: 10%; right: 10%; left: 10%"
+  fxLayout="row"
+  fxLayoutGap="10px"
+  fxLayoutAlign="space-between center"
+  class="floating-control"
+>
+  <button fxLayout="row" fxLayoutAlign="space-between center" mat-raised-button>
+    <mat-icon>chevron_left</mat-icon> <span>Previous Step</span>
+  </button>
+  <button fxLayout="row" fxLayoutAlign="space-between center" mat-raised-button>
+    <span>Next Step</span><mat-icon>chevron_right</mat-icon>
+  </button>
+</div>

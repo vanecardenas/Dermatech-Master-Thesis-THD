@@ -1,7 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { DatabaseService } from 'src/app/database.service';
+import { DatabaseService } from 'src/app/shared/database.service';
 import { Vector2, Vector3 } from 'three/src/Three';
 
 @Component({
@@ -12,16 +12,44 @@ import { Vector2, Vector3 } from 'three/src/Three';
 export class SaveDrawingComponent {
   drawingName = '';
   drawingAuthor = '';
-  drawingComments = '';
+  drawingDescription = '';
   uploadingData = false;
+
+  cardValue: any = {
+    options: [],
+  };
+
+  selectOptions: Array<string> = [
+    '1',
+    '2',
+    '3',
+    '4',
+    '5',
+    '6',
+    '7',
+    '8',
+    '9',
+    '10',
+  ];
 
   constructor(
     private databaseService: DatabaseService,
     private _snackBar: MatSnackBar,
     public dialogRef: MatDialogRef<SaveDrawingComponent>,
     @Inject(MAT_DIALOG_DATA)
-    public data: { drawing: Drawing; onSave: CallableFunction }
+    public data: {
+      drawing: Drawing;
+      onSave: CallableFunction;
+      kind: 'lesion' | 'technique';
+    }
   ) {}
+
+  selectChange = (event: any) => {
+    const key: string = event.key;
+    this.cardValue[key] = [...event.data];
+
+    console.log(this.cardValue);
+  };
 
   convertLocation(location: { vectors: Vector2[]; clip: Vector2[] }): {
     vectors: { x: number; y: number }[];
@@ -72,22 +100,21 @@ export class SaveDrawingComponent {
       strokes: convertedStrokes,
       name: this.drawingName,
       author: this.drawingAuthor,
-      comments: this.drawingComments,
+      description: this.drawingDescription,
     };
 
-    console.log('Saving drawing:', drawing);
     try {
       this.uploadingData = true;
-      await this.databaseService.addDrawing(drawing);
+      await this.databaseService.addDrawing(drawing, this.data.kind);
       this.dialogRef.close();
-      this._snackBar.open('Successfully added you drawing', 'Close', {
+      this._snackBar.open(`Successfully added the ${this.data.kind}`, 'Close', {
         duration: 2000,
       });
       this.data.onSave();
     } catch (error) {
       console.log(error);
       this._snackBar.open(
-        'There was an error when adding your drawing.\nPlease check your internet connection try saving again.\nConsider releading the application, this will clear your progress.',
+        `There was an error when adding your ${this.data.kind}.\nPlease check your internet connection try saving again.\nConsider releading the application, this will clear your progress.`,
         'Close',
         {
           duration: 4000,

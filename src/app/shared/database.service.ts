@@ -9,14 +9,14 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class DatabaseService {
-  private lesionCollection: AngularFirestoreCollection<DatabaseDrawing>;
-  lesions: Observable<DatabaseDrawing[]>;
+  private lesionMetasCollection: AngularFirestoreCollection<DatabaseDrawing>;
+  lesionMetas: Observable<DatabaseDrawing[]>;
 
   constructor(private readonly firestore: AngularFirestore) {
     // We are getting the drawings from the firestore database and map them to a local array.
-    this.lesionCollection =
+    this.lesionMetasCollection =
       firestore.collection<DatabaseDrawing>('lesionMetas');
-    this.lesions = this.lesionCollection.valueChanges({
+    this.lesionMetas = this.lesionMetasCollection.valueChanges({
       idField: 'id',
     });
     this.firestore = firestore;
@@ -44,9 +44,15 @@ export class DatabaseService {
 
   async addDrawing(drawing: DatabaseDrawing, kind: 'lesion' | 'technique') {
     const metaId = await this.firestore.createId();
+    const strokeId = await this.firestore.createId();
+    const sampledStrokeId = await this.firestore.createId();
+
     if (drawing.strokes) {
       const drawingStrokes = { metaId: metaId, strokes: [...drawing.strokes] };
-      await this.firestore.collection(`${kind}Strokes`).add(drawingStrokes);
+      await this.firestore
+        .collection(`${kind}Strokes`)
+        .doc(strokeId)
+        .set(drawingStrokes);
 
       const drawingStrokesSampled = {
         metaId: metaId,
@@ -54,12 +60,16 @@ export class DatabaseService {
       };
       await this.firestore
         .collection(`${kind}StrokesSampled`)
-        .add(drawingStrokesSampled);
+        .doc(sampledStrokeId)
+        .set(drawingStrokesSampled);
     }
     delete drawing.strokes;
+    drawing['strokeId'] = strokeId;
+    drawing['sampledStrokeId'] = sampledStrokeId;
 
     return this.firestore
       .collection<DatabaseDrawing>(`${kind}Metas`)
-      .add(drawing);
+      .doc(metaId)
+      .set(drawing);
   }
 }

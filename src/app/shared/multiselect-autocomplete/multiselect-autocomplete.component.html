@@ -1,0 +1,41 @@
+<mat-form-field appearance="outline" class="full-width">
+  <mat-label>{{ label }}</mat-label>
+  <input
+    #autocompleteTrigger
+    matInput
+    type="text"
+    [placeholder]="placeholder"
+    [matAutocomplete]="auto"
+    [formControl]="selectControl"
+  />
+</mat-form-field>
+
+<div class="chip-list-wrapper">
+  <mat-chip-list #chipList class="mat-chip-list-stacked">
+    <ng-container *ngFor="let select of selectData">
+      <mat-chip
+        fxLayout="row"
+        fxLayoutAlign="space-between center"
+        class="cardinal-colors"
+        (click)="removeChip(select)"
+      >
+        {{ select.item }}
+        <mat-icon class="mat-chip-remove">cancel</mat-icon>
+      </mat-chip>
+    </ng-container>
+  </mat-chip-list>
+</div>
+
+<mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+  <mat-option *ngFor="let data of filteredData | async">
+    <div (click)="optionClicked($event, data)">
+      <mat-checkbox
+        [checked]="data.selected"
+        (change)="toggleSelection(data)"
+        (click)="$event.stopPropagation()"
+      >
+        {{ data.item }}
+      </mat-checkbox>
+    </div>
+  </mat-option>
+</mat-autocomplete>
