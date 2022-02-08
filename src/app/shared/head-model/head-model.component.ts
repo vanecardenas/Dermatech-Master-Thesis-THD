@@ -33,7 +33,8 @@ export class HeadModelComponent {
   cursorInCanvas = false;
   drawColor = 'rgb(111, 106, 118)';
   @Input() drawingKind: 'lesion' | 'technique' = 'lesion';
-  step = 0;
+  currentTechniqueStep = 0;
+  techniqueSteps = [];
 
   // Circular Brush Cursor to track the mouse position
   @HostListener('document:mousemove', ['$event'])
@@ -45,7 +46,7 @@ export class HeadModelComponent {
   constructor(public dialog: MatDialog) {}
 
   ngAfterViewInit() {
-    this.container = document.getElementById('container');
+    this.container = document.getElementById(`container-${this.drawingKind}`);
 
     this.renderer = new THREE.WebGLRenderer({
       // alpha: true,
@@ -100,30 +101,28 @@ export class HeadModelComponent {
     });
 
     // Check if the cursor is in the canvas
-    (document.getElementById('container') as HTMLElement).addEventListener(
-      'mouseover',
-      () => {
-        this.cursorInCanvas = true;
-      }
-    );
-    (document.getElementById('container') as HTMLElement).addEventListener(
-      'mouseout',
-      () => {
-        this.cursorInCanvas = false;
-      }
-    );
+    (
+      document.getElementById(`container-${this.drawingKind}`) as HTMLElement
+    ).addEventListener('mouseover', () => {
+      this.cursorInCanvas = true;
+    });
+    (
+      document.getElementById(`container-${this.drawingKind}`) as HTMLElement
+    ).addEventListener('mouseout', () => {
+      this.cursorInCanvas = false;
+    });
   }
 
   setStep(index: number) {
-    this.step = index;
+    this.currentTechniqueStep = index;
   }
 
   nextStep() {
-    this.step++;
+    this.currentTechniqueStep++;
   }
 
   prevStep() {
-    this.step--;
+    this.currentTechniqueStep--;
   }
 
   toggleControlMode() {

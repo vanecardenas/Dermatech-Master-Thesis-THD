@@ -104,6 +104,7 @@
   fxLayoutGap="10px"
   fxLayoutAlign="space-between center"
   class="floating-control"
+  *ngIf="drawingKind === 'technique'"
 >
   <h4 class="floating-control">Step Overview</h4>
   <mat-accordion>
@@ -138,7 +139,7 @@
   </mat-accordion>
 </div>
 <div
-  id="container"
+  id="container-{{ this.drawingKind }}"
   [ngStyle]="{ cursor: drawingEnabled && cursorInCanvas ? 'none' : 'inherit' }"
 ></div>
 <!-- BOTTOM STEP CONTROLS -->
@@ -148,6 +149,7 @@
   fxLayoutGap="10px"
   fxLayoutAlign="space-between center"
   class="floating-control"
+  *ngIf="drawingKind === 'technique'"
 >
   <button fxLayout="row" fxLayoutAlign="space-between center" mat-raised-button>
     <mat-icon>chevron_left</mat-icon> <span>Previous Step</span>
