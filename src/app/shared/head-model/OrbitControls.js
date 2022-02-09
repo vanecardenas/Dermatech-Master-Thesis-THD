@@ -268,6 +268,7 @@ var OrbitControls = function (object, domElement) {
     PAN: 2,
     TOUCH_ROTATE: 3,
     TOUCH_DOLLY_PAN: 4,
+    SINGLE_TOUCH_PAN: 5,
   };
 
   var state = STATE.NONE;
@@ -554,6 +555,23 @@ var OrbitControls = function (object, domElement) {
     rotateStart.set(event.touches[0].pageX, event.touches[0].pageY);
   }
 
+  // NOTE: custom single-touch panning, to be executed, when rotation is disabled
+  function handleSingleTouchStartPan(event) {
+    if (scope.enablePan) {
+      panStart.set(event.touches[0].pageX, event.touches[0].pageY);
+    }
+  }
+
+  function handleSingleTouchMovePan(event) {
+    if (scope.enablePan) {
+      panEnd.set(event.touches[0].pageX, event.touches[0].pageY);
+      panDelta.subVectors(panEnd, panStart).multiplyScalar(scope.panSpeed);
+      pan(panDelta.x, panDelta.y);
+      panStart.copy(panEnd);
+    }
+    scope.update();
+  }
+
   function handleTouchStartDollyPan(event) {
     //console.log( 'handleTouchStartDollyPan' );
 
@@ -770,15 +788,15 @@ var OrbitControls = function (object, domElement) {
     event.preventDefault();
 
     switch (event.touches.length) {
-      case 1: // one-fingered touch: rotate
-        if (scope.enableRotate === false) return;
-
-        handleTouchStartRotate(event);
-
-        state = STATE.TOUCH_ROTATE;
-
+      case 1: // one-fingered touch: rotate / pan if rotate is disabled
+        if (scope.enableRotate) {
+          handleTouchStartRotate(event);
+          state = STATE.TOUCH_ROTATE;
+        } else {
+          handleSingleTouchStartPan(event);
+          state = STATE.SINGLE_TOUCH_PAN;
+        }
         break;
-
       case 2: // two-fingered touch: dolly-pan
         if (scope.enableZoom === false && scope.enablePan === false) return;
 
@@ -804,12 +822,14 @@ var OrbitControls = function (object, domElement) {
     event.stopPropagation();
 
     switch (event.touches.length) {
-      case 1: // one-fingered touch: rotate
-        if (scope.enableRotate === false) return;
-        if (state !== STATE.TOUCH_ROTATE) return; // is this needed?
-
-        handleTouchMoveRotate(event);
-
+      case 1: // one-fingered touch: rotate / pan if rotate is disabled
+        if (scope.enableRotate) {
+          if (state !== STATE.TOUCH_ROTATE) return;
+          handleTouchMoveRotate(event);
+        } else {
+          if (state !== STATE.SINGLE_TOUCH_PAN) return;
+          handleSingleTouchMovePan(event);
+        }
         break;
 
       case 2: // two-fingered touch: dolly-pan
