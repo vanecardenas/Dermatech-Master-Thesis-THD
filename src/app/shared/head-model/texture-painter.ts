@@ -129,21 +129,21 @@ export class TexturePainter {
 
   bindListeners() {
     this.renderer.domElement.addEventListener(
-      'mousemove',
+      'pointermove',
       (event) => {
         if (this.drawingEnabled) this.onMouseMove(event);
       },
       false
     );
     this.renderer.domElement.addEventListener(
-      'mousedown',
+      'pointerdown',
       (event) => {
         if (this.drawingEnabled) this.onMouseDown(event);
       },
       false
     );
     this.renderer.domElement.addEventListener(
-      'mouseup',
+      'pointerup',
       (event) => {
         if (this.drawingEnabled) this.onMouseUp(event);
       },

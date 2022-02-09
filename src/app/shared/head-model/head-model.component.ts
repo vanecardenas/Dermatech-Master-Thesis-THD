@@ -1,15 +1,9 @@
-import { Component, HostListener, Input } from '@angular/core';
+import { Component, ElementRef, Input, ViewChild } from '@angular/core';
 import * as THREE from 'three';
 
 import { OrbitControls } from './OrbitControls.js';
 import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-import {
-  Mesh,
-  Object3D,
-  PerspectiveCamera,
-  Scene,
-  WebGLRenderer,
-} from 'three/src/Three';
+import { Mesh, PerspectiveCamera, Scene, WebGLRenderer } from 'three/src/Three';
 
 import { TexturePainter } from './texture-painter';
 
@@ -40,15 +34,12 @@ export class HeadModelComponent {
   cursorInCanvas = false;
   drawColor = 'rgb(111, 106, 118)';
   @Input() drawingKind: 'lesion' | 'technique' = 'lesion';
+  boundingRect!: DOMRect;
   currentTechniqueStep = 0;
   techniqueSteps = [];
 
-  // Circular Brush Cursor to track the mouse position
-  @HostListener('document:mousemove', ['$event'])
-  onMousemove(event: MouseEvent) {
-    this.cursorTop = event.pageY - 5 + 'px';
-    this.cursorLeft = event.pageX - 5 + 'px';
-  }
+  @ViewChild('headContainer', { static: false })
+  headContainer!: ElementRef<HTMLElement>;
 
   constructor(public dialog: MatDialog) {}
 
@@ -103,22 +94,39 @@ export class HeadModelComponent {
       this.painter = new TexturePainter(this.renderer, this.camera, mesh);
       this.painter.setDrawColor(this.drawColor);
       this.painter.drawingEnabled = this.drawingEnabled;
-      window.addEventListener('resize', () => this.onWindowResize(), false);
       this.render();
       this.headMesh = mesh;
     });
 
-    // Check if the cursor is in the canvas
-    (
-      document.getElementById(`container-${this.drawingKind}`) as HTMLElement
-    ).addEventListener('mouseover', () => {
+    this.updateBoundingRect();
+    // Pointer events for drawingcursor
+    this.headContainer.nativeElement.addEventListener('pointerover', () => {
       this.cursorInCanvas = true;
     });
-    (
-      document.getElementById(`container-${this.drawingKind}`) as HTMLElement
-    ).addEventListener('mouseout', () => {
+    this.headContainer.nativeElement.addEventListener('pointerout', () => {
       this.cursorInCanvas = false;
     });
+    this.headContainer.nativeElement.addEventListener(
+      'pointerdown',
+      (event) => {
+        this.cursorTop = event.clientY - this.boundingRect.top - 5 + 'px';
+        this.cursorLeft = event.clientX - this.boundingRect.left - 5 + 'px';
+      }
+    );
+    this.headContainer.nativeElement.addEventListener(
+      'pointermove',
+      (event) => {
+        this.cursorTop = event.clientY - this.boundingRect.top - 5 + 'px';
+        this.cursorLeft = event.clientX - this.boundingRect.left - 5 + 'px';
+      }
+    );
+    window.addEventListener('resize', () => this.onWindowResize(), false);
+  }
+
+  updateBoundingRect() {
+    this.boundingRect =
+      this.headContainer.nativeElement.getBoundingClientRect();
+    console.log('new bounding rect', this.boundingRect);
   }
 
   setStep(index: number) {
@@ -166,6 +174,9 @@ export class HeadModelComponent {
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.painter.resize();
+    let timeout;
+    clearTimeout(timeout);
+    timeout = setTimeout(() => this.updateBoundingRect(), 100);
   }
 
   undoLastStroke() {
