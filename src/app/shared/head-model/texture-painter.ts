@@ -424,12 +424,16 @@ export class TexturePainter {
   }
 
   clearDrawing() {
+    this.cursorSize += 1;
+    this.cursorUnits = this.cursorSize / this.frustumSize / this.aspect;
     this.strokes.forEach((stroke) => {
       this.draw(stroke.locations, true);
     });
     this.strokes = [];
     this.currentStrokePoints = [];
     this.currentStrokeLocations = [];
+    this.cursorSize -= 1;
+    this.cursorUnits = this.cursorSize / this.frustumSize / this.aspect;
   }
 
   get drawing(): Drawing {

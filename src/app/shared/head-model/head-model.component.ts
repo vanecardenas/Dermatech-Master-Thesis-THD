@@ -3,7 +3,13 @@ import * as THREE from 'three';
 
 import { OrbitControls } from './OrbitControls.js';
 import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-import { PerspectiveCamera, Scene, WebGLRenderer } from 'three/src/Three';
+import {
+  Mesh,
+  Object3D,
+  PerspectiveCamera,
+  Scene,
+  WebGLRenderer,
+} from 'three/src/Three';
 
 import { TexturePainter } from './texture-painter';
 
@@ -25,6 +31,7 @@ export class HeadModelComponent {
   renderer!: WebGLRenderer;
   camera!: PerspectiveCamera;
   scene!: Scene;
+  headMesh!: Mesh;
   painter!: TexturePainter;
   controlMode: 'rotate' | 'pan' = 'rotate';
   wasPanEnabled = false;
@@ -98,6 +105,7 @@ export class HeadModelComponent {
       this.painter.drawingEnabled = this.drawingEnabled;
       window.addEventListener('resize', () => this.onWindowResize(), false);
       this.render();
+      this.headMesh = mesh;
     });
 
     // Check if the cursor is in the canvas
@@ -170,6 +178,7 @@ export class HeadModelComponent {
 
   clearDrawing() {
     this.painter.clearDrawing();
+    // this.disposeNodes(this.scene);
   }
 
   toggleDrawingKind() {}
@@ -188,6 +197,7 @@ export class HeadModelComponent {
 
   resetScene() {
     this.painter.clearDrawing();
+    // this.disposeNodes(this.scene);
     this.controls.reset();
   }
 
@@ -205,4 +215,46 @@ export class HeadModelComponent {
     // needs to be after scene is rendered.
     this.painter.update();
   }
+
+  // disposeMaterialMaps(material: any) {
+  //   if ('map' in material && material.map) material.map.dispose();
+  //   if ('lightMap' in material && material.lightMap)
+  //     material.lightMap.dispose();
+  //   if ('bumpMap' in material && material.bumpMap) material.bumpMap.dispose();
+  //   if ('normalMap' in material && material.normalMap)
+  //     material.normalMap.dispose();
+  //   if ('specularMap' in material && material.specularMap)
+  //     material.specularMap.dispose();
+  //   if ('envMap' in material && material.envMap) material.envMap.dispose();
+  // }
+
+  // disposeMesh(mesh: Mesh) {
+  //   console.log('disposing mesh');
+  //   if (mesh.geometry) {
+  //     mesh.geometry.dispose();
+  //   }
+  //   if (mesh.material) {
+  //     if (Array.isArray(mesh.material)) {
+  //       mesh.material.forEach((mtrl, idx) => {
+  //         this.disposeMaterialMaps(mtrl);
+  //         mtrl.dispose(); // disposes any instances associated with the material
+  //       });
+  //     } else {
+  //       this.disposeMaterialMaps(mesh.material);
+  //       mesh.material.dispose(); // disposes any instances associated with the material
+  //     }
+  //   }
+  // }
+
+  // // The following function is based on deejbee's answer on Stackoverflow on three.js object disposal:
+  // // https://stackoverflow.com/a/40178723
+  // disposeNodes(parentObject: Object3D) {
+  //   console.log(parentObject);
+  //   parentObject.traverse((node) => {
+  //     console.log(node);
+  //     if (node.type === 'Mesh') {
+  //       this.disposeMesh(node as Mesh);
+  //     }
+  //   });
+  // }
 }
