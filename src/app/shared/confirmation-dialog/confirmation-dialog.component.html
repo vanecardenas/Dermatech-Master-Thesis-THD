@@ -1,0 +1,8 @@
+<h2 mat-dialog-title>{{ data.message }}</h2>
+<mat-dialog-content *ngIf="data.details">
+  {{ data.details }}
+</mat-dialog-content>
+<mat-dialog-actions fxLayout="row">
+  <button fxFlex mat-button color="primary" (click)="confirm()">Confirm</button>
+  <button fxFlex mat-button color="red" (click)="cancel()">Cancel</button>
+</mat-dialog-actions>

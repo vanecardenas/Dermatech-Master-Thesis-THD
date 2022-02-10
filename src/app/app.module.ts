@@ -46,6 +46,7 @@ import { MultiselectAutocompleteComponent } from './shared/multiselect-autocompl
 import { AddTechniqueComponent } from './add-technique/add-technique.component';
 import { AssociateLesionTechniqueComponent } from './associate-lesion-technique/associate-lesion-technique.component';
 import { EditStepComponent } from './shared/edit-step/edit-step.component';
+import { ConfirmationDialogComponent } from './shared/confirmation-dialog/confirmation-dialog.component';
 
 @NgModule({
   declarations: [
@@ -59,6 +60,7 @@ import { EditStepComponent } from './shared/edit-step/edit-step.component';
     AddTechniqueComponent,
     AssociateLesionTechniqueComponent,
     EditStepComponent,
+    ConfirmationDialogComponent,
   ],
   imports: [
     BrowserModule,

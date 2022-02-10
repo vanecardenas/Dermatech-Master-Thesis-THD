@@ -10,6 +10,7 @@ import { TexturePainter } from './texture-painter';
 import { MatDialog } from '@angular/material/dialog';
 import { SaveDrawingComponent } from '../save-drawing/save-drawing.component';
 import { EditStepComponent } from '../edit-step/edit-step.component';
+import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'app-head-model',
@@ -167,6 +168,32 @@ export class HeadModelComponent {
       this.uneditedNewStep = false;
     }
     console.log('current step', this.currentTechniqueStep);
+  }
+
+  deleteStep(event: MouseEvent, stepNumber: number) {
+    event.stopPropagation();
+    let confirmationDialog = this.dialog.open(ConfirmationDialogComponent, {
+      // height: '400px',
+      // width: '600px',
+      data: {
+        message: 'Are you sure you want to delete this step?',
+        details: `This can not be undone and the step "${this.techniqueSteps[stepNumber].name}" will be deleted.`,
+      },
+    });
+    confirmationDialog.afterClosed().subscribe((confirmed) => {
+      if (confirmed) {
+        this.techniqueSteps.splice(stepNumber, 1);
+        this.techniqueSteps.forEach((step, index) => {
+          step.stepNumber = index;
+        });
+        if (stepNumber <= this.currentTechniqueStep) {
+          this.currentTechniqueStep--;
+        }
+        if (this.techniqueSteps.length === 0) {
+          this.techniqueSteps.push(this.templateStep);
+        }
+      }
+    });
   }
 
   editStepDetails(event: MouseEvent, stepNumber: number) {
