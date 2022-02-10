@@ -53,6 +53,9 @@ export class HeadModelComponent {
       author: '',
       strokes: [],
       stepNumber: this.currentTechniqueStep,
+      region: '',
+      subregion: '',
+      size: '',
     };
   }
 
@@ -174,7 +177,7 @@ export class HeadModelComponent {
     event.stopPropagation();
     let confirmationDialog = this.dialog.open(ConfirmationDialogComponent, {
       // height: '400px',
-      // width: '600px',
+      width: '500px',
       data: {
         message: 'Are you sure you want to delete this step?',
         details: `This can not be undone and the step "${this.techniqueSteps[stepNumber].name}" will be deleted.`,
@@ -200,7 +203,7 @@ export class HeadModelComponent {
     event.stopPropagation();
     let editStepDialog = this.dialog.open(EditStepComponent, {
       // height: '400px',
-      // width: '600px',
+      width: '500px',
       data: {
         step: { ...this.techniqueSteps[stepNumber] },
       },
@@ -273,7 +276,7 @@ export class HeadModelComponent {
   saveDrawing() {
     this.dialog.open(SaveDrawingComponent, {
       // height: '400px',
-      // width: '600px',
+      width: '500px',
       data: {
         drawing: this.painter.drawing,
         onSave: () => this.resetScene(),

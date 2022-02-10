@@ -1,8 +1,10 @@
 import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatSelectChange } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DatabaseService } from 'src/app/shared/database.service';
 import { Vector2, Vector3 } from 'three/src/Three';
+import { LesionFilterService } from '../lesion-filter.service';
 
 @Component({
   selector: 'app-save-drawing',
@@ -14,10 +16,10 @@ export class SaveDrawingComponent {
   drawingAuthor = '';
   drawingDescription = '';
   uploadingData = false;
-
-  cardValue: any = {
-    options: [],
-  };
+  drawingRegion = '';
+  drawingSubregion = '';
+  drawingSize = '';
+  associatedTechniques: string[] = [];
 
   selectOptions: Array<string> = [
     '1',
@@ -33,6 +35,7 @@ export class SaveDrawingComponent {
   ];
 
   constructor(
+    public lesionFilterService: LesionFilterService,
     private databaseService: DatabaseService,
     private _snackBar: MatSnackBar,
     public dialogRef: MatDialogRef<SaveDrawingComponent>,
@@ -44,11 +47,18 @@ export class SaveDrawingComponent {
     }
   ) {}
 
+  capitalizeFirstLetter(text: string) {
+    return text.charAt(0).toUpperCase() + text.slice(1);
+  }
+
+  onRegionSelect(event: MatSelectChange) {
+    const region = this.lesionFilterService.getRegionForSubregion(event.value);
+    if (region) this.drawingRegion = region;
+  }
+
   selectChange = (event: any) => {
     const key: string = event.key;
-    this.cardValue[key] = [...event.data];
-
-    console.log(this.cardValue);
+    this.associatedTechniques = [...event.data];
   };
 
   convertLocation(location: { vectors: Vector2[]; clip: Vector2[] }): {
@@ -101,6 +111,10 @@ export class SaveDrawingComponent {
       name: this.drawingName,
       author: this.drawingAuthor,
       description: this.drawingDescription,
+      region: this.drawingRegion,
+      subregion: this.drawingSubregion,
+      size: this.drawingSize,
+      associatedTechniques: this.associatedTechniques,
     };
 
     try {

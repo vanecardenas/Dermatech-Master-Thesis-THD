@@ -26,6 +26,13 @@ interface DatabaseDrawing {
   description?: string;
   strokeId?: string;
   sampledStrokeId?: string;
+  region: string;
+  subregion: string;
+  size: string;
+}
+
+interface DatabaseLesion extends DatabaseDrawing {
+  associatedTechniques: string[];
 }
 
 interface DatabaseTechniqueStep extends DatabaseDrawing {

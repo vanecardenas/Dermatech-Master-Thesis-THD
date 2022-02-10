@@ -32,6 +32,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatSelectModule } from '@angular/material/select';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -86,6 +87,7 @@ import { ConfirmationDialogComponent } from './shared/confirmation-dialog/confir
     MatExpansionModule,
     MatChipsModule,
     MatAutocompleteModule,
+    MatSelectModule,
     MatCheckboxModule,
     MatButtonToggleModule,
     AngularFireModule.initializeApp(environment.firebase),
