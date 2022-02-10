@@ -1,0 +1,35 @@
+<h2 mat-dialog-title>Edit Step Details</h2>
+<mat-dialog-content>
+  <div fxLayout="column" fxLayoutAlign="space-between center">
+    <mat-form-field appearance="outline">
+      <mat-label>Step Name</mat-label>
+      <input
+        matInput
+        [(ngModel)]="editedStep.name"
+        placeholder="Name of the Step"
+        required
+      />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Step Description</mat-label>
+      <textarea
+        matInput
+        [(ngModel)]="editedStep.description"
+        placeholder="Description of the Step"
+      >
+      </textarea>
+    </mat-form-field>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions fxLayout="row">
+  <button
+    fxFlex
+    mat-raised-button
+    class="save-button"
+    (click)="saveStep()"
+    [disabled]="!editedStep.name"
+  >
+    Save
+  </button>
+  <button fxFlex mat-button (click)="cancel()">Cancel</button>
+</mat-dialog-actions>

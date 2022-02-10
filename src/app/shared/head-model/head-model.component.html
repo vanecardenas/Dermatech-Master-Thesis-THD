@@ -12,10 +12,10 @@
   fxLayoutGap="10px"
   fxLayoutAlign="space-between center"
 >
-  <h4 class="floating-control">Movement Controls</h4>
+  <h4>Movement Controls</h4>
   <mat-button-toggle-group
     fxFlexFill
-    class="floating-control base-elevation"
+    class="base-elevation"
     [(ngModel)]="drawingEnabled"
     (change)="toggleDrawing()"
   >
@@ -24,7 +24,7 @@
   </mat-button-toggle-group>
   <mat-button-toggle-group
     fxFlexFill
-    class="floating-control base-elevation"
+    class="base-elevation"
     [(ngModel)]="controlMode"
     (change)="toggleControlMode()"
     [disabled]="drawingEnabled"
@@ -37,17 +37,15 @@
     fxLayout="row"
     fxLayoutAlign="space-between center"
     mat-raised-button
-    class="floating-control"
     (click)="resetControls()"
   >
     <mat-icon>person</mat-icon>
     Reset view
   </button>
-  <h4 class="floating-control section-header">Drawing Controls</h4>
+  <h4 class="section-header">Drawing Controls</h4>
   <button
     fxFlexFill
     mat-raised-button
-    class="floating-control"
     ngx-colors-trigger
     colorsAnimation="popup"
     format="rgba"
@@ -66,7 +64,6 @@
     fxLayout="row"
     fxLayoutAlign="space-between center"
     mat-raised-button
-    class="floating-control"
     (click)="undoLastStroke()"
   >
     <mat-icon>undo</mat-icon>
@@ -77,7 +74,6 @@
     fxLayout="row"
     fxLayoutAlign="space-between center"
     mat-raised-button
-    class="floating-control"
     (click)="clearDrawing()"
   >
     <mat-icon>clear</mat-icon>
@@ -90,51 +86,73 @@
     fxLayoutAlign="space-between center"
     mat-raised-button
     color="primary"
-    class="floating-control save-button"
+    class="save-button"
     (click)="saveDrawing()"
   >
     <mat-icon>save</mat-icon>
     Save lesion
   </button>
+  <button
+    *ngIf="drawingKind === 'technique'"
+    fxFlexFill
+    fxLayout="row"
+    fxLayoutAlign="space-between center"
+    mat-raised-button
+    color="primary"
+    class="save-button"
+    (click)="saveSurgicalTechnique()"
+  >
+    <mat-icon>save</mat-icon>
+    Save technique
+  </button>
 </div>
 <!-- RIGHT CONTROL BOX STEP OVERVIEW, SURGICAL TECHNIQUES -->
 <div
-  style="position: absolute; width: 145px; top: calc(5% + 75px); right: 10px"
+  style="position: absolute; width: 260px; top: calc(5% + 75px); right: 10px"
   fxLayout="column"
   fxLayoutGap="10px"
   fxLayoutAlign="space-between center"
-  class="floating-control"
   *ngIf="drawingKind === 'technique'"
 >
-  <h4 class="floating-control">Step Overview</h4>
-  <mat-accordion>
-    <mat-expansion-panel>
-      <mat-expansion-panel-header>
-        <mat-panel-title> Step 1 </mat-panel-title>
-        <mat-icon>account_circle</mat-icon>
-      </mat-expansion-panel-header>
-      <mat-panel-description
-        >Cut open the head carefully.</mat-panel-description
-      >
-      <mat-action-row>
-        <button mat-button color="primary" (click)="nextStep()">
-          Go to Step
+  <h4>Step Overview</h4>
+  <mat-accordion style="max-width: 100%">
+    <mat-expansion-panel
+      *ngFor="let techniqueStep of techniqueSteps"
+      hideToggle
+    >
+      <mat-expansion-panel-header style="padding: 0px 5px">
+        <mat-panel-title style="line-height: 48px; height: 48px; width: 45%">
+          <span style="color: grey; margin-right: 5px">{{
+            techniqueStep.stepNumber
+          }}</span>
+          <span
+            style="
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+            "
+          >
+            {{ techniqueStep.name }}
+          </span>
+        </mat-panel-title>
+        <button
+          mat-button
+          color="primary"
+          (click)="editStepDetails($event, techniqueStep.stepNumber)"
+        >
+          <mat-icon>edit</mat-icon>
         </button>
-      </mat-action-row>
-    </mat-expansion-panel>
-    <mat-expansion-panel>
-      <mat-expansion-panel-header>
-        <mat-panel-title> Step 2 </mat-panel-title>
-        <mat-icon>account_circle</mat-icon>
-      </mat-expansion-panel-header>
-      <mat-panel-description
-        >Cut open the head carefully.</mat-panel-description
-      >
-      <mat-action-row>
-        <button mat-button color="primary" (click)="nextStep()">
-          Go to Step
+        <button
+          mat-button
+          color="primary"
+          (click)="setStep($event, techniqueStep.stepNumber)"
+        >
+          View
         </button>
-      </mat-action-row>
+      </mat-expansion-panel-header>
+      <mat-panel-description>{{
+        techniqueStep.description || "No Description"
+      }}</mat-panel-description>
     </mat-expansion-panel>
   </mat-accordion>
 </div>
@@ -149,13 +167,24 @@
   fxLayout="row"
   fxLayoutGap="10px"
   fxLayoutAlign="space-between center"
-  class="floating-control"
   *ngIf="drawingKind === 'technique'"
 >
-  <button fxLayout="row" fxLayoutAlign="space-between center" mat-raised-button>
+  <button
+    (click)="prevStep()"
+    fxLayout="row"
+    fxLayoutAlign="space-between center"
+    mat-raised-button
+    [disabled]="currentTechniqueStep < 1"
+  >
     <mat-icon>chevron_left</mat-icon> <span>Previous Step</span>
   </button>
-  <button fxLayout="row" fxLayoutAlign="space-between center" mat-raised-button>
+  <button
+    (click)="nextStep()"
+    fxLayout="row"
+    fxLayoutAlign="space-between center"
+    mat-raised-button
+    [disabled]="uneditedNewStep"
+  >
     <span>Next Step</span><mat-icon>chevron_right</mat-icon>
   </button>
 </div>

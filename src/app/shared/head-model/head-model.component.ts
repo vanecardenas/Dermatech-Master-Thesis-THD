@@ -9,6 +9,7 @@ import { TexturePainter } from './texture-painter';
 
 import { MatDialog } from '@angular/material/dialog';
 import { SaveDrawingComponent } from '../save-drawing/save-drawing.component';
+import { EditStepComponent } from '../edit-step/edit-step.component';
 
 @Component({
   selector: 'app-head-model',
@@ -36,14 +37,30 @@ export class HeadModelComponent {
   @Input() drawingKind: 'lesion' | 'technique' = 'lesion';
   boundingRect!: DOMRect;
   currentTechniqueStep = 0;
-  techniqueSteps = [];
+  techniqueSteps: DatabaseTechniqueStep[] = [];
+  uneditedNewStep = true;
 
   @ViewChild('headContainer', { static: false })
   headContainer!: ElementRef<HTMLElement>;
 
   constructor(public dialog: MatDialog) {}
 
+  get templateStep(): DatabaseTechniqueStep {
+    return {
+      name: `Step ${this.currentTechniqueStep}`,
+      description: '',
+      author: '',
+      strokes: [],
+      stepNumber: this.currentTechniqueStep,
+    };
+  }
+
   ngAfterViewInit() {
+    if (this.drawingKind === 'technique') {
+      console.log('loading technique steps');
+      this.techniqueSteps.push(this.templateStep);
+    }
+
     this.container = document.getElementById(`container-${this.drawingKind}`);
 
     this.renderer = new THREE.WebGLRenderer({
@@ -126,20 +143,52 @@ export class HeadModelComponent {
   updateBoundingRect() {
     this.boundingRect =
       this.headContainer.nativeElement.getBoundingClientRect();
-    console.log('new bounding rect', this.boundingRect);
   }
 
-  setStep(index: number) {
+  setStep(event: MouseEvent, index: number) {
+    event.stopPropagation();
     this.currentTechniqueStep = index;
+    console.log('current step', this.currentTechniqueStep);
   }
 
   nextStep() {
     this.currentTechniqueStep++;
+    if (this.currentTechniqueStep >= this.techniqueSteps.length) {
+      this.techniqueSteps.push(this.templateStep);
+      this.uneditedNewStep = true;
+    }
+    console.log('current step', this.currentTechniqueStep);
   }
 
   prevStep() {
     this.currentTechniqueStep--;
+    if (this.uneditedNewStep) {
+      this.techniqueSteps.pop();
+      this.uneditedNewStep = false;
+    }
+    console.log('current step', this.currentTechniqueStep);
   }
+
+  editStepDetails(event: MouseEvent, stepNumber: number) {
+    event.stopPropagation();
+    let editStepDialog = this.dialog.open(EditStepComponent, {
+      // height: '400px',
+      // width: '600px',
+      data: {
+        step: { ...this.techniqueSteps[stepNumber] },
+      },
+    });
+    editStepDialog.afterClosed().subscribe((editedStep) => {
+      if (editedStep) {
+        this.techniqueSteps[stepNumber] = editedStep;
+        if (stepNumber === this.currentTechniqueStep) {
+          this.uneditedNewStep = false;
+        }
+      }
+    });
+  }
+
+  saveSurgicalTechnique() {}
 
   toggleControlMode() {
     if (this.controlMode === 'rotate') {

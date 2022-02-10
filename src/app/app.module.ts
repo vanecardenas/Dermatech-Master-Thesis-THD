@@ -45,6 +45,7 @@ import { LoginComponent } from './login/login.component';
 import { MultiselectAutocompleteComponent } from './shared/multiselect-autocomplete/multiselect-autocomplete.component';
 import { AddTechniqueComponent } from './add-technique/add-technique.component';
 import { AssociateLesionTechniqueComponent } from './associate-lesion-technique/associate-lesion-technique.component';
+import { EditStepComponent } from './shared/edit-step/edit-step.component';
 
 @NgModule({
   declarations: [
@@ -57,6 +58,7 @@ import { AssociateLesionTechniqueComponent } from './associate-lesion-technique/
     MultiselectAutocompleteComponent,
     AddTechniqueComponent,
     AssociateLesionTechniqueComponent,
+    EditStepComponent,
   ],
   imports: [
     BrowserModule,

@@ -27,3 +27,12 @@ interface DatabaseDrawing {
   strokeId?: string;
   sampledStrokeId?: string;
 }
+
+interface DatabaseTechniqueStep extends DatabaseDrawing {
+  stepNumber: number;
+  techniqueId?: string;
+}
+
+interface DatabaseTechnique extends DatabaseDrawing {
+  stepIDs?: string[];
+}
