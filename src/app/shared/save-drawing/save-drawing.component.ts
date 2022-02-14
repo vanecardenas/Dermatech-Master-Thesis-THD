@@ -19,7 +19,7 @@ export class SaveDrawingComponent {
   drawingRegion = '';
   drawingSubregion = '';
   drawingSize = '';
-  associatedTechniques: string[] = [];
+  techniqueAssociations: TechniqueAssociation[] = [];
 
   selectOptions: Array<string> = [
     '1',
@@ -41,7 +41,8 @@ export class SaveDrawingComponent {
     public dialogRef: MatDialogRef<SaveDrawingComponent>,
     @Inject(MAT_DIALOG_DATA)
     public data: {
-      drawing: Drawing;
+      lesion?: LesionDrawing;
+      technique?: NewTechniqueStep[];
       onSave: CallableFunction;
       kind: 'lesion' | 'technique';
     }
@@ -58,7 +59,7 @@ export class SaveDrawingComponent {
 
   selectChange = (event: any) => {
     const key: string = event.key;
-    this.associatedTechniques = [...event.data];
+    this.techniqueAssociations = [...event.data];
   };
 
   convertLocation(location: { vectors: Vector2[]; clip: Vector2[] }): {
@@ -83,9 +84,9 @@ export class SaveDrawingComponent {
     };
   }
 
-  async saveDrawing() {
-    let convertedStrokes: DatabaseStroke[] = [];
-    this.data.drawing.forEach((stroke) => {
+  formatLesionForUpload(): [NewLesion, ConvertedStroke[]] {
+    let convertedStrokes: ConvertedStroke[] = [];
+    (this.data.lesion as Stroke[]).forEach((stroke) => {
       const convertedLocations = stroke.locations.map((location) =>
         this.convertLocation(location)
       );
@@ -106,20 +107,79 @@ export class SaveDrawingComponent {
       });
     });
 
-    const drawing = {
-      strokes: convertedStrokes,
+    const lesion: NewLesion = {
       name: this.drawingName,
       author: this.drawingAuthor,
       description: this.drawingDescription,
       region: this.drawingRegion,
       subregion: this.drawingSubregion,
       size: this.drawingSize,
-      associatedTechniques: this.associatedTechniques,
+      techniqueAssociations: this.techniqueAssociations,
     };
+    return [lesion, convertedStrokes];
+  }
 
+  formatTechniqueForUpload(): [NewTechnique, ConvertedTechniqueStep[]] {
+    let convertedSteps: ConvertedTechniqueStep[] = [];
+
+    (this.data.technique as NewTechniqueStep[]).forEach((techniqueStep) => {
+      const convertedStrokes: ConvertedStroke[] = [];
+      techniqueStep.strokes.forEach((stroke) => {
+        const convertedLocations = stroke.locations.map((location) =>
+          this.convertLocation(location)
+        );
+        const convertedPoints = stroke.points.map((point) =>
+          this.convertPoint(point)
+        );
+        let sampledPoints = [];
+        // Only take every 8th point to reduce the size in the database
+        for (let i = 0; i < convertedPoints.length; ) {
+          sampledPoints.push(convertedPoints[i]);
+          i = i + 8;
+        }
+
+        convertedStrokes.push({
+          color: stroke.color,
+          locations: convertedLocations,
+          points: sampledPoints,
+        });
+      });
+
+      const ConvertedTechniqueStep: ConvertedTechniqueStep = {
+        ...techniqueStep,
+        strokes: convertedStrokes,
+      };
+      convertedSteps.push(ConvertedTechniqueStep);
+    });
+
+    const technique: NewTechnique = {
+      name: this.drawingName,
+      author: this.drawingAuthor,
+      description: this.drawingDescription,
+      region: this.drawingRegion,
+      subregion: this.drawingSubregion,
+      size: this.drawingSize,
+    };
+    return [technique, convertedSteps];
+  }
+
+  async saveDrawing() {
     try {
-      this.uploadingData = true;
-      await this.databaseService.addDrawing(drawing, this.data.kind);
+      if (this.data.kind === 'lesion') {
+        const formattedLesion = this.formatLesionForUpload();
+        this.uploadingData = true;
+        await this.databaseService.addLesion(
+          formattedLesion[0],
+          formattedLesion[1]
+        );
+      } else {
+        const formattedTechnique = this.formatTechniqueForUpload();
+        this.uploadingData = true;
+        await this.databaseService.addTechnique(
+          formattedTechnique[0],
+          formattedTechnique[1]
+        );
+      }
       this.dialogRef.close();
       this._snackBar.open(`Successfully added the ${this.data.kind}`, 'Close', {
         duration: 2000,

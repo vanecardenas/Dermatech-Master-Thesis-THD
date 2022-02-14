@@ -1,8 +1,13 @@
-<div
-  fxLayout="row"
-  fxLayoutAlign="space-around start"
-  style="margin-top: calc(75px + 5%)"
+<button
+  mat-raised-button
+  class="save-button"
+  [disabled]="!associationsEdited"
+  (click)="saveAssociationChanges()"
+  style="margin-top: calc(75px + 5%); margin-left: 13%"
 >
+  Save Changes
+</button>
+<div fxLayout="row" fxLayoutAlign="space-around start" style="margin-top: 10px">
   <div fxLayout="column" fxLayoutAlign="space-around start" fxLayoutGap="15px">
     <mat-card fxFlexFill>
       <mat-card-header>
@@ -11,12 +16,15 @@
         </mat-card-title>
       </mat-card-header>
       <mat-card-content *ngIf="!lesionsFetched">
-        <mat-progress-spinner color="accent" mode="indeterminate" diameter="60">
-        </mat-progress-spinner>
+        <mat-spinner> </mat-spinner>
       </mat-card-content>
       <mat-card-content *ngIf="lesionsFetched">
-        <form class="example-form">
-          <mat-form-field class="example-full-width" appearance="fill">
+        <form fxFlexFill class="example-form">
+          <mat-form-field
+            fxFlexFill
+            class="example-full-width"
+            appearance="fill"
+          >
             <mat-label>Select a lesion</mat-label>
             <input
               matInput
@@ -47,52 +55,68 @@
         <mat-card-subtitle> By {{ selectedLesion.author }} </mat-card-subtitle>
       </mat-card-header>
       <mat-card-content *ngIf="selectedLesion">
+        <div
+          class="drawing-categories"
+          fxLayout="row"
+          fxLayoutAlign="start center"
+          fxLayoutGap="15px grid"
+        >
+          <span>Region: {{ selectedLesion.region }}</span>
+          <span>Subregion: {{ selectedLesion.subregion }}</span>
+          <span>Size: {{ selectedLesion.size }}</span>
+        </div>
         {{ selectedLesion.description }}
       </mat-card-content>
     </mat-card>
   </div>
-  <mat-accordion class="example-headers-align">
-    <mat-expansion-panel [expanded]="step === 0" (opened)="setStep(0)">
-      <mat-expansion-panel-header>
-        <mat-panel-title> Personal data </mat-panel-title>
-        <mat-panel-description>
-          Type your name and age
-          <mat-icon>account_circle</mat-icon>
-        </mat-panel-description>
-      </mat-expansion-panel-header>
-
-      <mat-form-field appearance="fill">
-        <mat-label>First name</mat-label>
-        <input matInput />
-      </mat-form-field>
-
-      <mat-form-field appearance="fill">
-        <mat-label>Age</mat-label>
-        <input matInput type="number" min="1" />
-      </mat-form-field>
-      <mat-action-row>
-        <button mat-button color="primary" (click)="nextStep()">Next</button>
-      </mat-action-row>
-    </mat-expansion-panel>
-
-    <mat-expansion-panel [expanded]="step === 1" (opened)="setStep(1)">
-      <mat-expansion-panel-header>
-        <mat-panel-title> Destination </mat-panel-title>
-        <mat-panel-description>
-          Type the country name
-          <mat-icon>map</mat-icon>
-        </mat-panel-description>
-      </mat-expansion-panel-header>
-
-      <mat-form-field appearance="fill">
-        <mat-label>Country</mat-label>
-        <input matInput />
-      </mat-form-field>
-
-      <mat-action-row>
-        <button mat-button color="warn" (click)="prevStep()">Previous</button>
-        <button mat-button color="primary" (click)="nextStep()">Next</button>
-      </mat-action-row>
-    </mat-expansion-panel>
-  </mat-accordion>
+  <div fxLayout="column" fxLayoutAlign="start center">
+    <h3>Surgical Techniques</h3>
+    <mat-card *ngIf="!selectedLesion"> Please select a lesion first </mat-card>
+    <mat-card *ngIf="selectedLesion && !techniquesFetched">
+      <mat-spinner></mat-spinner>
+    </mat-card>
+    <mat-accordion
+      *ngIf="selectedLesion && techniquesFetched"
+      class="example-headers-align"
+    >
+      <mat-expansion-panel *ngFor="let technique of techniqueMetas">
+        <mat-expansion-panel-header>
+          <mat-panel-title
+            style="line-height: 48px; height: 48px; width: 50%"
+            >{{ technique.name }}</mat-panel-title
+          >
+          <mat-panel-description style="line-height: 48px; height: 48px"
+            >{{ technique.stepIds.length }} Steps</mat-panel-description
+          >
+          <mat-slide-toggle
+            style="height: 48px"
+            #slideToggle
+            [checked]="associatedToSelectedLesion(technique.id)"
+            (change)="onAssociationToggle(technique)"
+            >Associated</mat-slide-toggle
+          >
+          <button
+            mat-icon-button
+            style="height: 48px"
+            (click)="rateAssociation($event, technique)"
+            [disabled]="!slideToggle.checked"
+          >
+            <mat-icon>star_rate</mat-icon>
+          </button>
+        </mat-expansion-panel-header>
+        <p>By {{ technique.author }}</p>
+        <p>{{ technique.description }}</p>
+        <mat-action-row>
+          <button
+            mat-button
+            aria-label="More Details"
+            (click)="showTechniqueDetails(technique)"
+          >
+            <mat-icon>launch</mat-icon>
+            More Details
+          </button>
+        </mat-action-row>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
 </div>

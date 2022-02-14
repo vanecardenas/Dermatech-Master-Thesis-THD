@@ -38,24 +38,26 @@ export class HeadModelComponent {
   @Input() drawingKind: 'lesion' | 'technique' = 'lesion';
   boundingRect!: DOMRect;
   currentTechniqueStep = 0;
-  techniqueSteps: DatabaseTechniqueStep[] = [];
-  uneditedNewStep = true;
+  techniqueSteps: NewTechniqueStep[] = [];
+  stepDrawingEdited = false;
+  stepDetailsEdited = false;
+  isNewStep = true;
 
   @ViewChild('headContainer', { static: false })
   headContainer!: ElementRef<HTMLElement>;
 
   constructor(public dialog: MatDialog) {}
 
-  get templateStep(): DatabaseTechniqueStep {
+  get uneditedNewStep() {
+    return !this.stepDrawingEdited && !this.stepDetailsEdited && this.isNewStep;
+  }
+
+  get templateStep(): NewTechniqueStep {
     return {
       name: `Step ${this.currentTechniqueStep}`,
       description: '',
-      author: '',
       strokes: [],
       stepNumber: this.currentTechniqueStep,
-      region: '',
-      subregion: '',
-      size: '',
     };
   }
 
@@ -115,6 +117,13 @@ export class HeadModelComponent {
       this.painter = new TexturePainter(this.renderer, this.camera, mesh);
       this.painter.setDrawColor(this.drawColor);
       this.painter.drawingEnabled = this.drawingEnabled;
+      this.painter.strokesDrawn.subscribe((strokesAmount: number) => {
+        if (strokesAmount > 0) {
+          this.stepDrawingEdited = true;
+        } else {
+          this.stepDrawingEdited = false;
+        }
+      });
       this.render();
       this.headMesh = mesh;
     });
@@ -151,52 +160,112 @@ export class HeadModelComponent {
 
   setStep(event: MouseEvent, index: number) {
     event.stopPropagation();
-    this.currentTechniqueStep = index;
-    console.log('current step', this.currentTechniqueStep);
+    this.prevStep(index);
   }
 
   nextStep() {
-    this.currentTechniqueStep++;
+    // store progress of step, we expect it to be edited
+    this.techniqueSteps[this.currentTechniqueStep].strokes = [
+      ...this.painter.drawing,
+    ];
+    this.resetScene();
+    this.currentTechniqueStep++; // looking at the next step from here on
+    this.stepDrawingEdited = false;
+    this.stepDetailsEdited = false;
     if (this.currentTechniqueStep >= this.techniqueSteps.length) {
+      // we were at the last step, need to add a new one
       this.techniqueSteps.push(this.templateStep);
-      this.uneditedNewStep = true;
+      this.isNewStep = true;
+    } else {
+      // need to load the next step's drawing
+      if (
+        this.techniqueSteps[this.currentTechniqueStep].strokes !== undefined
+      ) {
+        console.log('drawing next step');
+        this.painter.drawStrokes(
+          this.techniqueSteps[this.currentTechniqueStep].strokes
+        );
+      }
     }
-    console.log('current step', this.currentTechniqueStep);
   }
 
-  prevStep() {
-    this.currentTechniqueStep--;
+  prevStep(index?: number) {
     if (this.uneditedNewStep) {
+      // nothing was edited, step is removed
       this.techniqueSteps.pop();
-      this.uneditedNewStep = false;
+    } else {
+      // step was edited and needs to be stored
+      this.techniqueSteps[this.currentTechniqueStep].strokes = [
+        ...this.painter.drawing,
+      ];
     }
-    console.log('current step', this.currentTechniqueStep);
+    this.resetScene();
+    if (index === undefined) {
+      this.currentTechniqueStep--; // looking at the previous step from here on
+    } else {
+      this.currentTechniqueStep = index; // looking at the selected step from here on
+    }
+    this.stepDrawingEdited = false;
+    this.stepDetailsEdited = false;
+    this.isNewStep = false;
+    // need to load the previous step's drawing
+    if (this.techniqueSteps[this.currentTechniqueStep].strokes !== undefined) {
+      console.log('drawing previous step');
+      this.painter.drawStrokes(
+        this.techniqueSteps[this.currentTechniqueStep].strokes
+      );
+    }
   }
 
   deleteStep(event: MouseEvent, stepNumber: number) {
     event.stopPropagation();
-    let confirmationDialog = this.dialog.open(ConfirmationDialogComponent, {
-      // height: '400px',
-      width: '500px',
-      data: {
-        message: 'Are you sure you want to delete this step?',
-        details: `This can not be undone and the step "${this.techniqueSteps[stepNumber].name}" will be deleted.`,
-      },
-    });
-    confirmationDialog.afterClosed().subscribe((confirmed) => {
-      if (confirmed) {
-        this.techniqueSteps.splice(stepNumber, 1);
-        this.techniqueSteps.forEach((step, index) => {
-          step.stepNumber = index;
-        });
-        if (stepNumber <= this.currentTechniqueStep) {
-          this.currentTechniqueStep--;
+    if (this.techniqueSteps.length > 0) {
+      let confirmationDialog = this.dialog.open(ConfirmationDialogComponent, {
+        // height: '400px',
+        width: '500px',
+        data: {
+          message: 'Are you sure you want to delete this step?',
+          details: `This can not be undone and the step "${this.techniqueSteps[stepNumber].name}" will be deleted.`,
+        },
+      });
+      confirmationDialog.afterClosed().subscribe((confirmed) => {
+        if (confirmed) {
+          this.techniqueSteps.splice(stepNumber, 1);
+          this.techniqueSteps.forEach((step, index) => {
+            step.stepNumber = index;
+          });
+          if (stepNumber === this.currentTechniqueStep) {
+            // this step was deleted, we have to change scene to new step
+            this.resetScene();
+            this.stepDetailsEdited = false;
+            this.stepDrawingEdited = false;
+            // need to load the previous' step's drawing, if there is a previous step
+            if (
+              this.currentTechniqueStep > 0 &&
+              this.techniqueSteps[this.currentTechniqueStep - 1].strokes !==
+                undefined
+            ) {
+              console.log('drawing previous step due to deletion');
+              this.painter.drawStrokes(
+                this.techniqueSteps[this.currentTechniqueStep - 1].strokes
+              );
+            }
+          }
+          if (
+            stepNumber <= this.currentTechniqueStep &&
+            this.currentTechniqueStep > 0
+          ) {
+            this.currentTechniqueStep--;
+          }
+          if (this.techniqueSteps.length === 0) {
+            this.techniqueSteps.push(this.templateStep);
+            this.isNewStep = true;
+            this.stepDetailsEdited = false;
+            this.stepDrawingEdited = false;
+          }
         }
-        if (this.techniqueSteps.length === 0) {
-          this.techniqueSteps.push(this.templateStep);
-        }
-      }
-    });
+      });
+    }
   }
 
   editStepDetails(event: MouseEvent, stepNumber: number) {
@@ -212,13 +281,23 @@ export class HeadModelComponent {
       if (editedStep) {
         this.techniqueSteps[stepNumber] = editedStep;
         if (stepNumber === this.currentTechniqueStep) {
-          this.uneditedNewStep = false;
+          this.stepDetailsEdited = true;
         }
       }
     });
   }
 
-  saveSurgicalTechnique() {}
+  saveSurgicalTechnique() {
+    this.dialog.open(SaveDrawingComponent, {
+      // height: '400px',
+      width: '700px',
+      data: {
+        technique: [...this.techniqueSteps],
+        onSave: () => this.resetScene(),
+        kind: this.drawingKind,
+      },
+    });
+  }
 
   toggleControlMode() {
     if (this.controlMode === 'rotate') {
@@ -271,14 +350,12 @@ export class HeadModelComponent {
     // this.disposeNodes(this.scene);
   }
 
-  toggleDrawingKind() {}
-
-  saveDrawing() {
+  saveLesion() {
     this.dialog.open(SaveDrawingComponent, {
       // height: '400px',
       width: '500px',
       data: {
-        drawing: this.painter.drawing,
+        lesion: [...this.painter.drawing],
         onSave: () => this.resetScene(),
         kind: this.drawingKind,
       },

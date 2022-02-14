@@ -1,45 +1,89 @@
-interface Stroke {
+// A Stroke is one ongoing movement of drawing.
+type Stroke = {
   color: string;
   points: import('three/src/Three').Vector3[];
   locations: {
     vectors: import('three/src/Three').Vector2[];
     clip: import('three/src/Three').Vector2[];
   }[];
-}
+};
 
-interface Drawing extends Array<Stroke> {}
+// A complete Drawing consists of multiple Strokes.
+// LesionDrawing and TechniqueStepDrawing for better orientation in the code.
+type LesionDrawing = Array<Stroke>;
+type TechniqueStepDrawing = Array<Stroke>;
 
-interface DatabaseStroke {
+// DatabaseStrokes are converted Strokes for storage in the database
+type ConvertedStroke = {
   color: string;
   points: { x: number; y: number; z: number }[];
   locations: {
     vectors: { x: number; y: number }[];
     clip: { x: number; y: number }[];
   }[];
-}
+};
 
-interface DatabaseDrawing {
-  id?: string;
-  strokes?: DatabaseStroke[];
+type TechniqueAssociation = {
+  techniqueId: string;
+  active: boolean;
+  comments: string;
+  ratings: {
+    rating: number;
+    author: string;
+  }[];
+};
+
+// In the database, the metadata is stored separated from the actual drawings.
+// This allows faster download and filtering, as drawings can become large.
+type _DrawingMetaBase = {
   name: string;
-  author: string;
   description?: string;
-  strokeId?: string;
-  sampledStrokeId?: string;
+};
+type _DrawingMeta = _DrawingMetaBase & {
+  author: string;
   region: string;
   subregion: string;
   size: string;
-}
+};
+type NewLesion = _DrawingMeta & {
+  techniqueAssociations: TechniqueAssociation[];
+};
+type DatabaseLesion = NewLesion & {
+  id?: string;
+  strokeId: string;
+  sampledStrokeId: string;
+  imageId?: string;
+};
+// DatabaseTechnique is not directly containing stroke references.
+// It references DatabaseTechniqueSteps instead, which reference the drawings.
+type NewTechnique = _DrawingMeta;
+type DatabaseTechnique = NewTechnique & {
+  id?: string;
+  stepIds: string[];
+};
 
-interface DatabaseLesion extends DatabaseDrawing {
-  associatedTechniques: string[];
-}
-
-interface DatabaseTechniqueStep extends DatabaseDrawing {
+// DatabaseTechniqueStep is a "DatabaseDrawing - Light", as it does not contain author or meta data for filtering.
+type NewTechniqueStep = _DrawingMetaBase & {
   stepNumber: number;
-  techniqueId?: string;
-}
+  strokes: Stroke[];
+};
+type ConvertedTechniqueStep = _DrawingMetaBase & {
+  stepNumber: number;
+  strokes: ConvertedStroke[];
+};
+type DatabaseTechniqueStep = _DrawingMetaBase & {
+  id?: string;
+  techniqueId: string;
+  stepNumber: number;
+  strokeId: string;
+  sampledStrokeId: string;
+  imageId?: string;
+};
 
-interface DatabaseTechnique extends DatabaseDrawing {
-  stepIDs?: string[];
-}
+type DatabaseStrokes = {
+  id?: string;
+  metaId: string;
+  strokes: ConvertedStroke[];
+};
+// DatabaseDrawingStrokesSampled for better orientation in the code.
+type DatabaseDrawingStrokesSampled = DatabaseStrokes;

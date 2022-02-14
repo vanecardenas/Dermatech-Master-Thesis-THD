@@ -109,3 +109,28 @@ body,
   align-items: center !important;
   border-radius: 0px 0px 10px 0px !important;
 }
+
+.mat-spinner,
+.mat-progress-spinner {
+  stroke: #434850 !important;
+}
+
+.save-button {
+  background-color: #434850;
+  color: white;
+}
+
+.save-button.mat-button-disabled {
+  background-color: #dee3e9;
+  color: #6e747e;
+}
+
+.mat-dialog-content-free-height {
+  max-height: initial !important;
+}
+
+.drawing-categories {
+  color: gray;
+  margin-bottom: 5px !important;
+  font-style: italic;
+}

@@ -87,7 +87,8 @@
     mat-raised-button
     color="primary"
     class="save-button"
-    (click)="saveDrawing()"
+    (click)="saveLesion()"
+    [disabled]="!stepDrawingEdited"
   >
     <mat-icon>save</mat-icon>
     Save lesion
@@ -101,6 +102,7 @@
     color="primary"
     class="save-button"
     (click)="saveSurgicalTechnique()"
+    [disabled]="uneditedNewStep && currentTechniqueStep === 0"
   >
     <mat-icon>save</mat-icon>
     Save technique

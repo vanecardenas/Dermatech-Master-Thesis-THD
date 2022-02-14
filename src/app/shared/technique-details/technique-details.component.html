@@ -1,0 +1,39 @@
+<div fxLayout="row" fxLayoutAlign="space-between center">
+  <h2 mat-dialog-title>{{ data.technique.name }}</h2>
+  <button mat-icon-button (click)="close()"><mat-icon>close</mat-icon></button>
+</div>
+<mat-dialog-content class="mat-dialog-content-free-height">
+  <h4>By {{ data.technique.author }}</h4>
+  <div
+    class="drawing-categories"
+    fxLayout="row"
+    fxLayoutAlign="start center"
+    fxLayoutGap="15px grid"
+  >
+    <span>Region: {{ data.technique.region }}</span>
+    <span>Subregion: {{ data.technique.subregion }}</span>
+    <span>Size: {{ data.technique.size }}</span>
+  </div>
+  <p>{{ data.technique.description }}</p>
+  <mat-spinner *ngIf="!techniqueStepsFetched"></mat-spinner>
+  <div *ngIf="techniqueStepsFetched">
+    <h4>Steps</h4>
+    <div fxLayout="column" fxLayoutAlign="start center" fxLayoutGap="10px">
+      <div *ngFor="let step of techniqueSteps">
+        <div fxLayout="row" fxLayoutAlign="start center">
+          <span style="color: grey; margin-right: 10px">{{
+            step.stepNumber
+          }}</span>
+          <div>
+            <h4 mat-line>{{ step.name }}</h4>
+            <p mat-line>{{ step.description }}</p>
+          </div>
+        </div>
+        <img class="step-picture" src="assets/decal-normal.jpg" />
+      </div>
+    </div>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions fxLayout="row" fxLayoutAlign="end center">
+  <button mat-raised-button (click)="close()">Close</button>
+</mat-dialog-actions>

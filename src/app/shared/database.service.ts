@@ -3,26 +3,36 @@ import {
   AngularFirestore,
   AngularFirestoreCollection,
 } from '@angular/fire/compat/firestore';
-import { Observable } from 'rxjs';
+import { map, Observable, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DatabaseService {
-  private lesionMetasCollection: AngularFirestoreCollection<DatabaseDrawing>;
-  lesionMetas: Observable<DatabaseDrawing[]>;
+  private lesionMetasCollection: AngularFirestoreCollection<DatabaseLesion>;
+  lesionMetas: Observable<DatabaseLesion[]>;
+  private techniqueMetasCollection: AngularFirestoreCollection<DatabaseTechnique>;
+  techniqueMetas: Observable<DatabaseTechnique[]>;
 
   constructor(private readonly firestore: AngularFirestore) {
     // We are getting the drawings from the firestore database and map them to a local array.
     this.lesionMetasCollection =
-      firestore.collection<DatabaseDrawing>('lesionMetas');
+      firestore.collection<DatabaseLesion>('lesionMetas');
     this.lesionMetas = this.lesionMetasCollection.valueChanges({
+      idField: 'id',
+    });
+    this.techniqueMetasCollection =
+      firestore.collection<DatabaseTechnique>('techniqueMetas');
+    this.techniqueMetas = this.techniqueMetasCollection.valueChanges({
       idField: 'id',
     });
     this.firestore = firestore;
   }
 
-  downSample(stroke: DatabaseStroke, every_nth: number): DatabaseStroke {
+  private downSample(
+    stroke: ConvertedStroke,
+    every_nth: number
+  ): ConvertedStroke {
     let sampledLocations = [];
     for (let i = 0; i < stroke.locations.length; ) {
       sampledLocations.push(stroke.locations[i]);
@@ -42,34 +52,124 @@ export class DatabaseService {
     };
   }
 
-  async addDrawing(drawing: DatabaseDrawing, kind: 'lesion' | 'technique') {
+  async addLesion(lesionMeta: NewLesion, strokes: ConvertedStroke[]) {
     const metaId = await this.firestore.createId();
     const strokeId = await this.firestore.createId();
     const sampledStrokeId = await this.firestore.createId();
 
-    if (drawing.strokes) {
-      const drawingStrokes = { metaId: metaId, strokes: [...drawing.strokes] };
-      await this.firestore
-        .collection(`${kind}Strokes`)
-        .doc(strokeId)
-        .set(drawingStrokes);
+    const drawingStrokes = { metaId: metaId, strokes: [...strokes] };
+    await this.firestore
+      .collection<DatabaseStrokes>('lesionStrokes')
+      .doc(strokeId)
+      .set(drawingStrokes);
 
-      const drawingStrokesSampled = {
-        metaId: metaId,
-        strokes: drawing.strokes.map((stroke) => this.downSample(stroke, 3)),
-      };
-      await this.firestore
-        .collection(`${kind}StrokesSampled`)
-        .doc(sampledStrokeId)
-        .set(drawingStrokesSampled);
-    }
-    delete drawing.strokes;
-    drawing['strokeId'] = strokeId;
-    drawing['sampledStrokeId'] = sampledStrokeId;
+    const drawingStrokesSampled = {
+      metaId: metaId,
+      strokes: strokes.map((stroke) => this.downSample(stroke, 3)),
+    };
+    await this.firestore
+      .collection<DatabaseStrokes>('lesionStrokesSampled')
+      .doc(sampledStrokeId)
+      .set(drawingStrokesSampled);
+
+    const databaseLesionMeta: DatabaseLesion = {
+      ...lesionMeta,
+      strokeId: strokeId,
+      sampledStrokeId: sampledStrokeId,
+    };
 
     return this.firestore
-      .collection<DatabaseDrawing>(`${kind}Metas`)
+      .collection<DatabaseLesion>('lesionMetas')
       .doc(metaId)
-      .set(drawing);
+      .set(databaseLesionMeta);
+  }
+
+  private async addTechniqueStep(
+    step: ConvertedTechniqueStep,
+    techniqueMetaId: string
+  ) {
+    const stepMetaId = await this.firestore.createId();
+    const stepStrokeId = await this.firestore.createId();
+    const stepSampledStrokeId = await this.firestore.createId();
+
+    const drawingStrokes = { metaId: stepMetaId, strokes: [...step.strokes] };
+    await this.firestore
+      .collection<DatabaseStrokes>('techniqueStepStrokes')
+      .doc(stepStrokeId)
+      .set(drawingStrokes);
+
+    const drawingStrokesSampled = {
+      metaId: stepMetaId,
+      strokes: step.strokes.map((stroke) => this.downSample(stroke, 3)),
+    };
+    await this.firestore
+      .collection<DatabaseStrokes>('techniqueStepStrokesSampled')
+      .doc(stepSampledStrokeId)
+      .set(drawingStrokesSampled);
+
+    const databaseStepMeta: DatabaseTechniqueStep = {
+      name: step.name,
+      description: step.description,
+      stepNumber: step.stepNumber,
+      techniqueId: techniqueMetaId,
+      strokeId: stepStrokeId,
+      sampledStrokeId: stepSampledStrokeId,
+    };
+
+    await this.firestore
+      .collection<DatabaseTechniqueStep>('techniqueStepMetas')
+      .doc(stepMetaId)
+      .set(databaseStepMeta);
+
+    return stepMetaId;
+  }
+
+  async addTechnique(
+    techniqueMeta: NewTechnique,
+    steps: ConvertedTechniqueStep[]
+  ) {
+    const techniqueMetaId = await this.firestore.createId();
+
+    const databaseStepIds: string[] = await Promise.all(
+      steps.map((step) => this.addTechniqueStep(step, techniqueMetaId))
+    );
+
+    const databaseTechniqueMeta: DatabaseTechnique = {
+      ...techniqueMeta,
+      stepIds: databaseStepIds,
+    };
+
+    return this.firestore
+      .collection<DatabaseTechnique>('techniqueMetas')
+      .doc(techniqueMetaId)
+      .set(databaseTechniqueMeta);
+  }
+
+  getStrokesFor(kind: 'lesion' | 'techniqueStep', id: string) {
+    return this.firestore
+      .collection<DatabaseStrokes>(`${kind}Strokes`)
+      .doc(id)
+      .get();
+  }
+
+  getStrokesSampledFor(kind: 'lesion' | 'techniqueStep', id: string) {
+    return this.firestore
+      .collection<DatabaseStrokes>(`${kind}StrokesSampled`)
+      .doc(id)
+      .get();
+  }
+
+  getTechniqueStepsFor(techniqueId: string) {
+    return this.firestore
+      .collection<DatabaseTechniqueStep>('techniqueStepMetas', (ref) =>
+        ref.where('techniqueId', '==', techniqueId)
+      )
+      .get()
+      .pipe(map((snapshot) => snapshot.docs.map((doc) => doc.data())))
+      .pipe(
+        tap((techniqueSteps) =>
+          techniqueSteps.sort((a, b) => a.stepNumber - b.stepNumber)
+        )
+      );
   }
 }

@@ -1,101 +1,99 @@
 <ng-container *ngIf="uploadingData">
   <h2 mat-dialog-title>Saving new {{ data.kind }}...</h2>
-  <mat-dialog-content>
+  <mat-dialog-content fxLayout="row" fxLayoutAlign="space-around center">
     <mat-spinner></mat-spinner>
   </mat-dialog-content>
 </ng-container>
 <ng-container *ngIf="!uploadingData">
   <h2 mat-dialog-title>Details for the {{ data.kind }}</h2>
-  <mat-dialog-content>
-    <div fxLayout="column" fxLayoutAlign="space-between center">
-      <h4 fxFlexFill>
-        {{
-          drawingRegion
-            ? "Selected region: " + capitalizeFirstLetter(drawingRegion)
-            : "Select a region"
-        }}
-      </h4>
-      <mat-form-field fxFlexFill appearance="outline">
-        <mat-label>Region</mat-label>
-        <mat-select
-          required
-          (selectionChange)="onRegionSelect($event)"
-          [(ngModel)]="drawingSubregion"
-        >
-          <mat-optgroup
-            *ngFor="let region of lesionFilterService.regions"
-            [label]="capitalizeFirstLetter(region)"
-          >
-            <mat-option
-              *ngFor="let subregion of lesionFilterService.subregions(region)"
-              [value]="subregion"
-            >
-              {{ capitalizeFirstLetter(subregion) }}
-            </mat-option>
-          </mat-optgroup>
-        </mat-select>
-      </mat-form-field>
-      <mat-form-field fxFlexFill appearance="outline">
-        <mat-label>Lesion Size</mat-label>
-        <mat-select
-          required
-          [(ngModel)]="drawingSize"
-          [disabled]="!drawingRegion || !drawingSubregion"
-        >
-          <ng-container *ngIf="drawingRegion && drawingSubregion">
-            <mat-option
-              *ngFor="
-                let size of lesionFilterService.sizes(
-                  drawingRegion,
-                  drawingSubregion
-                )
-              "
-              [value]="size"
-            >
-              {{ capitalizeFirstLetter(size) }}
-            </mat-option>
-          </ng-container>
-        </mat-select>
-      </mat-form-field>
-      <mat-form-field fxFlexFill appearance="outline">
-        <mat-label>Name of the {{ data.kind }}</mat-label>
-        <input
-          matInput
-          name="drawingNameInput"
-          [(ngModel)]="drawingName"
-          placeholder="Kind of {{ data.kind }}"
-          required
-        />
-      </mat-form-field>
-      <mat-form-field fxFlexFill appearance="outline">
-        <mat-label>Author of the {{ data.kind }}</mat-label>
-        <input
-          matInput
-          name="drawingAuthorInput"
-          [(ngModel)]="drawingAuthor"
-          placeholder="Dr. Strange"
-          required
-        />
-      </mat-form-field>
-      <mat-form-field fxFlexFill appearance="outline">
-        <mat-label>Description of the {{ data.kind }}</mat-label>
-        <textarea
-          matInput
-          name="drawingDescriptionInput"
-          [(ngModel)]="drawingDescription"
-          placeholder="Description of the {{ data.kind }}"
-        ></textarea>
-      </mat-form-field>
-      <app-multiselect-autocomplete
-        fxFlexFill
-        label="Associated Surgical Techniques"
-        placeholder="Select Surgical Techniques"
-        key="options"
-        [data]="selectOptions"
-        (result)="selectChange($event)"
+  <mat-dialog-content fxLayout="column" fxLayoutAlign="space-between center">
+    <h4 fxFlexFill>
+      {{
+        drawingRegion
+          ? "Selected region: " + capitalizeFirstLetter(drawingRegion)
+          : "Select a region"
+      }}
+    </h4>
+    <mat-form-field fxFlexFill appearance="outline">
+      <mat-label>Region</mat-label>
+      <mat-select
+        required
+        (selectionChange)="onRegionSelect($event)"
+        [(ngModel)]="drawingSubregion"
       >
-      </app-multiselect-autocomplete>
-    </div>
+        <mat-optgroup
+          *ngFor="let region of lesionFilterService.regions"
+          [label]="capitalizeFirstLetter(region)"
+        >
+          <mat-option
+            *ngFor="let subregion of lesionFilterService.subregions(region)"
+            [value]="subregion"
+          >
+            {{ capitalizeFirstLetter(subregion) }}
+          </mat-option>
+        </mat-optgroup>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field fxFlexFill appearance="outline">
+      <mat-label>Lesion Size</mat-label>
+      <mat-select
+        required
+        [(ngModel)]="drawingSize"
+        [disabled]="!drawingRegion || !drawingSubregion"
+      >
+        <ng-container *ngIf="drawingRegion && drawingSubregion">
+          <mat-option
+            *ngFor="
+              let size of lesionFilterService.sizes(
+                drawingRegion,
+                drawingSubregion
+              )
+            "
+            [value]="size"
+          >
+            {{ capitalizeFirstLetter(size) }}
+          </mat-option>
+        </ng-container>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field fxFlexFill appearance="outline">
+      <mat-label>Name of the {{ data.kind }}</mat-label>
+      <input
+        matInput
+        name="drawingNameInput"
+        [(ngModel)]="drawingName"
+        placeholder="Kind of {{ data.kind }}"
+        required
+      />
+    </mat-form-field>
+    <mat-form-field fxFlexFill appearance="outline">
+      <mat-label>Author of the {{ data.kind }}</mat-label>
+      <input
+        matInput
+        name="drawingAuthorInput"
+        [(ngModel)]="drawingAuthor"
+        placeholder="Dr. Strange"
+        required
+      />
+    </mat-form-field>
+    <mat-form-field fxFlexFill appearance="outline">
+      <mat-label>Description of the {{ data.kind }}</mat-label>
+      <textarea
+        matInput
+        name="drawingDescriptionInput"
+        [(ngModel)]="drawingDescription"
+        placeholder="Description of the {{ data.kind }}"
+      ></textarea>
+    </mat-form-field>
+    <app-multiselect-autocomplete
+      fxFlexFill
+      label="Associated Surgical Techniques"
+      placeholder="Select Surgical Techniques"
+      key="options"
+      [data]="selectOptions"
+      (result)="selectChange($event)"
+    >
+    </app-multiselect-autocomplete>
   </mat-dialog-content>
   <mat-dialog-actions fxLayout="row">
     <button

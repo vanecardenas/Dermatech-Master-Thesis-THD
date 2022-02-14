@@ -2,6 +2,7 @@
  * @author ScieCode / https://sciecode.github.io/
  */
 import { Input } from '@angular/core';
+import { Subject } from 'rxjs';
 import * as THREE from 'three';
 import {
   WebGLRenderer,
@@ -56,6 +57,8 @@ export class TexturePainter {
 
   protected headColor = 'rgb(197, 200, 217)';
   protected drawColor = 'rgb(111, 106, 118)';
+
+  strokesDrawn = new Subject<number>();
 
   constructor(
     renderer: WebGLRenderer,
@@ -201,13 +204,13 @@ export class TexturePainter {
     }
   }
 
-  faceDraw(vectors: Vector2[], undo: boolean = false) {
+  faceDraw(vectors: Vector2[], mode: 'brush' | 'undo' | 'redraw' = 'brush') {
     let width = this.canvas.width;
     let height = this.canvas.height;
     let length = vectors.length / 2;
 
     if (this.ctx) {
-      this.ctx.fillStyle = undo ? this.headColor : this.drawColor;
+      this.ctx.fillStyle = mode === 'undo' ? this.headColor : this.drawColor;
 
       // move to the first point
       this.ctx.beginPath();
@@ -233,16 +236,16 @@ export class TexturePainter {
       vectors: Vector2[];
       clip: Vector2[];
     }[],
-    undo: boolean = false
+    mode: 'brush' | 'undo' | 'redraw' = 'brush'
   ) {
-    if (!this.ctx || (!this.mouseIsDown && !undo) || !faces) return;
+    if (!this.ctx || (!this.mouseIsDown && mode === 'brush') || !faces) return;
 
     faces.forEach((face) => {
       if (this.ctx) {
         this.ctx.save();
 
         this.faceClip(face.clip);
-        this.faceDraw(face.vectors, undo); // face.points
+        this.faceDraw(face.vectors, mode); // face.points
 
         this.ctx.restore();
       }
@@ -419,24 +422,39 @@ export class TexturePainter {
   undoLastStroke() {
     const lastStroke = this.strokes.pop();
     if (lastStroke) {
-      this.draw(lastStroke.locations, true);
+      this.draw(lastStroke.locations, 'undo');
     }
+    this.strokesDrawn.next(this.strokes.length);
+  }
+
+  drawStrokes(strokes: Stroke[]) {
+    this.strokes = [...strokes];
+    strokes.forEach((stroke) => {
+      console.log(stroke.color);
+      this.setDrawColor(stroke.color);
+      console.log('painting stroke', stroke);
+      this.draw(stroke.locations, 'redraw');
+    });
+    console.log('done drawing strokes');
   }
 
   clearDrawing() {
     this.cursorSize += 1;
     this.cursorUnits = this.cursorSize / this.frustumSize / this.aspect;
     this.strokes.forEach((stroke) => {
-      this.draw(stroke.locations, true);
+      console.log('clearing stroke', stroke);
+      this.draw(stroke.locations, 'undo');
     });
     this.strokes = [];
     this.currentStrokePoints = [];
     this.currentStrokeLocations = [];
     this.cursorSize -= 1;
     this.cursorUnits = this.cursorSize / this.frustumSize / this.aspect;
+    this.strokesDrawn.next(this.strokes.length);
+    console.log('cleared drawing');
   }
 
-  get drawing(): Drawing {
+  get drawing(): Stroke[] {
     return this.strokes;
   }
 
@@ -484,6 +502,8 @@ export class TexturePainter {
         points: [...this.currentStrokePoints],
         locations: [...this.currentStrokeLocations],
       });
+      console.log(this.strokes);
+      this.strokesDrawn.next(this.strokes.length);
       this.currentStrokePoints = [];
       this.currentStrokeLocations = [];
     }
