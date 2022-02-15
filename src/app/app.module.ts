@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule, HammerModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -11,6 +11,8 @@ import {
 } from '@angular/fire/compat/auth';
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
+
+import { ImageCropperModule } from 'ngx-image-cropper';
 
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
@@ -49,6 +51,7 @@ import { AssociateLesionTechniqueComponent } from './associate-lesion-technique/
 import { EditStepComponent } from './shared/edit-step/edit-step.component';
 import { ConfirmationDialogComponent } from './shared/confirmation-dialog/confirmation-dialog.component';
 import { TechniqueDetailsComponent } from './shared/technique-details/technique-details.component';
+import { ImageCropperComponent } from './shared/image-cropper/image-cropper.component';
 
 @NgModule({
   declarations: [
@@ -64,6 +67,7 @@ import { TechniqueDetailsComponent } from './shared/technique-details/technique-
     EditStepComponent,
     ConfirmationDialogComponent,
     TechniqueDetailsComponent,
+    ImageCropperComponent,
   ],
   imports: [
     BrowserModule,
@@ -95,6 +99,8 @@ import { TechniqueDetailsComponent } from './shared/technique-details/technique-
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,
     NgxColorsModule,
+    ImageCropperModule,
+    HammerModule,
   ],
   providers: [
     {

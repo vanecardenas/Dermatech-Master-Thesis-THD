@@ -1,0 +1,36 @@
+<button mat-raised-button (click)="rotateLeft()">Rotate left</button>
+<button mat-raised-button (click)="rotateRight()">Rotate right</button>
+<button mat-raised-button (click)="flipHorizontal()">Flip horizontal</button>
+<button mat-raised-button (click)="flipVertical()">Flip vertical</button>
+<br />
+<br />
+<button mat-raised-button (click)="resetImage()">Reset image</button>
+<br />
+<br />
+<input
+  [(ngModel)]="rotation"
+  placeholder="Rotation"
+  type="number"
+  (keyup)="updateRotation()"
+/>
+<button mat-raised-button (click)="zoomOut()">Zoom -</button>
+<button mat-raised-button (click)="zoomIn()">Zoom +</button>
+
+<div>
+  <image-cropper
+    [imageURL]="data.imageData"
+    [resizeToWidth]="256"
+    [cropperMinWidth]="128"
+    [onlyScaleDown]="true"
+    [canvasRotation]="canvasRotation"
+    [transform]="transform"
+    [style.display]="imageLoaded ? null : 'none'"
+    (imageLoaded)="setImageLoaded()"
+    (imageCropped)="imageCropped($event)"
+    (loadImageFailed)="loadImageFailed()"
+  ></image-cropper>
+</div>
+<img
+  [src]="croppedImage"
+  [style.border]="croppedImage ? '1px solid black' : 'none'"
+/>

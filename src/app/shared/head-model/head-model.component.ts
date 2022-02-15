@@ -11,6 +11,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { SaveDrawingComponent } from '../save-drawing/save-drawing.component';
 import { EditStepComponent } from '../edit-step/edit-step.component';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
+import { ImageCropperComponent } from '../image-cropper/image-cropper.component';
 
 @Component({
   selector: 'app-head-model',
@@ -72,6 +73,7 @@ export class HeadModelComponent {
     this.renderer = new THREE.WebGLRenderer({
       // alpha: true,
       antialias: true,
+      preserveDrawingBuffer: true,
     });
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(this.width, this.height);
@@ -284,6 +286,18 @@ export class HeadModelComponent {
           this.stepDetailsEdited = true;
         }
       }
+    });
+  }
+
+  takePicture() {
+    const mimeType = 'image/png';
+    const imageData = this.renderer.domElement.toDataURL(mimeType);
+    this.dialog.open(ImageCropperComponent, {
+      // height: '400px',
+      width: '800px',
+      data: {
+        imageData: imageData,
+      },
     });
   }
 

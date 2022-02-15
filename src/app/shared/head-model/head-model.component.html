@@ -80,6 +80,16 @@
     Clear drawing
   </button>
   <button
+    fxFlexFill
+    fxLayout="row"
+    fxLayoutAlign="space-between center"
+    mat-raised-button
+    (click)="takePicture()"
+  >
+    <mat-icon>camera</mat-icon>
+    Take picture
+  </button>
+  <button
     *ngIf="drawingKind === 'lesion'"
     fxFlexFill
     fxLayout="row"
