@@ -131,35 +131,34 @@ export class HeadModelComponent {
       this.render();
       this.headMesh = mesh;
     });
-
-    this.updateBoundingRect();
     // Pointer events for drawingcursor
-    this.headContainer.nativeElement.addEventListener('pointerover', () => {
-      this.cursorInCanvas = true;
-    });
-    this.headContainer.nativeElement.addEventListener('pointerout', () => {
-      this.cursorInCanvas = false;
-    });
-    this.headContainer.nativeElement.addEventListener(
-      'pointerdown',
-      (event) => {
+    if (this.container) {
+      this.container.addEventListener('pointerover', () => {
+        this.cursorInCanvas = true;
+      });
+      this.container.addEventListener('pointerout', () => {
+        this.cursorInCanvas = false;
+      });
+      this.container.addEventListener('pointerdown', (event) => {
         this.cursorTop = event.clientY - this.boundingRect.top - 5 + 'px';
         this.cursorLeft = event.clientX - this.boundingRect.left - 5 + 'px';
-      }
-    );
-    this.headContainer.nativeElement.addEventListener(
-      'pointermove',
-      (event) => {
+      });
+      this.container.addEventListener('pointermove', (event) => {
         this.cursorTop = event.clientY - this.boundingRect.top - 5 + 'px';
         this.cursorLeft = event.clientX - this.boundingRect.left - 5 + 'px';
-      }
-    );
+      });
+    }
     window.addEventListener('resize', () => this.onWindowResize(), false);
+    this.updateBoundingRect();
   }
 
   updateBoundingRect() {
-    this.boundingRect =
-      this.headContainer.nativeElement.getBoundingClientRect();
+    let timeout;
+    clearTimeout(timeout);
+    timeout = setTimeout(() => {
+      this.boundingRect =
+        this.headContainer.nativeElement.getBoundingClientRect();
+    }, 100);
   }
 
   setStep(event: MouseEvent, index: number) {
@@ -357,9 +356,7 @@ export class HeadModelComponent {
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.painter.resize();
-    let timeout;
-    clearTimeout(timeout);
-    timeout = setTimeout(() => this.updateBoundingRect(), 100);
+    this.updateBoundingRect();
   }
 
   undoLastStroke() {
