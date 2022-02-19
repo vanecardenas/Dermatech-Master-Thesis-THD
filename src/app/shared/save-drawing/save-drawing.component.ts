@@ -2,6 +2,7 @@ import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSelectChange } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { finalize, Observable } from 'rxjs';
 import { DatabaseService } from 'src/app/shared/database.service';
 import { Vector2, Vector3 } from 'three/src/Three';
 import { LesionFilterService } from '../lesion-filter.service';
@@ -20,19 +21,11 @@ export class SaveDrawingComponent {
   drawingSubregion = '';
   drawingSize = '';
   techniqueAssociations: TechniqueAssociation[] = [];
-
-  selectOptions: Array<string> = [
-    '1',
-    '2',
-    '3',
-    '4',
-    '5',
-    '6',
-    '7',
-    '8',
-    '9',
-    '10',
-  ];
+  lesionAssociations: LesionAssociation[] = [];
+  lesionMetas: DatabaseLesion[] = [];
+  techniqueMetas: DatabaseTechnique[] = [];
+  lesionMetasFetched = false;
+  techniqueMetasFetched = false;
 
   constructor(
     public lesionFilterService: LesionFilterService,
@@ -46,7 +39,16 @@ export class SaveDrawingComponent {
       onSave: CallableFunction;
       kind: 'lesion' | 'technique';
     }
-  ) {}
+  ) {
+    this.databaseService.lesionMetas.subscribe((lesionMetas) => {
+      this.lesionMetas = lesionMetas;
+      this.lesionMetasFetched = true;
+    });
+    this.databaseService.techniqueMetas.subscribe((techniqueMetas) => {
+      this.techniqueMetas = techniqueMetas;
+      this.techniqueMetasFetched = true;
+    });
+  }
 
   capitalizeFirstLetter(text: string) {
     return text.charAt(0).toUpperCase() + text.slice(1);
@@ -57,9 +59,32 @@ export class SaveDrawingComponent {
     if (region) this.drawingRegion = region;
   }
 
-  selectChange = (event: any) => {
+  selectLesionChange = (event: MultiSelectOutput) => {
     const key: string = event.key;
-    this.techniqueAssociations = [...event.data];
+    console.log(event.data);
+    this.lesionAssociations = event.data.map((association) => {
+      return {
+        lesionId: association.id as string,
+        active: true,
+        comments: '',
+        ratings: [],
+      };
+    });
+  };
+
+  selectTechniqueChange = (event: MultiSelectOutput) => {
+    const key: string = event.key;
+    console.log(event.data);
+    this.techniqueAssociations = event.data.map(
+      (association): TechniqueAssociation => {
+        return {
+          techniqueId: association.id as string,
+          active: true,
+          comments: '',
+          ratings: [],
+        };
+      }
+    );
   };
 
   convertLocation(location: { vectors: Vector2[]; clip: Vector2[] }): {
@@ -179,7 +204,8 @@ export class SaveDrawingComponent {
         this.uploadingData = true;
         await this.databaseService.addTechnique(
           formattedTechnique[0],
-          formattedTechnique[1]
+          formattedTechnique[1],
+          this.lesionAssociations
         );
       }
       this.dialogRef.close();

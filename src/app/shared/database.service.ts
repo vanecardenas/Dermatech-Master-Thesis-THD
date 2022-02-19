@@ -3,6 +3,7 @@ import {
   AngularFirestore,
   AngularFirestoreCollection,
 } from '@angular/fire/compat/firestore';
+import firebase from 'firebase/compat/app';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { lastValueFrom, map, Observable, tap } from 'rxjs';
 
@@ -149,9 +150,31 @@ export class DatabaseService {
     return stepMetaId;
   }
 
+  async addLesionAssociations(
+    lesionAssociations: LesionAssociation[],
+    techniqueId: string
+  ) {
+    const batch = this.firestore.firestore.batch();
+    const collectionRef =
+      this.firestore.collection<DatabaseLesion>('lesionMetas');
+    lesionAssociations.forEach((lesionAssociation) => {
+      const techniqueAssociation: TechniqueAssociation = {
+        techniqueId: techniqueId,
+        active: lesionAssociation.active,
+        comments: lesionAssociation.comments,
+        ratings: lesionAssociation.ratings,
+      };
+      batch.update(collectionRef.doc(lesionAssociation.lesionId).ref, {
+        techniqueAssociations:
+          firebase.firestore.FieldValue.arrayUnion(techniqueAssociation),
+      });
+    });
+  }
+
   async addTechnique(
     techniqueMeta: NewTechnique,
-    steps: ConvertedTechniqueStep[]
+    steps: ConvertedTechniqueStep[],
+    lesionAssociations: LesionAssociation[]
   ) {
     const techniqueMetaId = await this.firestore.createId();
 
@@ -164,10 +187,12 @@ export class DatabaseService {
       stepIds: databaseStepIds,
     };
 
-    return this.firestore
+    await this.firestore
       .collection<DatabaseTechnique>('techniqueMetas')
       .doc(techniqueMetaId)
       .set(databaseTechniqueMeta);
+
+    return this.addLesionAssociations(lesionAssociations, techniqueMetaId);
   }
 
   getStrokesFor(kind: 'lesion' | 'techniqueStep', id: string) {

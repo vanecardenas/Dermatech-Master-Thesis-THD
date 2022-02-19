@@ -34,6 +34,17 @@ type TechniqueAssociation = {
     author: string;
   }[];
 };
+// This will not be written into database, we only do a one-way association.
+// However, this will be used as an intermediate format for adding the association to the lesion.
+type LesionAssociation = {
+  lesionId: string;
+  active: boolean;
+  comments: string;
+  ratings: {
+    rating: number;
+    author: string;
+  }[];
+};
 
 // In the database, the metadata is stored separated from the actual drawings.
 // This allows faster download and filtering, as drawings can become large.
@@ -93,3 +104,17 @@ type DatabaseStrokes = {
 };
 // DatabaseDrawingStrokesSampled for better orientation in the code.
 type DatabaseDrawingStrokesSampled = DatabaseStrokes;
+
+// Item types for selection of technique associations
+type Item = {
+  name: string;
+  id?: string;
+};
+type ItemData = {
+  item: Item;
+  selected: boolean;
+};
+type MultiSelectOutput = {
+  key: string;
+  data: Array<Item>;
+};

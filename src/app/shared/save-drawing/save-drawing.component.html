@@ -85,15 +85,32 @@
         placeholder="Description of the {{ data.kind }}"
       ></textarea>
     </mat-form-field>
-    <app-multiselect-autocomplete
-      fxFlexFill
-      label="Associated Surgical Techniques"
-      placeholder="Select Surgical Techniques"
-      key="options"
-      [data]="selectOptions"
-      (result)="selectChange($event)"
-    >
-    </app-multiselect-autocomplete>
+    <ng-container *ngIf="data.kind === 'lesion'">
+      <mat-spinner *ngIf="!techniqueMetasFetched"></mat-spinner>
+      <app-multiselect-autocomplete
+        fxFlexFill
+        *ngIf="techniqueMetasFetched && techniqueMetas"
+        label="Associate Surgical Techniques"
+        placeholder="Select Surgical Techniques"
+        key="techniques"
+        [data]="techniqueMetas"
+        (result)="selectTechniqueChange($event)"
+      >
+      </app-multiselect-autocomplete>
+    </ng-container>
+    <ng-container *ngIf="data.kind === 'technique'">
+      <mat-spinner *ngIf="!lesionMetasFetched"></mat-spinner>
+      <app-multiselect-autocomplete
+        fxFlexFill
+        *ngIf="lesionMetasFetched && lesionMetas"
+        label="Associate to Lesions"
+        placeholder="Select Lesions"
+        key="lesions"
+        [data]="lesionMetas"
+        (result)="selectLesionChange($event)"
+      >
+      </app-multiselect-autocomplete>
+    </ng-container>
   </mat-dialog-content>
   <mat-dialog-actions fxLayout="row">
     <button

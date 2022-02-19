@@ -19,7 +19,7 @@
         class="cardinal-colors"
         (click)="removeChip(select)"
       >
-        {{ select.item }}
+        {{ select.item.name }}
         <mat-icon class="mat-chip-remove">cancel</mat-icon>
       </mat-chip>
     </ng-container>
@@ -34,7 +34,7 @@
         (change)="toggleSelection(data)"
         (click)="$event.stopPropagation()"
       >
-        {{ data.item }}
+        {{ data.item.name }}
       </mat-checkbox>
     </div>
   </mat-option>

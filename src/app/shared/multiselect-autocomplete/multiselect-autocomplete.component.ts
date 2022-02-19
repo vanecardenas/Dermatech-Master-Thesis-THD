@@ -11,26 +11,21 @@ import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 
-export interface ItemData {
-  item: string;
-  selected: boolean;
-}
-
 @Component({
   selector: 'app-multiselect-autocomplete',
   templateUrl: './multiselect-autocomplete.component.html',
   styleUrls: ['./multiselect-autocomplete.component.scss'],
 })
 export class MultiselectAutocompleteComponent implements OnInit {
-  @Output() result = new EventEmitter<{ key: string; data: Array<string> }>();
+  @Output() result = new EventEmitter<MultiSelectOutput>();
   @Input() placeholder: string = 'Select Data';
-  @Input() data: Array<string> = [];
+  @Input() data: Item[] = [];
   @Input() key: string = '';
   @Input() label: string = 'Select Data';
   selectControl = new FormControl();
-  rawData: Array<ItemData> = [];
-  selectData: Array<ItemData> = [];
-  filteredData: Observable<Array<ItemData>>;
+  rawData: ItemData[] = [];
+  selectData: ItemData[] = [];
+  filteredData: Observable<ItemData[]>;
   filterString: string = '';
 
   @ViewChild('autocompleteTrigger', {
@@ -48,7 +43,7 @@ export class MultiselectAutocompleteComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.data.forEach((item: string) => {
+    this.data.forEach((item: Item) => {
       this.rawData.push({ item, selected: false });
     });
   }
@@ -57,7 +52,9 @@ export class MultiselectAutocompleteComponent implements OnInit {
     this.filterString = filter;
     if (filter.length > 0) {
       return this.rawData.filter((option) => {
-        return option.item.toLowerCase().indexOf(filter.toLowerCase()) >= 0;
+        return (
+          option.item.name.toLowerCase().indexOf(filter.toLowerCase()) >= 0
+        );
       });
     } else {
       return this.rawData.slice();
@@ -75,7 +72,9 @@ export class MultiselectAutocompleteComponent implements OnInit {
     if (data.selected === true) {
       this.selectData.push(data);
     } else {
-      const i = this.selectData.findIndex((value) => value.item === data.item);
+      const i = this.selectData.findIndex(
+        (value) => value.item.id === data.item.id
+      );
       this.selectData.splice(i, 1);
     }
     this.selectControl.setValue(this.selectData);
@@ -84,7 +83,7 @@ export class MultiselectAutocompleteComponent implements OnInit {
   };
 
   emitAdjustedData = (): void => {
-    const results: Array<string> = [];
+    const results: Array<Item> = [];
     this.selectData.forEach((data: ItemData) => {
       results.push(data.item);
     });
