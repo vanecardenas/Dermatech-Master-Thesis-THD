@@ -1,21 +1,80 @@
-<button mat-raised-button (click)="rotateLeft()">Rotate left</button>
-<button mat-raised-button (click)="rotateRight()">Rotate right</button>
-<button mat-raised-button (click)="flipHorizontal()">Flip horizontal</button>
-<button mat-raised-button (click)="flipVertical()">Flip vertical</button>
-<br />
-<br />
-<button mat-raised-button (click)="resetImage()">Reset image</button>
-<br />
-<br />
-<input
-  [(ngModel)]="rotation"
-  placeholder="Rotation"
-  type="number"
-  (keyup)="updateRotation()"
-/>
-<button mat-raised-button (click)="zoomOut()">Zoom -</button>
-<button mat-raised-button (click)="zoomIn()">Zoom +</button>
-
+<div class="image-cropper-controls" fxLayout="row wrap" fxLayoutGap="10px grid">
+  <div fxLayout="row wrap" fxLayoutGap="10px">
+    <button
+      mat-raised-button
+      fxLayout="row"
+      fxLayoutAlign="space-between center"
+      (click)="rotateLeft()"
+    >
+      <mat-icon>rotate_left</mat-icon>
+      <span> Rotate left </span>
+    </button>
+    <button
+      mat-raised-button
+      fxLayout="row"
+      fxLayoutAlign="space-between center"
+      (click)="rotateRight()"
+    >
+      <mat-icon>rotate_right</mat-icon>
+      <span> Rotate right </span>
+    </button>
+    <!-- <mat-form-field class="mat-input-small" appearance="outline">
+      <mat-label>Rotation in degrees</mat-label>
+      <input
+        matInput
+        placeholder="Rotation"
+        type="number"
+        [(ngModel)]="rotation"
+        (keyup)="updateRotation()"
+        (change)="updateRotation()"
+      />
+    </mat-form-field> -->
+  </div>
+  <div>
+    <button
+      mat-raised-button
+      fxLayout="row"
+      fxLayoutAlign="space-between center"
+      (click)="flipHorizontal()"
+    >
+      <mat-icon>flip</mat-icon>
+      <span> Flip horizontal </span>
+    </button>
+  </div>
+  <div>
+    <button
+      mat-raised-button
+      fxLayout="row"
+      fxLayoutAlign="space-between center"
+      (click)="flipVertical()"
+    >
+      <mat-icon style="transform: rotate(90deg)">flip</mat-icon>
+      <span> Flip vertical </span>
+    </button>
+  </div>
+  <div>
+    <button
+      mat-raised-button
+      fxLayout="row"
+      fxLayoutAlign="space-between center"
+      (click)="zoomOut()"
+    >
+      <mat-icon>zoom_out</mat-icon>
+      <span> Zoom out</span>
+    </button>
+  </div>
+  <div>
+    <button
+      mat-raised-button
+      fxLayout="row"
+      fxLayoutAlign="space-between center"
+      (click)="zoomIn()"
+    >
+      <mat-icon>zoom_in</mat-icon>
+      <span>Zoom in</span>
+    </button>
+  </div>
+</div>
 <div>
   <image-cropper
     [imageURL]="data.imageData"
@@ -28,9 +87,28 @@
     (imageLoaded)="setImageLoaded()"
     (imageCropped)="imageCropped($event)"
     (loadImageFailed)="loadImageFailed()"
+    style="height: 72vh"
   ></image-cropper>
 </div>
-<img
-  [src]="croppedImage"
-  [style.border]="croppedImage ? '1px solid black' : 'none'"
-/>
+<div fxLayout="row wrap" fxLayoutAlign="end center" fxLayoutGap="10px">
+  <button
+    mat-raised-button
+    color="error"
+    fxLayout="row"
+    fxLayoutAlign="space-between center"
+    (click)="resetImage()"
+  >
+    <mat-icon>undo</mat-icon>
+    <span>Reset image</span>
+  </button>
+  <button
+    mat-raised-button
+    class="save-button"
+    fxLayout="row"
+    fxLayoutAlign="space-between center"
+    (click)="onSave()"
+  >
+    <mat-icon>save</mat-icon>
+    <span>Save picture</span>
+  </button>
+</div>

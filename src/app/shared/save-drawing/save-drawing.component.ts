@@ -86,26 +86,27 @@ export class SaveDrawingComponent {
 
   formatLesionForUpload(): [NewLesion, ConvertedStroke[]] {
     let convertedStrokes: ConvertedStroke[] = [];
-    (this.data.lesion as Stroke[]).forEach((stroke) => {
-      const convertedLocations = stroke.locations.map((location) =>
-        this.convertLocation(location)
-      );
-      const convertedPoints = stroke.points.map((point) =>
-        this.convertPoint(point)
-      );
-      let sampledPoints = [];
-      // Only take every 8th point to reduce the size in the database
-      for (let i = 0; i < convertedPoints.length; ) {
-        sampledPoints.push(convertedPoints[i]);
-        i = i + 8;
-      }
-
-      convertedStrokes.push({
-        color: stroke.color,
-        locations: convertedLocations,
-        points: sampledPoints,
+    if (this.data.lesion && this.data.lesion.strokes) {
+      (this.data.lesion.strokes as Stroke[]).forEach((stroke) => {
+        const convertedLocations = stroke.locations.map((location) =>
+          this.convertLocation(location)
+        );
+        const convertedPoints = stroke.points.map((point) =>
+          this.convertPoint(point)
+        );
+        let sampledPoints = [];
+        // Only take every 8th point to reduce the size in the database
+        for (let i = 0; i < convertedPoints.length; ) {
+          sampledPoints.push(convertedPoints[i]);
+          i = i + 8;
+        }
+        convertedStrokes.push({
+          color: stroke.color,
+          locations: convertedLocations,
+          points: sampledPoints,
+        });
       });
-    });
+    }
 
     const lesion: NewLesion = {
       name: this.drawingName,
@@ -115,6 +116,7 @@ export class SaveDrawingComponent {
       subregion: this.drawingSubregion,
       size: this.drawingSize,
       techniqueAssociations: this.techniqueAssociations,
+      image: this.data.lesion?.image as Blob,
     };
     return [lesion, convertedStrokes];
   }

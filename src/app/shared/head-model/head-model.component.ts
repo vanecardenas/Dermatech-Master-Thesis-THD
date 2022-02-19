@@ -43,6 +43,7 @@ export class HeadModelComponent {
   stepDrawingEdited = false;
   stepDetailsEdited = false;
   isNewStep = true;
+  lesionImage = new Blob();
 
   @ViewChild('headContainer', { static: false })
   headContainer!: ElementRef<HTMLElement>;
@@ -59,6 +60,7 @@ export class HeadModelComponent {
       description: '',
       strokes: [],
       stepNumber: this.currentTechniqueStep,
+      image: new Blob(),
     };
   }
 
@@ -293,12 +295,21 @@ export class HeadModelComponent {
     const mimeType = 'image/png';
     const imageData = this.renderer.domElement.toDataURL(mimeType);
     this.dialog.open(ImageCropperComponent, {
-      // height: '400px',
+      height: '95vh',
       width: '800px',
       data: {
         imageData: imageData,
+        onSave: (croppedImage: Blob) => this.saveCroppedImage(croppedImage),
       },
     });
+  }
+
+  saveCroppedImage(croppedImage: Blob) {
+    if (this.drawingKind === 'lesion') {
+      this.lesionImage = croppedImage;
+    } else {
+      this.techniqueSteps[this.currentTechniqueStep].image = croppedImage;
+    }
   }
 
   saveSurgicalTechnique() {
@@ -364,12 +375,19 @@ export class HeadModelComponent {
     // this.disposeNodes(this.scene);
   }
 
+  get lesionToSave(): LesionDrawing {
+    return {
+      strokes: [...this.painter.drawing],
+      image: this.lesionImage,
+    };
+  }
+
   saveLesion() {
     this.dialog.open(SaveDrawingComponent, {
       // height: '400px',
       width: '500px',
       data: {
-        lesion: [...this.painter.drawing],
+        lesion: this.lesionToSave,
         onSave: () => this.resetScene(),
         kind: this.drawingKind,
       },

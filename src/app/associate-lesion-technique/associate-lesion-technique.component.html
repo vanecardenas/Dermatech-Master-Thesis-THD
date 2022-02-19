@@ -7,7 +7,11 @@
 >
   Save Changes
 </button>
-<div fxLayout="row" fxLayoutAlign="space-around start" style="margin-top: 10px">
+<div
+  fxLayout="row wrap"
+  fxLayoutAlign="space-around start"
+  style="margin-top: 10px"
+>
   <div fxLayout="column" fxLayoutAlign="space-around start" fxLayoutGap="15px">
     <mat-card fxFlexFill>
       <mat-card-header>
@@ -65,7 +69,10 @@
           <span>Subregion: {{ selectedLesion.subregion }}</span>
           <span>Size: {{ selectedLesion.size }}</span>
         </div>
-        {{ selectedLesion.description }}
+        <div fxLayout="column" fxLayoutAlign="start center">
+          <img [src]="selectedLesion.imageId" />
+          <p>{{ selectedLesion.description }}</p>
+        </div>
       </mat-card-content>
     </mat-card>
   </div>

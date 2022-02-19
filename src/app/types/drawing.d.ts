@@ -10,8 +10,10 @@ type Stroke = {
 
 // A complete Drawing consists of multiple Strokes.
 // LesionDrawing and TechniqueStepDrawing for better orientation in the code.
-type LesionDrawing = Array<Stroke>;
-type TechniqueStepDrawing = Array<Stroke>;
+type LesionDrawing = {
+  strokes: Array<Stroke>;
+  image: Blob;
+};
 
 // DatabaseStrokes are converted Strokes for storage in the database
 type ConvertedStroke = {
@@ -47,12 +49,14 @@ type _DrawingMeta = _DrawingMetaBase & {
 };
 type NewLesion = _DrawingMeta & {
   techniqueAssociations: TechniqueAssociation[];
+  image: Blob;
 };
-type DatabaseLesion = NewLesion & {
+type DatabaseLesion = _DrawingMeta & {
   id?: string;
   strokeId: string;
   sampledStrokeId: string;
-  imageId?: string;
+  techniqueAssociations: TechniqueAssociation[];
+  imageId: string;
 };
 // DatabaseTechnique is not directly containing stroke references.
 // It references DatabaseTechniqueSteps instead, which reference the drawings.
@@ -66,10 +70,12 @@ type DatabaseTechnique = NewTechnique & {
 type NewTechniqueStep = _DrawingMetaBase & {
   stepNumber: number;
   strokes: Stroke[];
+  image: Blob;
 };
 type ConvertedTechniqueStep = _DrawingMetaBase & {
   stepNumber: number;
   strokes: ConvertedStroke[];
+  image: Blob;
 };
 type DatabaseTechniqueStep = _DrawingMetaBase & {
   id?: string;
@@ -77,7 +83,7 @@ type DatabaseTechniqueStep = _DrawingMetaBase & {
   stepNumber: number;
   strokeId: string;
   sampledStrokeId: string;
-  imageId?: string;
+  imageId: string;
 };
 
 type DatabaseStrokes = {

@@ -3,7 +3,8 @@ import {
   AngularFirestore,
   AngularFirestoreCollection,
 } from '@angular/fire/compat/firestore';
-import { map, Observable, tap } from 'rxjs';
+import { AngularFireStorage } from '@angular/fire/compat/storage';
+import { lastValueFrom, map, Observable, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -14,7 +15,10 @@ export class DatabaseService {
   private techniqueMetasCollection: AngularFirestoreCollection<DatabaseTechnique>;
   techniqueMetas: Observable<DatabaseTechnique[]>;
 
-  constructor(private readonly firestore: AngularFirestore) {
+  constructor(
+    private readonly firestore: AngularFirestore,
+    private storage: AngularFireStorage
+  ) {
     // We are getting the drawings from the firestore database and map them to a local array.
     this.lesionMetasCollection =
       firestore.collection<DatabaseLesion>('lesionMetas');
@@ -52,6 +56,14 @@ export class DatabaseService {
     };
   }
 
+  async addImage(imageFile: Blob, metaId: string) {
+    const fileName = metaId + '.png';
+    const fileRef = this.storage.ref(fileName);
+    await this.storage.upload(fileName, imageFile);
+    // get notified when the download URL is available
+    return lastValueFrom(fileRef.getDownloadURL());
+  }
+
   async addLesion(lesionMeta: NewLesion, strokes: ConvertedStroke[]) {
     const metaId = await this.firestore.createId();
     const strokeId = await this.firestore.createId();
@@ -72,10 +84,20 @@ export class DatabaseService {
       .doc(sampledStrokeId)
       .set(drawingStrokesSampled);
 
+    const imageId = await this.addImage(lesionMeta.image, metaId);
+    console.log(imageId);
+
     const databaseLesionMeta: DatabaseLesion = {
-      ...lesionMeta,
+      name: lesionMeta.name,
+      description: lesionMeta.description,
+      author: lesionMeta.author,
+      region: lesionMeta.region,
+      subregion: lesionMeta.subregion,
+      size: lesionMeta.size,
+      techniqueAssociations: lesionMeta.techniqueAssociations,
       strokeId: strokeId,
       sampledStrokeId: sampledStrokeId,
+      imageId: imageId as string,
     };
 
     return this.firestore
@@ -107,6 +129,8 @@ export class DatabaseService {
       .doc(stepSampledStrokeId)
       .set(drawingStrokesSampled);
 
+    const imageId = await this.addImage(step.image, stepMetaId);
+
     const databaseStepMeta: DatabaseTechniqueStep = {
       name: step.name,
       description: step.description,
@@ -114,6 +138,7 @@ export class DatabaseService {
       techniqueId: techniqueMetaId,
       strokeId: stepStrokeId,
       sampledStrokeId: stepSampledStrokeId,
+      imageId: imageId,
     };
 
     await this.firestore

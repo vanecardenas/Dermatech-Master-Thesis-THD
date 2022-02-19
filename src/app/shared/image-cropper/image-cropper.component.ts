@@ -25,6 +25,7 @@ export class ImageCropperComponent {
     @Inject(MAT_DIALOG_DATA)
     public data: {
       imageData: string;
+      onSave: Function;
     }
   ) {}
 
@@ -34,7 +35,9 @@ export class ImageCropperComponent {
   }
 
   imageCropped(event: ImageCroppedEvent) {
-    this.croppedImage = event.base64;
+    if (event.base64) {
+      this.croppedImage = base64ToFile(event.base64);
+    }
   }
 
   loadImageFailed() {
@@ -103,5 +106,10 @@ export class ImageCropperComponent {
       ...this.transform,
       rotate: this.rotation,
     };
+  }
+
+  onSave() {
+    this.data.onSave(this.croppedImage);
+    this.dialogRef.close();
   }
 }

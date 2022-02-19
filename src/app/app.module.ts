@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule, HammerModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import 'hammerjs';
 
 import { NgxColorsModule } from 'ngx-colors';
 
@@ -11,6 +12,7 @@ import {
 } from '@angular/fire/compat/auth';
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
+import { AngularFireStorageModule } from '@angular/fire/compat/storage';
 
 import { ImageCropperModule } from 'ngx-image-cropper';
 
@@ -98,6 +100,7 @@ import { ImageCropperComponent } from './shared/image-cropper/image-cropper.comp
     MatButtonToggleModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,
+    AngularFireStorageModule,
     NgxColorsModule,
     ImageCropperModule,
     HammerModule,
