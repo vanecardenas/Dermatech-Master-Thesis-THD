@@ -1,15 +1,19 @@
 <div class="example-container" [class.example-is-mobile]="mobileQuery.matches">
-  <div style="position: absolute" fxLayout="row" fxLayoutAlign="start center">
+  <div
+    class="floating-control cursor-pointer"
+    (click)="snav.toggle()"
+    style="position: absolute"
+    fxLayout="row"
+    fxLayoutAlign="start center"
+  >
     <img
-      class="floating-control cursor-pointer base-elevation"
-      style="height: 75px"
-      (click)="snav.toggle()"
-      src="/assets/logo-dermatech.jpg"
+      style="height: 75px; background-color: #434750"
+      src="/assets/logo-dermatech-white.png"
       alt="logo"
     />
-    <!-- <mat-card class="floating-control corner-label">
-      <h3>Associate Lesions and Surgical Techniques</h3>
-    </mat-card> -->
+    <mat-card class="no-elevation corner-label">
+      <h3>Menu</h3>
+    </mat-card>
   </div>
 
   <mat-sidenav-container
