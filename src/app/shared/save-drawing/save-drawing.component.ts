@@ -2,7 +2,6 @@ import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSelectChange } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { finalize, Observable } from 'rxjs';
 import { DatabaseService } from 'src/app/shared/database.service';
 import { Vector2, Vector3 } from 'three/src/Three';
 import { LesionFilterService } from '../lesion-filter.service';

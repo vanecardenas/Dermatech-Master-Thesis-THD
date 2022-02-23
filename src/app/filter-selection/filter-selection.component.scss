@@ -1,0 +1,13 @@
+.truncated {
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  height: 80px; // to make sure, text always has same height for consistent grid
+}
+
+@media screen and (min-width: 800px) {
+  .truncated {
+    max-width: 300px;
+  }
+}

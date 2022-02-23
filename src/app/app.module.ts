@@ -54,6 +54,8 @@ import { EditStepComponent } from './shared/edit-step/edit-step.component';
 import { ConfirmationDialogComponent } from './shared/confirmation-dialog/confirmation-dialog.component';
 import { TechniqueDetailsComponent } from './shared/technique-details/technique-details.component';
 import { ImageCropperComponent } from './shared/image-cropper/image-cropper.component';
+import { FilterSelectionComponent } from './filter-selection/filter-selection.component';
+import { LesionMatchingComponent } from './lesion-matching/lesion-matching.component';
 
 @NgModule({
   declarations: [
@@ -70,6 +72,8 @@ import { ImageCropperComponent } from './shared/image-cropper/image-cropper.comp
     ConfirmationDialogComponent,
     TechniqueDetailsComponent,
     ImageCropperComponent,
+    FilterSelectionComponent,
+    LesionMatchingComponent,
   ],
   imports: [
     BrowserModule,

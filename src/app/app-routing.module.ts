@@ -11,6 +11,7 @@ import { WelcomeStepComponent } from './welcome-step/welcome-step.component';
 import { LoginComponent } from './login/login.component';
 import { AddTechniqueComponent } from './add-technique/add-technique.component';
 import { AssociateLesionTechniqueComponent } from './associate-lesion-technique/associate-lesion-technique.component';
+import { FilterSelectionComponent } from './filter-selection/filter-selection.component';
 
 const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['login']);
 const redirectLoggedInToWelcome = () => redirectLoggedInTo(['welcome']);
@@ -24,6 +25,11 @@ const routes: Routes = [
   {
     path: 'welcome',
     component: WelcomeStepComponent,
+    ...canActivate(redirectUnauthorizedToLogin),
+  },
+  {
+    path: 'filter-selection',
+    component: FilterSelectionComponent,
     ...canActivate(redirectUnauthorizedToLogin),
   },
   {
