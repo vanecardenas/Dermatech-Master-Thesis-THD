@@ -12,6 +12,7 @@ import { LoginComponent } from './login/login.component';
 import { AddTechniqueComponent } from './add-technique/add-technique.component';
 import { AssociateLesionTechniqueComponent } from './associate-lesion-technique/associate-lesion-technique.component';
 import { FilterSelectionComponent } from './filter-selection/filter-selection.component';
+import { LesionMatchingComponent } from './lesion-matching/lesion-matching.component';
 
 const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['login']);
 const redirectLoggedInToWelcome = () => redirectLoggedInTo(['welcome']);
@@ -25,6 +26,11 @@ const routes: Routes = [
   {
     path: 'welcome',
     component: WelcomeStepComponent,
+    ...canActivate(redirectUnauthorizedToLogin),
+  },
+  {
+    path: 'lesion-matching',
+    component: LesionMatchingComponent,
     ...canActivate(redirectUnauthorizedToLogin),
   },
   {

@@ -44,14 +44,24 @@
       the progress indicator in the header.
     </mat-card-content>
   </mat-card>
-  <mat-card>
-    <mat-card-header>
-      <mat-card-title>Lesion Decision Support</mat-card-title>
-      <mat-card-subtitle> NOT IMPLEMENTED YET.</mat-card-subtitle>
-      <!-- <mat-card-subtitle
-          >Draw a lesion be guided to the best surgical
-          technique</mat-card-subtitle
-        > -->
-    </mat-card-header>
-  </mat-card>
+  <div fxLayout="column" fxLayoutGap="10px">
+    <button
+      [routerLink]="'/filter-selection'"
+      fxLayout
+      mat-raised-button
+      style="font-size: 18px; padding: 10px"
+    >
+      <span fxFlexFill> Decision Support by Lesion Criteria </span>
+      <mat-icon>play_circle</mat-icon>
+    </button>
+    <button
+      [routerLink]="'/lesion-matching'"
+      fxLayout
+      mat-raised-button
+      style="font-size: 18px; padding: 10px"
+    >
+      <span fxFlexFill> Decision Support by Lesion Drawing </span>
+      <mat-icon>play_circle</mat-icon>
+    </button>
+  </div>
 </div>

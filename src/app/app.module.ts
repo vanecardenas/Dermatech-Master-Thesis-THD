@@ -56,6 +56,7 @@ import { TechniqueDetailsComponent } from './shared/technique-details/technique-
 import { ImageCropperComponent } from './shared/image-cropper/image-cropper.component';
 import { FilterSelectionComponent } from './filter-selection/filter-selection.component';
 import { LesionMatchingComponent } from './lesion-matching/lesion-matching.component';
+import { MatchingLesionsComponent } from './lesion-matching/matching-lesions/matching-lesions.component';
 
 @NgModule({
   declarations: [
@@ -74,6 +75,7 @@ import { LesionMatchingComponent } from './lesion-matching/lesion-matching.compo
     ImageCropperComponent,
     FilterSelectionComponent,
     LesionMatchingComponent,
+    MatchingLesionsComponent,
   ],
   imports: [
     BrowserModule,

@@ -12,6 +12,7 @@ import { SaveDrawingComponent } from '../save-drawing/save-drawing.component';
 import { EditStepComponent } from '../edit-step/edit-step.component';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 import { ImageCropperComponent } from '../image-cropper/image-cropper.component';
+import { MatchingLesionsComponent } from '../../lesion-matching/matching-lesions/matching-lesions.component';
 
 @Component({
   selector: 'app-head-model',
@@ -36,7 +37,7 @@ export class HeadModelComponent {
   drawingEnabled = false;
   cursorInCanvas = false;
   drawColor = 'rgb(111, 106, 118)';
-  @Input() drawingKind: 'lesion' | 'technique' = 'lesion';
+  @Input() drawingKind: 'lesion' | 'technique' | 'match' = 'lesion';
   boundingRect!: DOMRect;
   currentTechniqueStep = 0;
   techniqueSteps: NewTechniqueStep[] = [];
@@ -387,6 +388,17 @@ export class HeadModelComponent {
         lesion: this.lesionToSave,
         onSave: () => this.resetScene(),
         kind: this.drawingKind,
+      },
+    });
+  }
+
+  matchLesion() {
+    this.dialog.open(MatchingLesionsComponent, {
+      height: '95vh',
+      minWidth: '90vw',
+      data: {
+        lesion: this.lesionToSave,
+        onClose: () => this.resetScene(),
       },
     });
   }

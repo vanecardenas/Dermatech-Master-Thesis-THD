@@ -80,6 +80,7 @@
     Clear drawing
   </button>
   <button
+    *ngIf="drawingKind !== 'match'"
     fxFlexFill
     fxLayout="row"
     fxLayoutAlign="space-between center"
@@ -102,6 +103,20 @@
   >
     <mat-icon>save</mat-icon>
     Save lesion
+  </button>
+  <button
+    *ngIf="drawingKind === 'match'"
+    fxFlexFill
+    fxLayout="row"
+    fxLayoutAlign="space-between center"
+    mat-raised-button
+    color="primary"
+    class="save-button"
+    (click)="matchLesion()"
+    [disabled]="!stepDrawingEdited"
+  >
+    <mat-icon>person_search</mat-icon>
+    Match lesion
   </button>
   <button
     *ngIf="drawingKind === 'technique'"
