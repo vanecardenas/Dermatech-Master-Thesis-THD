@@ -44,6 +44,7 @@ export class TexturePainter {
   bg!: HTMLImageElement;
   drawingEnabled = false;
   currentStroke = 0;
+  originalLineWidth = this.cursorSize;
   protected currentStrokePoints: Vector3[] = [];
   protected currentStrokeLocations: {
     vectors: Vector2[];
@@ -54,6 +55,7 @@ export class TexturePainter {
     points: Vector3[];
     locations: { vectors: Vector2[]; clip: Vector2[] }[];
   }[] = [];
+  rect: DOMRect;
 
   protected headColor = 'rgb(197, 200, 217)';
   protected drawColor = 'rgb(111, 106, 118)';
@@ -67,6 +69,7 @@ export class TexturePainter {
     textureSource?: string
   ) {
     this.renderer = renderer;
+    this.rect = this.renderer.domElement.getBoundingClientRect();
     this.camera = camera;
     this.mesh = mesh;
     this.mouseIsDown = false;
@@ -78,7 +81,6 @@ export class TexturePainter {
     this.cameraPosition = this.camera.position.clone();
 
     this.initializeCanvas();
-    this.initializeCursor();
     this.bindListeners();
   }
 
@@ -114,22 +116,6 @@ export class TexturePainter {
     this.drawColor = color;
   }
 
-  initializeCursor() {
-    this.scene = new THREE.Scene();
-    this.scene.background = null;
-
-    // this.ortho = new THREE.OrthographicCamera(
-    //   (this.frustumSize * this.aspect) / -2,
-    //   (this.frustumSize * this.aspect) / 2,
-    //   this.frustumSize / 2,
-    //   this.frustumSize / -2,
-    //   0,
-    //   10
-    // );
-    // this.ortho.position.z = 50;
-    // this.ortho.lookAt(this.scene.position);
-  }
-
   bindListeners() {
     this.renderer.domElement.addEventListener(
       'pointermove',
@@ -152,6 +138,11 @@ export class TexturePainter {
       },
       false
     );
+    window.addEventListener(
+      'resize',
+      () => (this.rect = this.renderer.domElement.getBoundingClientRect()),
+      false
+    );
   }
 
   update() {
@@ -164,14 +155,6 @@ export class TexturePainter {
   resize() {
     this.aspect = window.innerWidth / window.innerHeight;
     this.cursorUnits = this.cursorSize / this.frustumSize / this.aspect;
-
-    // this.ortho.left = (-this.frustumSize * this.aspect) / 2;
-    // this.ortho.right = (this.frustumSize * this.aspect) / 2;
-    // this.ortho.top = this.frustumSize / 2;
-    // this.ortho.bottom = -this.frustumSize / 2;
-
-    // this.ortho.updateProjectionMatrix();
-
     this.cameraUpdated = true;
   }
 
@@ -204,16 +187,23 @@ export class TexturePainter {
     }
   }
 
-  faceDraw(vectors: Vector2[], mode: 'brush' | 'undo' | 'redraw' = 'brush') {
+  faceDraw(
+    vectors: Vector2[],
+    mode: 'brush' | 'undo' | 'redraw' = 'brush',
+    clip: Vector2[]
+  ) {
     let width = this.canvas.width;
     let height = this.canvas.height;
     let length = vectors.length / 2;
 
     if (this.ctx) {
       this.ctx.fillStyle = mode === 'undo' ? this.headColor : this.drawColor;
-
+      this.ctx.strokeStyle = mode === 'undo' ? this.headColor : this.drawColor;
+      this.ctx.lineWidth =
+        mode === 'undo' ? this.originalLineWidth * 8 : this.originalLineWidth;
       // move to the first point
       this.ctx.beginPath();
+      this.ctx.lineJoin = this.ctx.lineCap = 'round';
       this.ctx.moveTo(
         vectors[length - 1].x * width,
         vectors[length - 1].y * height
@@ -226,6 +216,7 @@ export class TexturePainter {
           vectors[i].x * width, // p2.x
           vectors[i].y * height // p2.y
         );
+        this.ctx.stroke();
       }
       this.ctx.fill();
     }
@@ -245,7 +236,7 @@ export class TexturePainter {
         this.ctx.save();
 
         this.faceClip(face.clip);
-        this.faceDraw(face.vectors, mode); // face.points
+        this.faceDraw(face.vectors, mode, face.clip); // face.points
 
         this.ctx.restore();
       }
@@ -460,19 +451,12 @@ export class TexturePainter {
 
   // mouse methods
   updateMouse(evt: MouseEvent) {
-    let rect = this.renderer.domElement.getBoundingClientRect();
     let array = [
-      (evt.clientX - rect.left) / rect.width,
-      (evt.clientY - rect.top) / rect.height,
+      (evt.clientX - this.rect.left) / this.rect.width,
+      (evt.clientY - this.rect.top) / this.rect.height,
     ];
     this.reference.set(array[0] * 2 - 1, -(array[1] * 2) + 1, 0);
   }
-
-  // updateCursor() {
-  //   this.cursor.position.copy(this.ortho.position);
-  //   this.cursor.translateX(this.aspect * this.reference.x * 50);
-  //   this.cursor.translateY(this.reference.y * 50);
-  // }
 
   // listeners
   onMouseMove(evt: MouseEvent) {
