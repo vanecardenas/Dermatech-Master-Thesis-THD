@@ -30,6 +30,10 @@ export class AppComponent implements OnDestroy {
     this.mobileQuery.removeListener(this._mobileQueryListener);
   }
 
+  get showMenu() {
+    return !this.router.url.includes('login');
+  }
+
   async logout() {
     try {
       await this.auth.signOut();
