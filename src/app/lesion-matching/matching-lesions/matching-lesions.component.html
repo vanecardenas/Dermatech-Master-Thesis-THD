@@ -1,34 +1,48 @@
-<h2 mat-dialog-title>Known lesions matching your drawing</h2>
+<h2 mat-dialog-title>Known lesions best matching your drawing</h2>
 <h4 mat-dialog-subtitle>Select one to see associated techniques</h4>
-<mat-spinner *ngIf="!lesionMetasFetched"></mat-spinner>
+<mat-spinner *ngIf="!lesionMetasFetched || !lesionMetasSorted"></mat-spinner>
 <div
-  *ngIf="lesionMetasFetched"
+  *ngIf="lesionMetasFetched && lesionMetasSorted"
   fxLayout="row wrap"
   fxLayoutAlign="space-around center"
   fxLayoutGap="10px grid"
 >
-  <div *ngFor="let lesion of lesionMetas" style="max-width: 30%">
-    <mat-card>
-      <mat-card-header>
-        <mat-card-title>
-          {{ lesion.name }}
-        </mat-card-title>
-        <mat-card-subtitle> By {{ lesion.author }} </mat-card-subtitle>
-        <div
-          class="drawing-categories"
-          fxLayout="row"
-          fxLayoutAlign="start center"
-          fxLayoutGap="15px grid"
-        >
-          <span>Region: {{ lesion.region }}</span>
-          <span>Subregion: {{ lesion.subregion }}</span>
-          <span>Size: {{ lesion.size }}</span>
-        </div>
-      </mat-card-header>
-      <img mat-card-image *ngIf="lesion" [src]="lesion.imageId" />
-      <mat-card-content *ngIf="lesion">
-        <p>{{ lesion.description }}</p>
-      </mat-card-content>
-    </mat-card>
+  <ng-template
+    ngFor
+    let-lesion
+    [ngForOf]="showAllLesions ? lesionMetas : lesionMetas.slice(0, 3)"
+  >
+    <div style="max-width: 30%">
+      <mat-card
+        class="cursor-pointer"
+        (click)="showAssociatedTechniques(lesion)"
+      >
+        <mat-card-header>
+          <mat-card-title>
+            {{ lesion.name }}
+          </mat-card-title>
+          <mat-card-subtitle> By {{ lesion.author }} </mat-card-subtitle>
+          <div
+            class="drawing-categories"
+            fxLayout="row"
+            fxLayoutAlign="start center"
+            fxLayoutGap="15px grid"
+          >
+            <span>Region: {{ lesion.region }}</span>
+            <span>Subregion: {{ lesion.subregion }}</span>
+            <span>Size: {{ lesion.size }}</span>
+          </div>
+        </mat-card-header>
+        <img mat-card-image *ngIf="lesion" [src]="lesion.imageId" />
+        <mat-card-content *ngIf="lesion">
+          <p>{{ lesion.description }}</p>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </ng-template>
+  <div fxLayout fxLayoutAlign="center center">
+    <button mat-raised-button class="save-button" (click)="showMore()">
+      Show More
+    </button>
   </div>
 </div>

@@ -13,6 +13,7 @@ import { EditStepComponent } from '../edit-step/edit-step.component';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 import { ImageCropperComponent } from '../image-cropper/image-cropper.component';
 import { MatchingLesionsComponent } from '../../lesion-matching/matching-lesions/matching-lesions.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-head-model',
@@ -40,28 +41,28 @@ export class HeadModelComponent {
   @Input() drawingKind: 'lesion' | 'technique' | 'match' = 'lesion';
   boundingRect!: DOMRect;
   currentTechniqueStep = 0;
-  techniqueSteps: NewTechniqueStep[] = [];
+  techniqueSteps: TechniqueStepInCreation[] = [];
   stepDrawingEdited = false;
   stepDetailsEdited = false;
   isNewStep = true;
-  lesionImage = new Blob();
+  lesionImage: Blob | undefined = undefined;
 
   @ViewChild('headContainer', { static: false })
   headContainer!: ElementRef<HTMLElement>;
 
-  constructor(public dialog: MatDialog) {}
+  constructor(public dialog: MatDialog, public snackbar: MatSnackBar) {}
 
   get uneditedNewStep() {
     return !this.stepDrawingEdited && !this.stepDetailsEdited && this.isNewStep;
   }
 
-  get templateStep(): NewTechniqueStep {
+  get templateStep(): TechniqueStepInCreation {
     return {
       name: `Step ${this.currentTechniqueStep}`,
       description: '',
       strokes: [],
       stepNumber: this.currentTechniqueStep,
-      image: new Blob(),
+      image: undefined,
     };
   }
 
@@ -168,28 +169,32 @@ export class HeadModelComponent {
   }
 
   nextStep() {
-    // store progress of step, we expect it to be edited
-    this.techniqueSteps[this.currentTechniqueStep].strokes = [
-      ...this.painter.drawing,
-    ];
-    this.resetScene();
-    this.currentTechniqueStep++; // looking at the next step from here on
-    this.stepDrawingEdited = false;
-    this.stepDetailsEdited = false;
-    if (this.currentTechniqueStep >= this.techniqueSteps.length) {
-      // we were at the last step, need to add a new one
-      this.techniqueSteps.push(this.templateStep);
-      this.isNewStep = true;
-    } else {
-      // need to load the next step's drawing
-      if (
-        this.techniqueSteps[this.currentTechniqueStep].strokes !== undefined
-      ) {
-        console.log('drawing next step');
-        this.painter.drawStrokes(
-          this.techniqueSteps[this.currentTechniqueStep].strokes
-        );
+    if (this.techniqueSteps[this.currentTechniqueStep].image) {
+      // store progress of step, we expect it to be edited
+      this.techniqueSteps[this.currentTechniqueStep].strokes = [
+        ...this.painter.drawing,
+      ];
+      this.resetScene();
+      this.currentTechniqueStep++; // looking at the next step from here on
+      this.stepDrawingEdited = false;
+      this.stepDetailsEdited = false;
+      if (this.currentTechniqueStep >= this.techniqueSteps.length) {
+        // we were at the last step, need to add a new one
+        this.techniqueSteps.push(this.templateStep);
+        this.isNewStep = true;
+      } else {
+        // need to load the next step's drawing
+        if (
+          this.techniqueSteps[this.currentTechniqueStep].strokes !== undefined
+        ) {
+          console.log('drawing next step');
+          this.painter.drawStrokes(
+            this.techniqueSteps[this.currentTechniqueStep].strokes
+          );
+        }
       }
+    } else {
+      this.takePicture();
     }
   }
 
@@ -313,15 +318,22 @@ export class HeadModelComponent {
   }
 
   saveSurgicalTechnique() {
-    this.dialog.open(SaveDrawingComponent, {
-      // height: '400px',
-      width: '700px',
-      data: {
-        technique: [...this.techniqueSteps],
-        onSave: () => this.resetScene(),
-        kind: this.drawingKind,
-      },
-    });
+    // check if images were taken for all steps
+    if (this.techniqueSteps.map((step) => step.image).some((image) => !image)) {
+      this.snackbar.open('Please take a picture for all steps.', 'OK', {
+        duration: 2000,
+      });
+    } else {
+      this.dialog.open(SaveDrawingComponent, {
+        // height: '400px',
+        width: '700px',
+        data: {
+          technique: [...this.techniqueSteps],
+          onSave: () => this.resetScene(),
+          kind: this.drawingKind,
+        },
+      });
+    }
   }
 
   toggleControlMode() {
@@ -381,15 +393,19 @@ export class HeadModelComponent {
   }
 
   saveLesion() {
-    this.dialog.open(SaveDrawingComponent, {
-      // height: '400px',
-      width: '500px',
-      data: {
-        lesion: this.lesionToSave,
-        onSave: () => this.resetScene(),
-        kind: this.drawingKind,
-      },
-    });
+    if (this.lesionImage) {
+      this.dialog.open(SaveDrawingComponent, {
+        // height: '400px',
+        width: '500px',
+        data: {
+          lesion: this.lesionToSave,
+          onSave: () => this.resetScene(),
+          kind: this.drawingKind,
+        },
+      });
+    } else {
+      this.takePicture();
+    }
   }
 
   matchLesion() {

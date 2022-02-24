@@ -12,7 +12,14 @@ type Stroke = {
 // LesionDrawing and TechniqueStepDrawing for better orientation in the code.
 type LesionDrawing = {
   strokes: Array<Stroke>;
-  image: Blob;
+  image: Blob | undefined;
+};
+type LesionDrawingMatching = {
+  strokes: Array<Stroke>;
+  image: Blob | undefined;
+  drawingCenter: { x: number; y: number; z: number };
+  drawingDistances: { x: number; y: number; z: number };
+  drawingPointsCount: number;
 };
 
 // DatabaseStrokes are converted Strokes for storage in the database
@@ -81,6 +88,11 @@ type DatabaseTechnique = NewTechnique & {
 };
 
 // DatabaseTechniqueStep is a "DatabaseDrawing - Light", as it does not contain author or meta data for filtering.
+type TechniqueStepInCreation = _DrawingMetaBase & {
+  stepNumber: number;
+  strokes: Stroke[];
+  image: Blob | undefined;
+};
 type NewTechniqueStep = _DrawingMetaBase & {
   stepNumber: number;
   strokes: Stroke[];

@@ -37,6 +37,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSelectModule } from '@angular/material/select';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -57,6 +58,7 @@ import { ImageCropperComponent } from './shared/image-cropper/image-cropper.comp
 import { FilterSelectionComponent } from './filter-selection/filter-selection.component';
 import { LesionMatchingComponent } from './lesion-matching/lesion-matching.component';
 import { MatchingLesionsComponent } from './lesion-matching/matching-lesions/matching-lesions.component';
+import { AssociatedTechniquesComponent } from './associated-techniques/associated-techniques.component';
 
 @NgModule({
   declarations: [
@@ -76,6 +78,7 @@ import { MatchingLesionsComponent } from './lesion-matching/matching-lesions/mat
     FilterSelectionComponent,
     LesionMatchingComponent,
     MatchingLesionsComponent,
+    AssociatedTechniquesComponent,
   ],
   imports: [
     BrowserModule,
@@ -101,6 +104,7 @@ import { MatchingLesionsComponent } from './lesion-matching/matching-lesions/mat
     MatExpansionModule,
     MatChipsModule,
     MatAutocompleteModule,
+    MatTooltipModule,
     MatSelectModule,
     MatCheckboxModule,
     MatButtonToggleModule,

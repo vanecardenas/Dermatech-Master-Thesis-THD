@@ -1,0 +1,27 @@
+<h2 mat-dialog-title>Known lesions best matching your drawing</h2>
+<h4 mat-dialog-subtitle>Select one to see associated techniques</h4>
+<mat-spinner *ngIf="!techniqueMetasFetched"></mat-spinner>
+<div
+  *ngIf="techniqueMetasFetched"
+  fxLayout="row wrap"
+  fxLayoutAlign="space-around center"
+  fxLayoutGap="10px grid"
+>
+  <div *ngFor="let technique of techniqueMetas">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>{{ technique.name }}</mat-card-title>
+        <mat-card-subtitle>By {{ technique.author }}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <p>{{ technique.stepIds.length }} Steps</p>
+        <p class="truncated">{{ technique.description }}</p>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-button (click)="showTechniqueDetails(technique)">
+          View
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</div>

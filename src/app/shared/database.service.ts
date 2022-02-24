@@ -96,6 +96,9 @@ export class DatabaseService {
       subregion: lesionMeta.subregion,
       size: lesionMeta.size,
       techniqueAssociations: lesionMeta.techniqueAssociations,
+      drawingCenter: lesionMeta.drawingCenter,
+      drawingDistances: lesionMeta.drawingDistances,
+      drawingPointsCount: lesionMeta.drawingPointsCount,
       strokeId: strokeId,
       sampledStrokeId: sampledStrokeId,
       imageId: imageId as string,
@@ -215,10 +218,31 @@ export class DatabaseService {
         ref.where('techniqueId', '==', techniqueId)
       )
       .get()
-      .pipe(map((snapshot) => snapshot.docs.map((doc) => doc.data())))
+      .pipe(
+        map((snapshot) =>
+          snapshot.docs.map((doc) => {
+            return { ...doc.data(), id: doc.id };
+          })
+        )
+      )
       .pipe(
         tap((techniqueSteps) =>
           techniqueSteps.sort((a, b) => a.stepNumber - b.stepNumber)
+        )
+      );
+  }
+
+  getTechniquesById(techniqueIds: string[]) {
+    return this.firestore
+      .collection<DatabaseTechnique>('techniqueMetas', (ref) =>
+        ref.where(firebase.firestore.FieldPath.documentId(), 'in', techniqueIds)
+      )
+      .get()
+      .pipe(
+        map((snapshot) =>
+          snapshot.docs.map((doc) => {
+            return { ...doc.data(), id: doc.id };
+          })
         )
       );
   }

@@ -18,7 +18,6 @@ export class FilterSelectionComponent implements OnInit {
   lesionRegion = '';
   lesionSubregion = '';
   lesionSize = '';
-  // lesionMetas: DatabaseLesion[] = [];
   techniqueMetas: DatabaseTechnique[] = [];
   filteredTechniqueMetas: DatabaseTechnique[] = [];
   lesionMetasFetched = false;

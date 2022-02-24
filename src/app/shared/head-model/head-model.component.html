@@ -85,6 +85,7 @@
     fxLayout="row"
     fxLayoutAlign="space-between center"
     mat-raised-button
+    color="accent"
     (click)="takePicture()"
   >
     <mat-icon>image</mat-icon>
@@ -96,7 +97,6 @@
     fxLayout="row"
     fxLayoutAlign="space-between center"
     mat-raised-button
-    color="primary"
     class="save-button"
     (click)="saveLesion()"
     [disabled]="!stepDrawingEdited"
@@ -110,7 +110,6 @@
     fxLayout="row"
     fxLayoutAlign="space-between center"
     mat-raised-button
-    color="primary"
     class="save-button"
     (click)="matchLesion()"
     [disabled]="!stepDrawingEdited"
@@ -124,7 +123,6 @@
     fxLayout="row"
     fxLayoutAlign="space-between center"
     mat-raised-button
-    color="primary"
     class="save-button"
     (click)="saveSurgicalTechnique()"
     [disabled]="uneditedNewStep && currentTechniqueStep === 0"
@@ -169,6 +167,7 @@
           mat-icon-button
           color="primary"
           (click)="setStep($event, techniqueStep.stepNumber)"
+          matTooltip="Edit the drawing for this step"
         >
           <mat-icon>draw</mat-icon>
         </button>
@@ -176,6 +175,7 @@
           mat-icon-button
           color="primary"
           (click)="editStepDetails($event, techniqueStep.stepNumber)"
+          matTooltip="Edit title and description of this step"
         >
           <mat-icon>edit_note</mat-icon>
         </button>
@@ -183,9 +183,30 @@
           mat-icon-button
           color="warn"
           (click)="deleteStep($event, techniqueStep.stepNumber)"
+          matTooltip="Delete this step"
         >
           <mat-icon>delete</mat-icon>
         </button>
+        <div matTooltip="This step already has a picture">
+          <button
+            mat-icon-button
+            *ngIf="techniqueStep.image"
+            style="color: green"
+            disabled
+          >
+            <mat-icon>image</mat-icon>
+          </button>
+        </div>
+        <div matTooltip="This step is missing a picture">
+          <button
+            mat-icon-button
+            *ngIf="!techniqueStep.image"
+            style="color: red"
+            disabled
+          >
+            <mat-icon>image_not_supported</mat-icon>
+          </button>
+        </div>
       </mat-expansion-panel-header>
       <mat-panel-description>{{
         techniqueStep.description || "No Description"
