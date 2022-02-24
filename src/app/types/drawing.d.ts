@@ -57,6 +57,9 @@ type _DrawingMeta = _DrawingMetaBase & {
   region: string;
   subregion: string;
   size: string;
+  drawingCenter: { x: number; y: number; z: number };
+  drawingDistances: { x: number; y: number; z: number };
+  drawingPointsCount: number;
 };
 type NewLesion = _DrawingMeta & {
   techniqueAssociations: TechniqueAssociation[];

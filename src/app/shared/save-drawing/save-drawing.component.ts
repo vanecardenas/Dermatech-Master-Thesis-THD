@@ -108,29 +108,63 @@ export class SaveDrawingComponent {
     };
   }
 
+  calculateCenter(points: { x: number; y: number; z: number }[]): {
+    x: number;
+    y: number;
+    z: number;
+  } {
+    const centerX = points.reduce((acc, cur) => acc + cur.x, 0) / points.length;
+    const centerY = points.reduce((acc, cur) => acc + cur.y, 0) / points.length;
+    const centerZ = points.reduce((acc, cur) => acc + cur.z, 0) / points.length;
+    return { x: centerX, y: centerY, z: centerZ };
+  }
+
+  calculateDistances(points: { x: number; y: number; z: number }[]): {
+    x: number;
+    y: number;
+    z: number;
+  } {
+    const minX = Math.min(...points.map((point) => point.x));
+    const maxX = Math.max(...points.map((point) => point.x));
+    const minY = Math.min(...points.map((point) => point.y));
+    const maxY = Math.max(...points.map((point) => point.y));
+    const minZ = Math.min(...points.map((point) => point.z));
+    const maxZ = Math.max(...points.map((point) => point.z));
+    return {
+      x: maxX - minX,
+      y: maxY - minY,
+      z: maxZ - minZ,
+    };
+  }
+
   formatLesionForUpload(): [NewLesion, ConvertedStroke[]] {
     let convertedStrokes: ConvertedStroke[] = [];
+    let convertedPoints: { x: number; y: number; z: number }[] = [];
     if (this.data.lesion && this.data.lesion.strokes) {
       (this.data.lesion.strokes as Stroke[]).forEach((stroke) => {
-        const convertedLocations = stroke.locations.map((location) =>
+        const strokeConvertedLocations = stroke.locations.map((location) =>
           this.convertLocation(location)
         );
-        const convertedPoints = stroke.points.map((point) =>
+        const strokeConvertedPoints = stroke.points.map((point) =>
           this.convertPoint(point)
         );
         let sampledPoints = [];
         // Only take every 8th point to reduce the size in the database
-        for (let i = 0; i < convertedPoints.length; ) {
-          sampledPoints.push(convertedPoints[i]);
+        for (let i = 0; i < strokeConvertedPoints.length; ) {
+          sampledPoints.push(strokeConvertedPoints[i]);
           i = i + 8;
         }
+        convertedPoints.push(...sampledPoints);
         convertedStrokes.push({
           color: stroke.color,
-          locations: convertedLocations,
+          locations: strokeConvertedLocations,
           points: sampledPoints,
         });
       });
     }
+
+    const drawingCenter = this.calculateCenter(convertedPoints);
+    const drawingDistances = this.calculateDistances(convertedPoints);
 
     const lesion: NewLesion = {
       name: this.drawingName,
@@ -141,32 +175,36 @@ export class SaveDrawingComponent {
       size: this.drawingSize,
       techniqueAssociations: this.techniqueAssociations,
       image: this.data.lesion?.image as Blob,
+      drawingCenter: drawingCenter,
+      drawingDistances: drawingDistances,
+      drawingPointsCount: convertedPoints.length,
     };
     return [lesion, convertedStrokes];
   }
 
   formatTechniqueForUpload(): [NewTechnique, ConvertedTechniqueStep[]] {
     let convertedSteps: ConvertedTechniqueStep[] = [];
+    let convertedPoints: { x: number; y: number; z: number }[] = [];
 
     (this.data.technique as NewTechniqueStep[]).forEach((techniqueStep) => {
       const convertedStrokes: ConvertedStroke[] = [];
       techniqueStep.strokes.forEach((stroke) => {
-        const convertedLocations = stroke.locations.map((location) =>
+        const strokeConvertedLocations = stroke.locations.map((location) =>
           this.convertLocation(location)
         );
-        const convertedPoints = stroke.points.map((point) =>
+        const strokeConvertedPoints = stroke.points.map((point) =>
           this.convertPoint(point)
         );
         let sampledPoints = [];
         // Only take every 8th point to reduce the size in the database
-        for (let i = 0; i < convertedPoints.length; ) {
-          sampledPoints.push(convertedPoints[i]);
+        for (let i = 0; i < strokeConvertedPoints.length; ) {
+          sampledPoints.push(strokeConvertedPoints[i]);
           i = i + 8;
         }
-
+        convertedPoints.push(...sampledPoints);
         convertedStrokes.push({
           color: stroke.color,
-          locations: convertedLocations,
+          locations: strokeConvertedLocations,
           points: sampledPoints,
         });
       });
@@ -178,6 +216,9 @@ export class SaveDrawingComponent {
       convertedSteps.push(ConvertedTechniqueStep);
     });
 
+    const drawingCenter = this.calculateCenter(convertedPoints);
+    const drawingDistances = this.calculateDistances(convertedPoints);
+
     const technique: NewTechnique = {
       name: this.drawingName,
       author: this.drawingAuthor,
@@ -185,6 +226,9 @@ export class SaveDrawingComponent {
       region: this.drawingRegion,
       subregion: this.drawingSubregion,
       size: this.drawingSize,
+      drawingCenter: drawingCenter,
+      drawingDistances: drawingDistances,
+      drawingPointsCount: convertedPoints.length,
     };
     return [technique, convertedSteps];
   }
