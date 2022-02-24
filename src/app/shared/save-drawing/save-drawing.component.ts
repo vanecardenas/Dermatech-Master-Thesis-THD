@@ -79,7 +79,6 @@ export class SaveDrawingComponent {
         return {
           techniqueId: association.id as string,
           active: true,
-          comments: '',
           ratings: [],
         };
       }

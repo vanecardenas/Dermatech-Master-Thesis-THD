@@ -73,7 +73,6 @@ export class AssociateLesionTechniqueComponent {
         this.selectedLesion.techniqueAssociations.push({
           techniqueId: technique.id as string,
           active: true,
-          comments: '',
           ratings: [],
         });
       } else {

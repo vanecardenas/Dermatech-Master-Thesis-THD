@@ -164,7 +164,6 @@ export class DatabaseService {
       const techniqueAssociation: TechniqueAssociation = {
         techniqueId: techniqueId,
         active: lesionAssociation.active,
-        comments: lesionAssociation.comments,
         ratings: lesionAssociation.ratings,
       };
       batch.update(collectionRef.doc(lesionAssociation.lesionId).ref, {

@@ -35,10 +35,10 @@ type ConvertedStroke = {
 type TechniqueAssociation = {
   techniqueId: string;
   active: boolean;
-  comments: string;
   ratings: {
     rating: number;
     author: string;
+    comments: string;
   }[];
 };
 // This will not be written into database, we only do a one-way association.
@@ -46,8 +46,8 @@ type TechniqueAssociation = {
 type LesionAssociation = {
   lesionId: string;
   active: boolean;
-  comments: string;
   ratings: {
+    comments: string;
     rating: number;
     author: string;
   }[];
