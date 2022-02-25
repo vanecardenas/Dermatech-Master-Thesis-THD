@@ -31,7 +31,9 @@ export class AppComponent implements OnDestroy {
   }
 
   get showMenu() {
-    return !this.router.url.includes('login');
+    return (
+      !this.router.url.includes('login') && !this.router.url.includes('welcome')
+    );
   }
 
   async logout() {

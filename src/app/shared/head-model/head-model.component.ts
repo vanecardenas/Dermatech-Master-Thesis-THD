@@ -14,6 +14,7 @@ import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation
 import { ImageCropperComponent } from '../image-cropper/image-cropper.component';
 import { MatchingLesionsComponent } from '../../lesion-matching/matching-lesions/matching-lesions.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ImageDialogComponent } from '../image-dialog/image-dialog.component';
 
 @Component({
   selector: 'app-head-model',
@@ -42,10 +43,20 @@ export class HeadModelComponent {
   boundingRect!: DOMRect;
   currentTechniqueStep = 0;
   techniqueSteps: TechniqueStepInCreation[] = [];
+  techniqueStepImageStrings: string[] = [];
   stepDrawingEdited = false;
   stepDetailsEdited = false;
   isNewStep = true;
   lesionImage: Blob | undefined = undefined;
+  lesionImageString: string = 'undefined';
+
+  messages = {
+    lesion:
+      'Please draw a lesion on the head to add a new type of known lesion to the app.',
+    technique:
+      'Please draw all steps of the new technique to add it to the app. The steps will be numbered automatically.',
+    match: `Please draw a lesion according to your patient's lesion and use the match button to search for known lesions similar to it.`,
+  };
 
   @ViewChild('headContainer', { static: false })
   headContainer!: ElementRef<HTMLElement>;
@@ -58,7 +69,7 @@ export class HeadModelComponent {
 
   get templateStep(): TechniqueStepInCreation {
     return {
-      name: `Step ${this.currentTechniqueStep}`,
+      name: `Step ${this.currentTechniqueStep + 1}`,
       description: '',
       strokes: [],
       stepNumber: this.currentTechniqueStep,
@@ -67,6 +78,11 @@ export class HeadModelComponent {
   }
 
   ngAfterViewInit() {
+    this.snackbar.open(this.messages[this.drawingKind], 'OK', {
+      horizontalPosition: 'right',
+      verticalPosition: 'top',
+    });
+
     if (this.drawingKind === 'technique') {
       console.log('loading technique steps');
       this.techniqueSteps.push(this.templateStep);
@@ -296,7 +312,15 @@ export class HeadModelComponent {
     });
   }
 
-  takePicture() {
+  showStepImage(stepNumber: number) {
+    this.dialog.open(ImageDialogComponent, {
+      data: {
+        image: this.techniqueStepImageStrings[stepNumber],
+      },
+    });
+  }
+
+  takePicture(onSave?: Function) {
     const mimeType = 'image/png';
     const imageData = this.renderer.domElement.toDataURL(mimeType);
     this.dialog.open(ImageCropperComponent, {
@@ -304,16 +328,24 @@ export class HeadModelComponent {
       width: '800px',
       data: {
         imageData: imageData,
-        onSave: (croppedImage: Blob) => this.saveCroppedImage(croppedImage),
+        onSave: (croppedImage: Blob, croppedImageString: string) => {
+          this.saveCroppedImage(croppedImage, croppedImageString);
+          if (onSave) {
+            onSave();
+          }
+        },
       },
     });
   }
 
-  saveCroppedImage(croppedImage: Blob) {
+  saveCroppedImage(croppedImage: Blob, croppedImageString: string) {
     if (this.drawingKind === 'lesion') {
       this.lesionImage = croppedImage;
+      this.lesionImageString = croppedImageString;
     } else {
       this.techniqueSteps[this.currentTechniqueStep].image = croppedImage;
+      this.techniqueStepImageStrings[this.currentTechniqueStep] =
+        croppedImageString;
     }
   }
 
@@ -393,19 +425,18 @@ export class HeadModelComponent {
   }
 
   saveLesion() {
-    if (this.lesionImage) {
+    this.takePicture(() => {
       this.dialog.open(SaveDrawingComponent, {
         // height: '400px',
         width: '500px',
         data: {
           lesion: this.lesionToSave,
+          lesionImage: this.lesionImageString,
           onSave: () => this.resetScene(),
           kind: this.drawingKind,
         },
       });
-    } else {
-      this.takePicture();
-    }
+    });
   }
 
   matchLesion() {

@@ -12,7 +12,13 @@
   fxLayoutAlign="space-around start"
   style="margin-top: 10px"
 >
-  <div fxLayout="column" fxLayoutAlign="space-around start" fxLayoutGap="15px">
+  <div
+    fxFlex.lt-sm="100%"
+    fxFlex.gt-sm="30%"
+    fxLayout="column"
+    fxLayoutAlign="space-around start"
+    fxLayoutGap="15px"
+  >
     <mat-card fxFlexFill>
       <mat-card-header>
         <mat-card-title>
@@ -27,7 +33,7 @@
           <mat-form-field
             fxFlexFill
             class="example-full-width"
-            appearance="fill"
+            appearance="outline"
           >
             <mat-label>Select a lesion</mat-label>
             <input
@@ -109,6 +115,7 @@
             style="height: 48px"
             (click)="rateAssociation($event, technique)"
             [disabled]="!slideToggle.checked"
+            matTooltop="Rate the use of this technique for the selected lesion."
           >
             <mat-icon>star_rate</mat-icon>
           </button>

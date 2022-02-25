@@ -13,7 +13,8 @@ import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation
   styleUrls: ['./image-cropper.component.scss'],
 })
 export class ImageCropperComponent {
-  croppedImage: any = '';
+  croppedImage: Blob = new Blob();
+  croppedImageString: string = '';
   canvasRotation = 0;
   rotation = 0;
   scale = 1;
@@ -37,6 +38,7 @@ export class ImageCropperComponent {
   imageCropped(event: ImageCroppedEvent) {
     if (event.base64) {
       this.croppedImage = base64ToFile(event.base64);
+      this.croppedImageString = event.base64;
     }
   }
 
@@ -109,7 +111,7 @@ export class ImageCropperComponent {
   }
 
   onSave() {
-    this.data.onSave(this.croppedImage);
+    this.data.onSave(this.croppedImage, this.croppedImageString);
     this.dialogRef.close();
   }
 }

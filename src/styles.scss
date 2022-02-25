@@ -104,7 +104,9 @@ body,
 }
 
 .corner-label {
-  height: 43px;
+  height: 100%;
+  padding-top: 0px !important;
+  padding-bottom: 0px !important;
   display: flex !important;
   align-items: center !important;
   border-radius: 0px 0px 10px 0px !important;
@@ -135,4 +137,11 @@ body,
   color: gray;
   margin-bottom: 5px !important;
   font-style: italic;
+}
+
+.small-toggle-group,
+.small-toggle-group button,
+.small-toggle-group span {
+  height: 36px !important;
+  line-height: 36px !important;
 }

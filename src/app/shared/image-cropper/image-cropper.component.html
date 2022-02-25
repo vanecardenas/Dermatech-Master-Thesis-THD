@@ -1,5 +1,6 @@
-<div class="image-cropper-controls" fxLayout="row wrap" fxLayoutGap="10px grid">
-  <div fxLayout="row wrap" fxLayoutGap="10px">
+<h2 mat-dialog-title>Please crop the picture to its relevant part</h2>
+<div fxLayout="row wrap" fxLayoutGap="10px grid" style="padding-bottom: 5px">
+  <div>
     <button
       mat-raised-button
       fxLayout="row"
@@ -7,9 +8,10 @@
       (click)="rotateLeft()"
     >
       <mat-icon>rotate_left</mat-icon>
-      <span> Rotate left </span>
+      <span> Rotate </span>
     </button>
-    <button
+  </div>
+  <!-- <button
       mat-raised-button
       fxLayout="row"
       fxLayoutAlign="space-between center"
@@ -17,8 +19,8 @@
     >
       <mat-icon>rotate_right</mat-icon>
       <span> Rotate right </span>
-    </button>
-    <!-- <mat-form-field class="mat-input-small" appearance="outline">
+    </button> -->
+  <!-- <mat-form-field class="mat-input-small" appearance="outline">
       <mat-label>Rotation in degrees</mat-label>
       <input
         matInput
@@ -29,7 +31,6 @@
         (change)="updateRotation()"
       />
     </mat-form-field> -->
-  </div>
   <div>
     <button
       mat-raised-button
@@ -38,10 +39,10 @@
       (click)="flipHorizontal()"
     >
       <mat-icon>flip</mat-icon>
-      <span> Flip horizontal </span>
+      <span> Flip </span>
     </button>
   </div>
-  <div>
+  <!-- <div>
     <button
       mat-raised-button
       fxLayout="row"
@@ -51,7 +52,7 @@
       <mat-icon style="transform: rotate(90deg)">flip</mat-icon>
       <span> Flip vertical </span>
     </button>
-  </div>
+  </div> -->
   <div>
     <button
       mat-raised-button
@@ -74,13 +75,36 @@
       <span>Zoom in</span>
     </button>
   </div>
+  <div>
+    <button
+      mat-raised-button
+      color="error"
+      fxLayout="row"
+      fxLayoutAlign="space-between center"
+      (click)="resetImage()"
+    >
+      <mat-icon>undo</mat-icon>
+      <span>Reset image</span>
+    </button>
+  </div>
+  <div>
+    <button
+      mat-raised-button
+      class="save-button"
+      fxLayout="row"
+      fxLayoutAlign="space-between center"
+      (click)="onSave()"
+    >
+      <mat-icon>save</mat-icon>
+      <span>Save picture</span>
+    </button>
+  </div>
 </div>
 <div>
   <image-cropper
     [imageURL]="data.imageData"
     [resizeToWidth]="256"
     [cropperMinWidth]="128"
-    [onlyScaleDown]="true"
     [canvasRotation]="canvasRotation"
     [transform]="transform"
     [style.display]="imageLoaded ? null : 'none'"
@@ -89,26 +113,4 @@
     (loadImageFailed)="loadImageFailed()"
     style="height: 72vh"
   ></image-cropper>
-</div>
-<div fxLayout="row wrap" fxLayoutAlign="end center" fxLayoutGap="10px">
-  <button
-    mat-raised-button
-    color="error"
-    fxLayout="row"
-    fxLayoutAlign="space-between center"
-    (click)="resetImage()"
-  >
-    <mat-icon>undo</mat-icon>
-    <span>Reset image</span>
-  </button>
-  <button
-    mat-raised-button
-    class="save-button"
-    fxLayout="row"
-    fxLayoutAlign="space-between center"
-    (click)="onSave()"
-  >
-    <mat-icon>save</mat-icon>
-    <span>Save picture</span>
-  </button>
 </div>

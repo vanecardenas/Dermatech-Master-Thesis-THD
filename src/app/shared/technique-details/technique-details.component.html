@@ -19,18 +19,18 @@
   <div *ngIf="techniqueStepsFetched">
     <h4>Steps</h4>
     <div
-      fxLayoutAlign="space-around center"
+      fxLayoutAlign="space-around start"
       fxLayout="row wrap"
       fxLayout.sm="column"
       fxLayout.xs="column"
       fxLayoutGap="10px"
     >
-      <div *ngFor="let step of techniqueSteps">
+      <div *ngFor="let step of techniqueSteps" style="width: 256px">
         <div fxLayout="row" fxLayoutAlign="start center">
           <h4 style="color: grey; margin-right: 10px">{{ step.stepNumber }}</h4>
           <h4>{{ step.name }}</h4>
         </div>
-        <img class="step-picture" [src]="step.imageId" />
+        <img class="step-picture" [src]="step.imageId" style="width: 256px" />
         <p>{{ step.description }}</p>
       </div>
     </div>

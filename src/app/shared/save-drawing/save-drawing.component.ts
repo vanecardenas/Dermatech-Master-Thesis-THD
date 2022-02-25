@@ -34,6 +34,7 @@ export class SaveDrawingComponent {
     @Inject(MAT_DIALOG_DATA)
     public data: {
       lesion?: LesionDrawing;
+      lesionImage?: string; // base64 version of image, just for display
       technique?: NewTechniqueStep[];
       onSave: CallableFunction;
       kind: 'lesion' | 'technique';

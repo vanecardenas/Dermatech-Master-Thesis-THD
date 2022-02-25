@@ -12,25 +12,37 @@
   fxLayoutGap="10px"
   fxLayoutAlign="space-between center"
 >
-  <h4>Movement Controls</h4>
   <mat-button-toggle-group
     fxFlexFill
-    class="base-elevation"
+    class="base-elevation small-toggle-group"
     [(ngModel)]="drawingEnabled"
     (change)="toggleDrawing()"
   >
     <mat-button-toggle fxFlex [value]="false"> Move </mat-button-toggle>
     <mat-button-toggle fxFlex [value]="true"> Draw </mat-button-toggle>
   </mat-button-toggle-group>
+  <h4>Movement Controls</h4>
   <mat-button-toggle-group
     fxFlexFill
-    class="base-elevation"
+    class="base-elevation small-toggle-group"
     [(ngModel)]="controlMode"
     (change)="toggleControlMode()"
     [disabled]="drawingEnabled"
   >
-    <mat-button-toggle fxFlex value="rotate"> Rotate </mat-button-toggle>
-    <mat-button-toggle fxFlex value="pan"> Pan </mat-button-toggle>
+    <mat-button-toggle
+      [ngClass]="{ 'rotation-toggle-disabled': drawingEnabled }"
+      fxFlex
+      value="rotate"
+    >
+      Rotate
+    </mat-button-toggle>
+    <mat-button-toggle
+      [ngClass]="{ 'rotation-toggle-disabled': drawingEnabled }"
+      fxFlex
+      value="pan"
+    >
+      Pan
+    </mat-button-toggle>
   </mat-button-toggle-group>
   <button
     fxFlexFill
@@ -80,7 +92,7 @@
     Clear drawing
   </button>
   <button
-    *ngIf="drawingKind !== 'match'"
+    *ngIf="drawingKind === 'technique'"
     fxFlexFill
     fxLayout="row"
     fxLayoutAlign="space-between center"
@@ -151,7 +163,7 @@
       <mat-expansion-panel-header style="padding: 0px 5px">
         <mat-panel-title style="line-height: 48px; height: 48px; width: 45%">
           <span style="color: grey; margin-right: 5px">{{
-            techniqueStep.stepNumber
+            techniqueStep.stepNumber + 1
           }}</span>
           <span
             style="
@@ -187,12 +199,12 @@
         >
           <mat-icon>delete</mat-icon>
         </button>
-        <div matTooltip="This step already has a picture">
+        <div matTooltip="This step has a picture, click to see it">
           <button
             mat-icon-button
             *ngIf="techniqueStep.image"
             style="color: green"
-            disabled
+            (click)="showStepImage(techniqueStep.stepNumber)"
           >
             <mat-icon>image</mat-icon>
           </button>
@@ -221,7 +233,7 @@
 ></div>
 <!-- BOTTOM STEP CONTROLS -->
 <div
-  style="position: absolute; bottom: 10%; right: 10%; left: 10%"
+  style="position: absolute; bottom: 10%; right: 17%; left: 17%"
   fxLayout="row"
   fxLayoutGap="10px"
   fxLayoutAlign="space-between center"
@@ -234,7 +246,7 @@
     mat-raised-button
     [disabled]="currentTechniqueStep < 1"
   >
-    <mat-icon>chevron_left</mat-icon> <span>Previous Step</span>
+    <mat-icon>chevron_left</mat-icon> <span>Previous step</span>
   </button>
   <button
     (click)="nextStep()"
@@ -243,6 +255,12 @@
     mat-raised-button
     [disabled]="uneditedNewStep"
   >
-    <span>Next Step</span><mat-icon>chevron_right</mat-icon>
+    <span *ngIf="currentTechniqueStep < techniqueSteps.length - 1"
+      >Next step</span
+    >
+    <span *ngIf="currentTechniqueStep === techniqueSteps.length - 1"
+      >Add new step</span
+    >
+    <mat-icon>chevron_right</mat-icon>
   </button>
 </div>

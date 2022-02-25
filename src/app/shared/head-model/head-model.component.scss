@@ -29,3 +29,8 @@
 .active-step {
   border-left: solid 4px forestgreen;
 }
+
+.rotation-toggle-disabled {
+  color: rgba(0, 0, 0, 0.26) !important;
+  background-color: white !important;
+}

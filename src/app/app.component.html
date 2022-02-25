@@ -1,23 +1,23 @@
-<div class="example-container" [class.example-is-mobile]="mobileQuery.matches">
-  <div
-    class="floating-control cursor-pointer"
-    (click)="snav.toggle()"
-    style="position: absolute"
-    fxLayout="row"
-    fxLayoutAlign="start center"
-    *ngIf="showMenu"
-  >
-    <img
-      style="height: 75px; background-color: #434750"
-      src="/assets/logo-dermatech-white.png"
-      alt="logo"
-    />
-    <mat-card class="no-elevation corner-label">
-      <h3>Menu</h3>
-    </mat-card>
-  </div>
+<!-- <div class="example-container" [class.example-is-mobile]="mobileQuery.matches"> -->
+<div
+  class="floating-control cursor-pointer"
+  style="position: absolute; height: 65px"
+  fxLayout="row"
+  fxLayoutAlign="start center"
+  *ngIf="showMenu"
+  [routerLink]="'/welcome'"
+>
+  <img
+    style="height: 100%; background-color: #434750"
+    src="/assets/logo-dermatech-white.png"
+    alt="logo"
+  />
+  <mat-card class="no-elevation corner-label">
+    <h3>Home</h3>
+  </mat-card>
+</div>
 
-  <mat-sidenav-container
+<!-- <mat-sidenav-container
     class="example-sidenav-container"
     [style.marginTop.px]="mobileQuery.matches ? 75 : 0"
   >
@@ -51,10 +51,10 @@
           <mat-icon class="menu-icon">logout</mat-icon>Logout
         </a>
       </mat-nav-list>
-    </mat-sidenav>
+    </mat-sidenav> -->
 
-    <mat-sidenav-content class="sidenav-content">
-      <router-outlet></router-outlet>
-    </mat-sidenav-content>
-  </mat-sidenav-container>
-</div>
+<!-- <mat-sidenav-content class="sidenav-content"> -->
+<router-outlet></router-outlet>
+<!-- </mat-sidenav-content>
+  </mat-sidenav-container> -->
+<!-- </div> -->

@@ -38,6 +38,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatMenuModule } from '@angular/material/menu';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -59,6 +60,7 @@ import { FilterSelectionComponent } from './filter-selection/filter-selection.co
 import { LesionMatchingComponent } from './lesion-matching/lesion-matching.component';
 import { MatchingLesionsComponent } from './lesion-matching/matching-lesions/matching-lesions.component';
 import { AssociatedTechniquesComponent } from './associated-techniques/associated-techniques.component';
+import { ImageDialogComponent } from './shared/image-dialog/image-dialog.component';
 
 @NgModule({
   declarations: [
@@ -79,6 +81,7 @@ import { AssociatedTechniquesComponent } from './associated-techniques/associate
     LesionMatchingComponent,
     MatchingLesionsComponent,
     AssociatedTechniquesComponent,
+    ImageDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -95,6 +98,7 @@ import { AssociatedTechniquesComponent } from './associated-techniques/associate
     MatStepperModule,
     MatIconModule,
     MatDialogModule,
+    MatMenuModule,
     MatFormFieldModule,
     MatInputModule,
     MatSnackBarModule,
