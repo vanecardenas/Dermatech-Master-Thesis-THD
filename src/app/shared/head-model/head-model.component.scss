@@ -8,8 +8,8 @@
 #circularcursor {
   background-color: transparent;
   border: 1px solid black;
-  height: 8px;
-  width: 8px;
+  // height: 8px;
+  // width: 8px;
   border-radius: 50%;
   -moz-border-radius: 50%;
   -webkit-border-radius: 50%;
@@ -33,4 +33,8 @@
 .rotation-toggle-disabled {
   color: rgba(0, 0, 0, 0.26) !important;
   background-color: white !important;
+}
+
+.cursor-slider {
+  width: 100%;
 }

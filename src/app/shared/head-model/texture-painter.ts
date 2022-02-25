@@ -10,7 +10,6 @@ import {
   Mesh,
   Vector3,
   Scene,
-  // OrthographicCamera,
   Geometry,
   Face3,
   Vector2,
@@ -37,24 +36,18 @@ export class TexturePainter {
   cursorUnits = this.cursorSize / this.frustumSize / this.aspect;
   cameraPosition: Vector3;
   scene!: Scene;
-  // ortho!: OrthographicCamera;
   canvas!: HTMLCanvasElement;
   texture!: Texture;
   ctx!: CanvasRenderingContext2D | null;
   bg!: HTMLImageElement;
   drawingEnabled = false;
   currentStroke = 0;
-  originalLineWidth = this.cursorSize;
   protected currentStrokePoints: Vector3[] = [];
   protected currentStrokeLocations: {
     vectors: Vector2[];
     clip: Vector2[];
   }[] = [];
-  protected strokes: {
-    color: string;
-    points: Vector3[];
-    locations: { vectors: Vector2[]; clip: Vector2[] }[];
-  }[] = [];
+  protected strokes: Stroke[] = [];
   rect: DOMRect;
 
   protected headColor = 'rgb(197, 200, 217)';
@@ -200,7 +193,7 @@ export class TexturePainter {
       this.ctx.fillStyle = mode === 'undo' ? this.headColor : this.drawColor;
       this.ctx.strokeStyle = mode === 'undo' ? this.headColor : this.drawColor;
       this.ctx.lineWidth =
-        mode === 'undo' ? this.originalLineWidth * 8 : this.originalLineWidth;
+        mode === 'undo' ? this.cursorSize * 8 : this.cursorSize;
       // move to the first point
       this.ctx.beginPath();
       this.ctx.lineJoin = this.ctx.lineCap = 'round';
@@ -295,6 +288,11 @@ export class TexturePainter {
       let y = (i < 2 ? 1 : -1) * this.cursorUnits;
       directions.push(this.getDirectionFromCamera(x, y, origin));
     }
+  }
+
+  updateCursorSize(cursorSize: number) {
+    this.cursorSize = cursorSize;
+    this.cursorUnits = this.cursorSize / this.frustumSize / this.aspect;
   }
 
   getDrawLocations() {
@@ -419,14 +417,18 @@ export class TexturePainter {
   }
 
   drawStrokes(strokes: Stroke[]) {
+    const originalColor = this.drawColor;
+    const originalCursorSize = this.cursorSize;
     this.strokes = [...strokes];
     strokes.forEach((stroke) => {
       console.log(stroke.color);
       this.setDrawColor(stroke.color);
+      this.updateCursorSize(stroke.cursorSize);
       console.log('painting stroke', stroke);
       this.draw(stroke.locations, 'redraw');
     });
-    console.log('done drawing strokes');
+    this.setDrawColor(originalColor);
+    this.updateCursorSize(originalCursorSize);
   }
 
   clearDrawing() {
@@ -483,6 +485,7 @@ export class TexturePainter {
     ) {
       this.strokes.push({
         color: this.drawColor,
+        cursorSize: this.cursorSize,
         points: [...this.currentStrokePoints],
         locations: [...this.currentStrokeLocations],
       });

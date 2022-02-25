@@ -39,6 +39,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatSliderModule } from '@angular/material/slider';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -109,6 +110,7 @@ import { ImageDialogComponent } from './shared/image-dialog/image-dialog.compone
     MatChipsModule,
     MatAutocompleteModule,
     MatTooltipModule,
+    MatSliderModule,
     MatSelectModule,
     MatCheckboxModule,
     MatButtonToggleModule,

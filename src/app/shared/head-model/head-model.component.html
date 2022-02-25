@@ -1,5 +1,7 @@
 <div
   id="circularcursor"
+  [style.width.px]="cursorSize * 10"
+  [style.height.px]="cursorSize * 10"
   [style.top]="cursorTop"
   [style.left]="cursorLeft"
   [style.display]="drawingEnabled && cursorInCanvas ? 'block' : 'none'"
@@ -71,6 +73,17 @@
       Drawing color
     </div>
   </button>
+  <label>Line Thickness</label>
+  <mat-slider
+    class="cursor-slider"
+    max="2"
+    min="0.1"
+    step="0.1"
+    thumbLabel="true"
+    [(ngModel)]="cursorSize"
+    (change)="onCursorSizeChange()"
+  >
+  </mat-slider>
   <button
     fxFlexFill
     fxLayout="row"

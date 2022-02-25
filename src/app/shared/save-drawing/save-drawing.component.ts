@@ -157,6 +157,7 @@ export class SaveDrawingComponent {
         convertedPoints.push(...sampledPoints);
         convertedStrokes.push({
           color: stroke.color,
+          cursorSize: stroke.cursorSize,
           locations: strokeConvertedLocations,
           points: sampledPoints,
         });
@@ -204,6 +205,7 @@ export class SaveDrawingComponent {
         convertedPoints.push(...sampledPoints);
         convertedStrokes.push({
           color: stroke.color,
+          cursorSize: stroke.cursorSize,
           locations: strokeConvertedLocations,
           points: sampledPoints,
         });

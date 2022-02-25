@@ -1,6 +1,7 @@
 // A Stroke is one ongoing movement of drawing.
 type Stroke = {
   color: string;
+  cursorSize: number;
   points: import('three/src/Three').Vector3[];
   locations: {
     vectors: import('three/src/Three').Vector2[];
@@ -25,6 +26,7 @@ type LesionDrawingMatching = {
 // DatabaseStrokes are converted Strokes for storage in the database
 type ConvertedStroke = {
   color: string;
+  cursorSize: number;
   points: { x: number; y: number; z: number }[];
   locations: {
     vectors: { x: number; y: number }[];

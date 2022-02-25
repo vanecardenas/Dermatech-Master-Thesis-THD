@@ -52,6 +52,7 @@ export class DatabaseService {
 
     return {
       color: stroke.color,
+      cursorSize: stroke.cursorSize,
       points: sampledPoints,
       locations: sampledLocations,
     };

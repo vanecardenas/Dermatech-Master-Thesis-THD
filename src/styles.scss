@@ -145,3 +145,29 @@ body,
   height: 36px !important;
   line-height: 36px !important;
 }
+
+.cursor-slider .mat-slider-wrapper {
+  top: 18px !important;
+}
+.cursor-slider .mat-slider-track-wrapper {
+  height: 12px !important;
+  border-radius: 10px !important;
+}
+.cursor-slider .mat-slider-track-background,
+.cursor-slider .mat-slider-track-fill {
+  height: 100% !important;
+}
+.cursor-slider .mat-slider-track-fill {
+  background-color: #434850;
+}
+.cursor-slider .mat-slider-thumb {
+  height: 30px !important;
+  width: 30px !important;
+  background-color: #434850;
+  bottom: -20px !important;
+  right: -20px !important;
+}
+.cursor-slider .mat-slider-thumb-label {
+  background-color: #434850;
+  color: white;
+}

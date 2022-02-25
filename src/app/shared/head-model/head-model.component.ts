@@ -49,6 +49,7 @@ export class HeadModelComponent {
   isNewStep = true;
   lesionImage: Blob | undefined = undefined;
   lesionImageString: string = 'undefined';
+  cursorSize = 0.8;
 
   messages = {
     lesion:
@@ -158,12 +159,32 @@ export class HeadModelComponent {
         this.cursorInCanvas = false;
       });
       this.container.addEventListener('pointerdown', (event) => {
-        this.cursorTop = event.clientY - this.boundingRect.top - 5 + 'px';
-        this.cursorLeft = event.clientX - this.boundingRect.left - 5 + 'px';
+        if (this.boundingRect) {
+          this.cursorTop =
+            event.clientY -
+            this.boundingRect.top -
+            this.cursorSize * 6.25 +
+            'px';
+          this.cursorLeft =
+            event.clientX -
+            this.boundingRect.left -
+            this.cursorSize * 6.25 +
+            'px';
+        }
       });
       this.container.addEventListener('pointermove', (event) => {
-        this.cursorTop = event.clientY - this.boundingRect.top - 5 + 'px';
-        this.cursorLeft = event.clientX - this.boundingRect.left - 5 + 'px';
+        if (this.boundingRect) {
+          this.cursorTop =
+            event.clientY -
+            this.boundingRect.top -
+            this.cursorSize * 6.25 +
+            'px';
+          this.cursorLeft =
+            event.clientX -
+            this.boundingRect.left -
+            this.cursorSize * 6.25 +
+            'px';
+        }
       });
     }
     window.addEventListener('resize', () => this.onWindowResize(), false);
@@ -395,6 +416,10 @@ export class HeadModelComponent {
       this.controls.enablePan = this.wasPanEnabled;
       this.controls.enableRotate = this.wasRotateEnabled;
     }
+  }
+
+  onCursorSizeChange() {
+    this.painter.updateCursorSize(this.cursorSize);
   }
 
   onWindowResize() {
