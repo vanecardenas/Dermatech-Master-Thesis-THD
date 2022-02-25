@@ -111,6 +111,15 @@ export class DatabaseService {
       .set(databaseLesionMeta);
   }
 
+  async updateLesion(lesionMeta: DatabaseLesion) {
+    const lesionId = lesionMeta.id;
+    delete lesionMeta.id;
+    return this.firestore
+      .collection<DatabaseLesion>('lesionMetas')
+      .doc(lesionId)
+      .update(lesionMeta);
+  }
+
   private async addTechniqueStep(
     step: ConvertedTechniqueStep,
     techniqueMetaId: string

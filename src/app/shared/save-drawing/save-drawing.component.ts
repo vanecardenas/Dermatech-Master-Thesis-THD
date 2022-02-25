@@ -268,5 +268,6 @@ export class SaveDrawingComponent {
         }
       );
     }
+    this.uploadingData = false;
   }
 }

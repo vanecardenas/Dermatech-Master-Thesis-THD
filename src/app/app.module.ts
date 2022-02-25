@@ -5,6 +5,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import 'hammerjs';
 
 import { NgxColorsModule } from 'ngx-colors';
+import { NgxStarRatingModule } from 'ngx-star-rating';
 
 import {
   SETTINGS as AUTH_SETTINGS,
@@ -62,6 +63,7 @@ import { LesionMatchingComponent } from './lesion-matching/lesion-matching.compo
 import { MatchingLesionsComponent } from './lesion-matching/matching-lesions/matching-lesions.component';
 import { AssociatedTechniquesComponent } from './associated-techniques/associated-techniques.component';
 import { ImageDialogComponent } from './shared/image-dialog/image-dialog.component';
+import { RateAssociationComponent } from './associate-lesion-technique/rate-association/rate-association.component';
 
 @NgModule({
   declarations: [
@@ -83,6 +85,7 @@ import { ImageDialogComponent } from './shared/image-dialog/image-dialog.compone
     MatchingLesionsComponent,
     AssociatedTechniquesComponent,
     ImageDialogComponent,
+    RateAssociationComponent,
   ],
   imports: [
     BrowserModule,
@@ -118,6 +121,7 @@ import { ImageDialogComponent } from './shared/image-dialog/image-dialog.compone
     AngularFirestoreModule,
     AngularFireStorageModule,
     NgxColorsModule,
+    NgxStarRatingModule,
     ImageCropperModule,
     HammerModule,
   ],

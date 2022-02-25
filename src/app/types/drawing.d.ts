@@ -34,25 +34,23 @@ type ConvertedStroke = {
   }[];
 };
 
+type Rating = {
+  score: number;
+  author: string;
+  text: string;
+};
+
 type TechniqueAssociation = {
   techniqueId: string;
   active: boolean;
-  ratings: {
-    rating: number;
-    author: string;
-    comments: string;
-  }[];
+  ratings: Rating[];
 };
 // This will not be written into database, we only do a one-way association.
 // However, this will be used as an intermediate format for adding the association to the lesion.
 type LesionAssociation = {
   lesionId: string;
   active: boolean;
-  ratings: {
-    comments: string;
-    rating: number;
-    author: string;
-  }[];
+  ratings: Rating[];
 };
 
 // In the database, the metadata is stored separated from the actual drawings.

@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { DatabaseService } from '../shared/database.service';
 import { TechniqueDetailsComponent } from '../shared/technique-details/technique-details.component';
+import { RateAssociationComponent } from './rate-association/rate-association.component';
 
 @Component({
   selector: 'app-associate-lesion-technique',
@@ -86,6 +87,14 @@ export class AssociateLesionTechniqueComponent {
 
   rateAssociation(event: MouseEvent, technique: DatabaseTechnique) {
     event.stopPropagation();
+    this.dialog.open(RateAssociationComponent, {
+      // height: '95vh',
+      width: '800px',
+      data: {
+        lesion: this.selectedLesion as DatabaseLesion,
+        technique: technique,
+      },
+    });
   }
 
   saveAssociationChanges() {

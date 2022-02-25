@@ -1,0 +1,53 @@
+<ng-container *ngIf="uploadingRating">
+  <h2 mat-dialog-title>Saving rating...</h2>
+  <mat-dialog-content fxLayout="row" fxLayoutAlign="space-around center">
+    <mat-spinner></mat-spinner>
+  </mat-dialog-content>
+</ng-container>
+<ng-container *ngIf="!uploadingRating">
+  <h2 mat-dialog-title>Rate the use of this technique for this lesion</h2>
+  <h4 mat-dialog-subtitle>Lesion: {{ data.lesion.name }}</h4>
+  <h4 mat-dialog-subtitle>Technique: {{ data.technique.name }}</h4>
+  <mat-dialog-content>
+    <div>
+      <div
+        fxLayout="column"
+        fxLayoutAlign="start start"
+        style="margin-bottom: 10px"
+      >
+        <mat-label required>Rating Score</mat-label>
+        <ngx-star-rating [(ngModel)]="ratingScore"></ngx-star-rating>
+      </div>
+      <mat-form-field fxFlexFill appearance="outline">
+        <mat-label>Author of the Rating</mat-label>
+        <input
+          matInput
+          [(ngModel)]="ratingAuthor"
+          placeholder="Dr. Strange"
+          required
+        />
+      </mat-form-field>
+      <mat-form-field fxFlexFill appearance="outline">
+        <mat-label>Rating text</mat-label>
+        <textarea
+          matInput
+          [(ngModel)]="ratingText"
+          placeholder="Text of the rating"
+          required
+        ></textarea>
+      </mat-form-field>
+    </div>
+  </mat-dialog-content>
+  <mat-dialog-actions fxLayout="row">
+    <button
+      fxFlex
+      mat-raised-button
+      class="save-button"
+      (click)="saveRating()"
+      [disabled]="!ratingScore || !ratingAuthor || !ratingText"
+    >
+      Save
+    </button>
+    <button fxFlex mat-button mat-dialog-close>Cancel</button>
+  </mat-dialog-actions>
+</ng-container>
