@@ -110,15 +110,18 @@
             (change)="onAssociationToggle(technique)"
             >Associated</mat-slide-toggle
           >
-          <button
-            mat-icon-button
-            style="height: 48px"
-            (click)="rateAssociation($event, technique)"
-            [disabled]="!slideToggle.checked"
-            matTooltop="Rate the use of this technique for the selected lesion."
+          <div
+            matTooltip="Rate the use of this technique for the selected lesion."
           >
-            <mat-icon>star_rate</mat-icon>
-          </button>
+            <button
+              mat-icon-button
+              style="height: 48px"
+              (click)="rateAssociation($event, technique)"
+              [disabled]="!slideToggle.checked"
+            >
+              <mat-icon>star_rate</mat-icon>
+            </button>
+          </div>
         </mat-expansion-panel-header>
         <p>By {{ technique.author }}</p>
         <p>{{ technique.description }}</p>
