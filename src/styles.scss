@@ -171,3 +171,13 @@ body,
   background-color: #434850;
   color: white;
 }
+
+.snackbar-info {
+  background-color: white;
+  color: black;
+  border: solid 3px #ff3f80;
+}
+
+.snackbar-info span {
+  font-size: 16px;
+}

@@ -82,6 +82,7 @@ export class HeadModelComponent {
     this.snackbar.open(this.messages[this.drawingKind], 'OK', {
       horizontalPosition: 'right',
       verticalPosition: 'top',
+      panelClass: ['snackbar-info'],
     });
 
     if (this.drawingKind === 'technique') {
