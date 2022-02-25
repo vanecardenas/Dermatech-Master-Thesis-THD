@@ -17,7 +17,7 @@
         class="cursor-pointer"
         (click)="showAssociatedTechniques(lesion)"
       >
-        <mat-card-header>
+        <mat-card-header fxLayout="column">
           <mat-card-title>
             {{ lesion.name }}
           </mat-card-title>
@@ -40,7 +40,7 @@
       </mat-card>
     </div>
   </ng-template>
-  <div fxLayout fxLayoutAlign="center center">
+  <div *ngIf="!showAllLesions" fxLayout fxLayoutAlign="center center">
     <button mat-raised-button class="save-button" (click)="showMore()">
       Show More
     </button>

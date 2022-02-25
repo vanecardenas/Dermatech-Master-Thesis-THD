@@ -96,9 +96,9 @@
           fxFlexFill
           mat-raised-button
           color="primary"
-          (click)="onFindTechniques()"
+          (click)="onFindLesions()"
         >
-          Find techniques
+          Find lesions
         </button>
       </div>
       <div>
@@ -107,32 +107,51 @@
     </mat-step>
   </mat-stepper>
 </div>
-<ng-container *ngIf="techniquesRequested">
+<ng-container *ngIf="lesionMetasRequested">
   <mat-spinner
-    *ngIf="!techniqueMetasFetched || !techniqueMetasFiltered"
+    *ngIf="!lesionMetasFetched || !lesionMetasFiltered"
   ></mat-spinner>
   <div
-    *ngIf="techniqueMetasFetched && techniqueMetasFiltered"
+    *ngIf="lesionMetasFetched && lesionMetasFiltered"
     fxLayout="row wrap"
     fxLayoutAlign="space-around center"
     fxLayoutGap="10px grid"
   >
-    <div *ngFor="let technique of filteredTechniqueMetas">
-      <mat-card>
-        <mat-card-header>
-          <mat-card-title>{{ technique.name }}</mat-card-title>
-          <mat-card-subtitle>By {{ technique.author }}</mat-card-subtitle>
-        </mat-card-header>
-        <mat-card-content>
-          <p>{{ technique.stepIds.length }} Steps</p>
-          <p class="truncated">{{ technique.description }}</p>
-        </mat-card-content>
-        <mat-card-actions>
-          <button mat-button (click)="showTechniqueDetails(technique)">
-            View
-          </button>
-        </mat-card-actions>
-      </mat-card>
+    <div
+      fxLayout="column"
+      fxLayoutAlign="center center"
+      *ngIf="!filteredLesionMetas.length"
+    >
+      <p>No matching lesions for your criteria found.</p>
+      <button mat-raised-button [routerLink]="'add-lesion'">
+        Add a new kind of lesion
+      </button>
     </div>
+    <ng-template ngFor let-lesion [ngForOf]="filteredLesionMetas">
+      <div style="max-width: 30%">
+        <mat-card class="cursor-pointer" (click)="showTechniques(lesion)">
+          <mat-card-header fxLayout="column">
+            <mat-card-title>
+              {{ lesion.name }}
+            </mat-card-title>
+            <mat-card-subtitle> By {{ lesion.author }} </mat-card-subtitle>
+            <div
+              class="drawing-categories"
+              fxLayout="row"
+              fxLayoutAlign="start center"
+              fxLayoutGap="15px grid"
+            >
+              <span>Region: {{ lesion.region }}</span>
+              <span>Subregion: {{ lesion.subregion }}</span>
+              <span>Size: {{ lesion.size }}</span>
+            </div>
+          </mat-card-header>
+          <img mat-card-image *ngIf="lesion" [src]="lesion.imageId" />
+          <mat-card-content *ngIf="lesion">
+            <p>{{ lesion.description }}</p>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </ng-template>
   </div>
 </ng-container>

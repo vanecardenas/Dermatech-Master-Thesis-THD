@@ -6,8 +6,8 @@ import { BreakpointObserver } from '@angular/cdk/layout';
 import { StepperOrientation } from '@angular/material/stepper';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { TechniqueDetailsComponent } from '../shared/technique-details/technique-details.component';
 import { MatDialog } from '@angular/material/dialog';
+import { AssociatedTechniquesComponent } from '../associated-techniques/associated-techniques.component';
 
 @Component({
   selector: 'app-filter-selection',
@@ -18,12 +18,11 @@ export class FilterSelectionComponent implements OnInit {
   lesionRegion = '';
   lesionSubregion = '';
   lesionSize = '';
-  techniqueMetas: DatabaseTechnique[] = [];
-  filteredTechniqueMetas: DatabaseTechnique[] = [];
+  lesionMetas: DatabaseLesion[] = [];
+  filteredLesionMetas: DatabaseLesion[] = [];
   lesionMetasFetched = false;
-  techniqueMetasFetched = false;
-  techniqueMetasFiltered = false;
-  techniquesRequested = false;
+  lesionMetasRequested = false;
+  lesionMetasFiltered = false;
   stepperOrientation: Observable<StepperOrientation>;
 
   constructor(
@@ -32,9 +31,9 @@ export class FilterSelectionComponent implements OnInit {
     breakpointObserver: BreakpointObserver,
     private dialog: MatDialog
   ) {
-    this.databaseService.techniqueMetas.subscribe((techniqueMetas) => {
-      this.techniqueMetas = techniqueMetas;
-      this.techniqueMetasFetched = true;
+    this.databaseService.lesionMetas.subscribe((lesionMetas) => {
+      this.lesionMetas = lesionMetas;
+      this.lesionMetasFetched = true;
     });
     this.stepperOrientation = breakpointObserver
       .observe('(min-width: 800px)')
@@ -47,25 +46,25 @@ export class FilterSelectionComponent implements OnInit {
     return text.charAt(0).toUpperCase() + text.slice(1);
   }
 
-  onFindTechniques() {
-    this.techniquesRequested = true;
-    this.techniqueMetasFiltered = false;
-    this.filteredTechniqueMetas = this.techniqueMetas.filter((technique) => {
+  onFindLesions() {
+    this.lesionMetasRequested = true;
+    this.lesionMetasFiltered = false;
+    this.filteredLesionMetas = this.lesionMetas.filter((lesion) => {
       return (
-        technique.region === this.lesionRegion &&
-        technique.subregion === this.lesionSubregion &&
-        technique.size === this.lesionSize
+        lesion.region === this.lesionRegion &&
+        lesion.subregion === this.lesionSubregion &&
+        lesion.size === this.lesionSize
       );
     });
-    this.techniqueMetasFiltered = true;
+    this.lesionMetasFiltered = true;
   }
 
-  showTechniqueDetails(technique: DatabaseTechnique) {
-    this.dialog.open(TechniqueDetailsComponent, {
+  showTechniques(lesion: DatabaseLesion) {
+    this.dialog.open(AssociatedTechniquesComponent, {
       height: '95vh',
       width: '800px',
       data: {
-        technique: technique,
+        lesion: lesion,
       },
     });
   }

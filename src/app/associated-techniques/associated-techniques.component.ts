@@ -15,6 +15,7 @@ import {
 export class AssociatedTechniquesComponent {
   techniqueMetas: DatabaseTechnique[] = [];
   techniqueMetasFetched = false;
+  noAssociations = false;
 
   constructor(
     private dialog: MatDialog,
@@ -25,16 +26,20 @@ export class AssociatedTechniquesComponent {
       lesion: DatabaseLesion;
     }
   ) {
-    this.databaseService
-      .getTechniquesById(
-        this.data.lesion.techniqueAssociations.map(
-          (association) => association.techniqueId
+    if (this.data.lesion.techniqueAssociations.length > 0) {
+      this.databaseService
+        .getTechniquesById(
+          this.data.lesion.techniqueAssociations.map(
+            (association) => association.techniqueId
+          )
         )
-      )
-      .subscribe((techniqueMetas) => {
-        this.techniqueMetas = techniqueMetas;
-        this.techniqueMetasFetched = true;
-      });
+        .subscribe((techniqueMetas) => {
+          this.techniqueMetas = techniqueMetas;
+          this.techniqueMetasFetched = true;
+        });
+    } else {
+      this.noAssociations = true;
+    }
   }
 
   capitalizeFirstLetter(text: string) {

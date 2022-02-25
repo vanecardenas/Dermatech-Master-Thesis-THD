@@ -1,6 +1,6 @@
 <h2 mat-dialog-title>Known lesions best matching your drawing</h2>
 <h4 mat-dialog-subtitle>Select one to see associated techniques</h4>
-<mat-spinner *ngIf="!techniqueMetasFetched"></mat-spinner>
+<mat-spinner *ngIf="!techniqueMetasFetched && !noAssociations"></mat-spinner>
 <div
   *ngIf="techniqueMetasFetched"
   fxLayout="row wrap"
@@ -24,4 +24,10 @@
       </mat-card-actions>
     </mat-card>
   </div>
+</div>
+<div fxLayout="column" fxLayoutAlign="center center" *ngIf="noAssociations">
+  <p>There are no associated surgical techniques for this kind of lesion.</p>
+  <button mat-raised-button [routerLink]="'/add-technique'">
+    Add new technique
+  </button>
 </div>
