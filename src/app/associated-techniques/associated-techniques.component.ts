@@ -6,6 +6,7 @@ import {
   MatDialogRef,
   MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
+import { RatingsGridComponent } from './ratings-grid/ratings-grid.component';
 
 @Component({
   selector: 'app-associated-techniques',
@@ -16,6 +17,8 @@ export class AssociatedTechniquesComponent {
   techniqueMetas: DatabaseTechnique[] = [];
   techniqueMetasFetched = false;
   noAssociations = false;
+  averageRatings: { [key: string]: number } = {};
+  ratings: { [key: string]: Rating[] } = {};
 
   constructor(
     private dialog: MatDialog,
@@ -40,6 +43,21 @@ export class AssociatedTechniquesComponent {
     } else {
       this.noAssociations = true;
     }
+    // Format into ratings-dictionary by techniqueId
+    this.data.lesion.techniqueAssociations.forEach((association) => {
+      if (this.ratings.hasOwnProperty(association.techniqueId)) {
+        this.ratings[association.techniqueId].push(...association.ratings);
+      } else {
+        this.ratings[association.techniqueId] = association.ratings;
+      }
+    });
+    // calculate average ratings per association
+    Object.entries(this.ratings).forEach((rating: [string, Rating[]]) => {
+      this.averageRatings[rating[0]] =
+        rating[1].reduce((acc, cur) => {
+          return acc + cur.score;
+        }, 0) / rating[1].length;
+    });
   }
 
   capitalizeFirstLetter(text: string) {
@@ -52,6 +70,18 @@ export class AssociatedTechniquesComponent {
       width: '800px',
       data: {
         technique: technique,
+      },
+    });
+  }
+
+  showTechniqueRatings(technique: DatabaseTechnique) {
+    this.dialog.open(RatingsGridComponent, {
+      height: '95vh',
+      width: '800px',
+      data: {
+        technique: technique,
+        ratings: this.ratings[technique.id as string],
+        lesion: this.data.lesion,
       },
     });
   }

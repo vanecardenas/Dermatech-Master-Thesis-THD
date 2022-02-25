@@ -1,0 +1,26 @@
+<h2 mat-dialog-title>Ratings for use of this technique for the lesion</h2>
+<h4 mat-dialog-subtitle>Technique: {{ data.technique.name }}</h4>
+<h4 mat-dialog-subtitle>Lesion: {{ data.lesion.name }}</h4>
+<div
+  fxLayout="row wrap"
+  fxLayoutAlign="space-around center"
+  fxLayoutGap="10px grid"
+>
+  <div *ngFor="let rating of data.ratings">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>
+          {{ rating.score }} Stars
+          <ngx-star-rating
+            [(ngModel)]="rating.score"
+            [disabled]="true"
+          ></ngx-star-rating>
+        </mat-card-title>
+        <mat-card-subtitle>By {{ rating.author }}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        {{ rating.text }}
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

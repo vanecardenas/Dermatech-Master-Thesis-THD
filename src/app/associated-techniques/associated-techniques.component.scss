@@ -1,0 +1,14 @@
+label.star {
+  content: "\f005";
+  color: #fd4;
+  float: right;
+  font-size: 20px;
+  font-family: FontAwesome;
+  margin-left: 2px;
+}
+
+label.star:before {
+  content: "\f005";
+  font-family: FontAwesome;
+  margin-left: 2px;
+}

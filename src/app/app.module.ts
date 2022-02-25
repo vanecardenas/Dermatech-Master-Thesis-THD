@@ -64,6 +64,7 @@ import { MatchingLesionsComponent } from './lesion-matching/matching-lesions/mat
 import { AssociatedTechniquesComponent } from './associated-techniques/associated-techniques.component';
 import { ImageDialogComponent } from './shared/image-dialog/image-dialog.component';
 import { RateAssociationComponent } from './associate-lesion-technique/rate-association/rate-association.component';
+import { RatingsGridComponent } from './associated-techniques/ratings-grid/ratings-grid.component';
 
 @NgModule({
   declarations: [
@@ -86,6 +87,7 @@ import { RateAssociationComponent } from './associate-lesion-technique/rate-asso
     AssociatedTechniquesComponent,
     ImageDialogComponent,
     RateAssociationComponent,
+    RatingsGridComponent,
   ],
   imports: [
     BrowserModule,
