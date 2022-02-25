@@ -204,7 +204,7 @@
             mat-icon-button
             *ngIf="techniqueStep.image"
             style="color: green"
-            (click)="showStepImage(techniqueStep.stepNumber)"
+            (click)="showStepImage(techniqueStep.stepNumber, $event)"
           >
             <mat-icon>image</mat-icon>
           </button>

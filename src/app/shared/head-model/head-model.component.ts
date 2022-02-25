@@ -312,7 +312,8 @@ export class HeadModelComponent {
     });
   }
 
-  showStepImage(stepNumber: number) {
+  showStepImage(stepNumber: number, event: MouseEvent) {
+    event.stopPropagation();
     this.dialog.open(ImageDialogComponent, {
       data: {
         image: this.techniqueStepImageStrings[stepNumber],
