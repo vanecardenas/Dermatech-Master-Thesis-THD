@@ -1,5 +1,5 @@
-<h2 mat-dialog-title>Known lesions best matching your drawing</h2>
-<h4 mat-dialog-subtitle>Select one to see associated techniques</h4>
+<h2 mat-dialog-title>Surgical techniques associated with the chosen lesion</h2>
+<h4 mat-dialog-subtitle>Select one to see the details and technique steps</h4>
 <mat-spinner *ngIf="!techniqueMetasFetched && !noAssociations"></mat-spinner>
 <div
   *ngIf="techniqueMetasFetched"
@@ -13,8 +13,11 @@
         <mat-card-title>{{ technique.name }}</mat-card-title>
         <mat-card-subtitle>By {{ technique.author }}</mat-card-subtitle>
         <div *ngIf="technique.id">
-          Ø {{ averageRatings[technique.id] }}
-          <label class="star"></label>
+          <div *ngIf="averageRatings[technique.id]">
+            Ø {{ averageRatings[technique.id] }}
+            <label class="star"></label>
+          </div>
+          <div *ngIf="!averageRatings[technique.id]">No ratings yet</div>
         </div>
       </mat-card-header>
       <mat-card-content>
@@ -22,7 +25,12 @@
         <p class="truncated">{{ technique.description }}</p>
       </mat-card-content>
       <mat-card-actions>
-        <button mat-button (click)="showTechniqueRatings(technique)">
+        <button
+          *ngIf="technique.id"
+          mat-button
+          (click)="showTechniqueRatings(technique)"
+          [disabled]="ratings[technique.id].length === 0"
+        >
           Show Ratings
         </button>
         <button mat-button (click)="showTechniqueDetails(technique)">
