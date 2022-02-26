@@ -74,8 +74,8 @@ type NewLesion = _DrawingMeta & {
 };
 type DatabaseLesion = _DrawingMeta & {
   id?: string;
-  strokeId: string;
-  sampledStrokeId: string;
+  // strokeId: string;
+  // sampledStrokeId: string;
   techniqueAssociations: TechniqueAssociation[];
   imageId: string;
 };
@@ -107,8 +107,8 @@ type DatabaseTechniqueStep = _DrawingMetaBase & {
   id?: string;
   techniqueId: string;
   stepNumber: number;
-  strokeId: string;
-  sampledStrokeId: string;
+  // strokeId: string;
+  // sampledStrokeId: string;
   imageId: string;
 };
 

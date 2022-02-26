@@ -68,23 +68,23 @@ export class DatabaseService {
 
   async addLesion(lesionMeta: NewLesion, strokes: ConvertedStroke[]) {
     const metaId = await this.firestore.createId();
-    const strokeId = await this.firestore.createId();
-    const sampledStrokeId = await this.firestore.createId();
+    // const strokeId = await this.firestore.createId();
+    // const sampledStrokeId = await this.firestore.createId();
 
-    const drawingStrokes = { metaId: metaId, strokes: [...strokes] };
-    await this.firestore
-      .collection<DatabaseStrokes>('lesionStrokes')
-      .doc(strokeId)
-      .set(drawingStrokes);
+    // const drawingStrokes = { metaId: metaId, strokes: [...strokes] };
+    // await this.firestore
+    //   .collection<DatabaseStrokes>('lesionStrokes')
+    //   .doc(strokeId)
+    //   .set(drawingStrokes);
 
-    const drawingStrokesSampled = {
-      metaId: metaId,
-      strokes: strokes.map((stroke) => this.downSample(stroke, 3)),
-    };
-    await this.firestore
-      .collection<DatabaseStrokes>('lesionStrokesSampled')
-      .doc(sampledStrokeId)
-      .set(drawingStrokesSampled);
+    // const drawingStrokesSampled = {
+    //   metaId: metaId,
+    //   strokes: strokes.map((stroke) => this.downSample(stroke, 3)),
+    // };
+    // await this.firestore
+    //   .collection<DatabaseStrokes>('lesionStrokesSampled')
+    //   .doc(sampledStrokeId)
+    //   .set(drawingStrokesSampled);
 
     const imageId = await this.addImage(lesionMeta.image, metaId);
     console.log(imageId);
@@ -100,8 +100,8 @@ export class DatabaseService {
       drawingCenter: lesionMeta.drawingCenter,
       drawingDistances: lesionMeta.drawingDistances,
       drawingPointsCount: lesionMeta.drawingPointsCount,
-      strokeId: strokeId,
-      sampledStrokeId: sampledStrokeId,
+      // strokeId: strokeId,
+      // sampledStrokeId: sampledStrokeId,
       imageId: imageId as string,
     };
 
@@ -125,23 +125,23 @@ export class DatabaseService {
     techniqueMetaId: string
   ) {
     const stepMetaId = await this.firestore.createId();
-    const stepStrokeId = await this.firestore.createId();
-    const stepSampledStrokeId = await this.firestore.createId();
+    // const stepStrokeId = await this.firestore.createId();
+    // const stepSampledStrokeId = await this.firestore.createId();
 
-    const drawingStrokes = { metaId: stepMetaId, strokes: [...step.strokes] };
-    await this.firestore
-      .collection<DatabaseStrokes>('techniqueStepStrokes')
-      .doc(stepStrokeId)
-      .set(drawingStrokes);
+    // const drawingStrokes = { metaId: stepMetaId, strokes: [...step.strokes] };
+    // await this.firestore
+    //   .collection<DatabaseStrokes>('techniqueStepStrokes')
+    //   .doc(stepStrokeId)
+    //   .set(drawingStrokes);
 
-    const drawingStrokesSampled = {
-      metaId: stepMetaId,
-      strokes: step.strokes.map((stroke) => this.downSample(stroke, 3)),
-    };
-    await this.firestore
-      .collection<DatabaseStrokes>('techniqueStepStrokesSampled')
-      .doc(stepSampledStrokeId)
-      .set(drawingStrokesSampled);
+    // const drawingStrokesSampled = {
+    //   metaId: stepMetaId,
+    //   strokes: step.strokes.map((stroke) => this.downSample(stroke, 3)),
+    // };
+    // await this.firestore
+    //   .collection<DatabaseStrokes>('techniqueStepStrokesSampled')
+    //   .doc(stepSampledStrokeId)
+    //   .set(drawingStrokesSampled);
 
     const imageId = await this.addImage(step.image, stepMetaId);
 
@@ -150,8 +150,8 @@ export class DatabaseService {
       description: step.description,
       stepNumber: step.stepNumber,
       techniqueId: techniqueMetaId,
-      strokeId: stepStrokeId,
-      sampledStrokeId: stepSampledStrokeId,
+      // strokeId: stepStrokeId,
+      // sampledStrokeId: stepSampledStrokeId,
       imageId: imageId,
     };
 
