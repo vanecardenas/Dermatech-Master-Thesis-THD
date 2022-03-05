@@ -25,3 +25,13 @@ Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To u
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+
+
+TODO:
+Proper documentation
+
+Mention issues in outdated threejs version:
+For successfull compilation, local files of package threejs have to be adapted:
+- node_modules\three\src\renderers\webvr\WebVRManager.d.ts : Change type VRDisplay to any
+- node_modules\three\src\geometries\ExtrudeGeometry.d.ts : Comment out / delete import of UVGenerator
+- node_modules\three\src\materials\ShaderMaterial.d.ts : Comment out / delete import of ShaderMaterialParameters
