@@ -181,3 +181,12 @@ body,
 .snackbar-info span {
   font-size: 16px;
 }
+
+.mat-step-icon-selected,
+.mat-step-icon-state-edit {
+  background-color: #434850 !important;
+}
+
+.filter-stepper mat-form-field {
+  width: 100%;
+}

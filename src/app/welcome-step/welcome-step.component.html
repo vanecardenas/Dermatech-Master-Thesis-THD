@@ -19,7 +19,7 @@
   style="height: calc(85vh - 100px)"
 >
   <h1 style="font-size: xx-large">Welcome to Dermatech!</h1>
-  <div style="max-width: 90vw; text-align: center">
+  <div style="max-width: 90vw; text-align: center; font-size: medium">
     <p>
       This application supports you with up-to-date information and knowledge on
       surgical techniques when choosing the one for your patient.
@@ -41,6 +41,7 @@
   >
     <div fxFlex="100" fxLayout fxLayoutAlign="center">
       <button
+        fxFlex="100"
         mat-raised-button
         [matMenuTriggerFor]="matchingMenu"
         class="save-button"
@@ -57,8 +58,9 @@
         </button>
       </mat-menu>
     </div>
-    <div>
+    <div fxFlex.lt-md="100" fxFlex.gt-sm="30">
       <button
+        fxFlex="100"
         mat-raised-button
         [matMenuTriggerFor]="addDataMenu"
         style="font-size: 18px; padding: 10px"
@@ -74,8 +76,9 @@
         </button>
       </mat-menu>
     </div>
-    <div>
+    <div fxFlex.lt-md="100" fxFlex.gt-sm="70">
       <button
+        fxFlex="100"
         mat-raised-button
         routerLink="/associate-lesion-technique"
         style="font-size: 18px; padding: 10px"

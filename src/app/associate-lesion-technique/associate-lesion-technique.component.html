@@ -1,16 +1,7 @@
-<button
-  mat-raised-button
-  class="save-button"
-  [disabled]="!associationsEdited"
-  (click)="saveAssociationChanges()"
-  style="margin-top: calc(75px + 5%); margin-left: 13%"
->
-  Save Changes
-</button>
 <div
   fxLayout="row wrap"
   fxLayoutAlign="space-around start"
-  style="margin-top: 10px"
+  style="padding-top: 85px; padding-left: 13%"
 >
   <div
     fxFlex.lt-sm="100%"
@@ -85,7 +76,16 @@
     </mat-card>
   </div>
   <div fxLayout="column" fxLayoutAlign="start center">
-    <h3>Surgical Techniques</h3>
+    <button
+      mat-raised-button
+      fxFlexFill
+      class="save-button"
+      [disabled]="!associationsEdited"
+      (click)="saveAssociationChanges()"
+    >
+      Save Changes
+    </button>
+    <h3 style="margin-top: 15px">Surgical Techniques</h3>
     <mat-card *ngIf="!selectedLesion"> Please select a lesion first </mat-card>
     <mat-card *ngIf="selectedLesion && !techniquesFetched">
       <mat-spinner></mat-spinner>

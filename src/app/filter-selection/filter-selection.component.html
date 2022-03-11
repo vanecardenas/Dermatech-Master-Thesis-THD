@@ -8,6 +8,7 @@
   <mat-stepper
     [orientation]="(stepperOrientation | async)!"
     style="max-width: 800px; margin-bottom: 15px"
+    class="filter-stepper"
   >
     <mat-step label="Lesion region">
       <mat-form-field appearance="outline">
@@ -22,9 +23,9 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
-      <div>
-        <button mat-button matStepperNext>Next</button>
-      </div>
+      <button fxFlexFill matStepperNext mat-button class="save-button">
+        Next
+      </button>
     </mat-step>
     <mat-step label="Lesion subregion">
       <mat-form-field *ngIf="lesionRegion" appearance="outline">
@@ -43,8 +44,10 @@
       </mat-form-field>
       <p *ngIf="!lesionRegion">Please select the region of the lesion first.</p>
       <div>
-        <button mat-button matStepperPrevious>Back</button>
-        <button mat-button matStepperNext>Next</button>
+        <button fxFlex="50" mat-button matStepperPrevious>Back</button>
+        <button fxFlex="50" mat-button class="save-button" matStepperNext>
+          Next
+        </button>
       </div>
     </mat-step>
     <mat-step label="Lesion size">
@@ -72,8 +75,10 @@
         Please select region and subregion of the lesion first.
       </p>
       <div>
-        <button mat-button matStepperPrevious>Back</button>
-        <button mat-button matStepperNext>Next</button>
+        <button fxFlex="50" mat-button matStepperPrevious>Back</button>
+        <button fxFlex="50" mat-button class="save-button" matStepperNext>
+          Next
+        </button>
       </div>
     </mat-step>
     <mat-step>
@@ -81,28 +86,33 @@
       <p *ngIf="!lesionRegion || !lesionSubregion || !lesionSize">
         Please select region, subregion and size of the lesion first.
       </p>
-      <div *ngIf="lesionRegion && lesionSubregion && lesionSize">
+      <div
+        *ngIf="lesionRegion && lesionSubregion && lesionSize"
+        style="text-align: center"
+      >
         <p>
           That's it! To find fitting techniques for lesions fitting your
           critera, click the button below.
         </p>
-        <mat-list>
-          <div mat-subheader>Selected lesion criteria</div>
-          <mat-list-item>Region: {{ lesionRegion }}</mat-list-item>
-          <mat-list-item> Subregion: {{ lesionSubregion }} </mat-list-item>
-          <mat-list-item> Size: {{ lesionSize }} </mat-list-item>
-        </mat-list>
+        <div fxLayout fxLayoutAlign="center center">
+          <mat-list>
+            <div mat-subheader>Selected lesion criteria</div>
+            <mat-list-item>Region: {{ lesionRegion }}</mat-list-item>
+            <mat-list-item> Subregion: {{ lesionSubregion }} </mat-list-item>
+            <mat-list-item> Size: {{ lesionSize }} </mat-list-item>
+          </mat-list>
+        </div>
+      </div>
+      <div>
+        <button fxFlex="50" mat-button matStepperPrevious>Back</button>
         <button
-          fxFlexFill
+          fxFlex="50"
           mat-raised-button
           class="save-button"
           (click)="onFindLesions()"
         >
           Find lesions
         </button>
-      </div>
-      <div>
-        <button mat-button matStepperPrevious>Back</button>
       </div>
     </mat-step>
   </mat-stepper>
@@ -123,7 +133,7 @@
       *ngIf="!filteredLesionMetas.length"
     >
       <p>No matching lesions for your criteria found.</p>
-      <button mat-raised-button [routerLink]="'add-lesion'">
+      <button mat-raised-button [routerLink]="'/add-lesion'">
         Add a new kind of lesion
       </button>
     </div>
