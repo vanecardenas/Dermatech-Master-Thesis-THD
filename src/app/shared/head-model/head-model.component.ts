@@ -207,12 +207,12 @@ export class HeadModelComponent {
   }
 
   nextStep() {
-    if (this.techniqueSteps[this.currentTechniqueStep].image) {
+    const nextStepAction = () => {
       // store progress of step, we expect it to be edited
       this.techniqueSteps[this.currentTechniqueStep].strokes = [
         ...this.painter.drawing,
       ];
-      this.resetScene();
+      // this.resetScene();
       this.currentTechniqueStep++; // looking at the next step from here on
       this.stepDrawingEdited = false;
       this.stepDetailsEdited = false;
@@ -222,6 +222,7 @@ export class HeadModelComponent {
         this.isNewStep = true;
       } else {
         // need to load the next step's drawing
+        this.painter.clearDrawing();
         if (
           this.techniqueSteps[this.currentTechniqueStep].strokes !== undefined
         ) {
@@ -231,8 +232,14 @@ export class HeadModelComponent {
           );
         }
       }
+    };
+    if (
+      !this.techniqueSteps[this.currentTechniqueStep].image ||
+      this.stepDrawingEdited
+    ) {
+      this.takePicture(nextStepAction);
     } else {
-      this.takePicture();
+      nextStepAction();
     }
   }
 
@@ -246,21 +253,35 @@ export class HeadModelComponent {
         ...this.painter.drawing,
       ];
     }
-    this.resetScene();
-    if (index === undefined) {
-      this.currentTechniqueStep--; // looking at the previous step from here on
+    // this.resetScene();
+    const prevStepAction = () => {
+      if (index === undefined) {
+        this.currentTechniqueStep--; // looking at the previous step from here on
+      } else {
+        this.currentTechniqueStep = index; // looking at the selected step from here on
+      }
+      this.stepDrawingEdited = false;
+      this.stepDetailsEdited = false;
+      this.isNewStep = false;
+      // need to load the previous step's drawing
+      this.painter.clearDrawing();
+      if (
+        this.techniqueSteps[this.currentTechniqueStep].strokes !== undefined
+      ) {
+        console.log('drawing previous step');
+        this.painter.drawStrokes(
+          this.techniqueSteps[this.currentTechniqueStep].strokes
+        );
+      }
+    };
+    if (
+      !this.uneditedNewStep &&
+      (!this.techniqueSteps[this.currentTechniqueStep].image ||
+        this.stepDrawingEdited)
+    ) {
+      this.takePicture(prevStepAction);
     } else {
-      this.currentTechniqueStep = index; // looking at the selected step from here on
-    }
-    this.stepDrawingEdited = false;
-    this.stepDetailsEdited = false;
-    this.isNewStep = false;
-    // need to load the previous step's drawing
-    if (this.techniqueSteps[this.currentTechniqueStep].strokes !== undefined) {
-      console.log('drawing previous step');
-      this.painter.drawStrokes(
-        this.techniqueSteps[this.currentTechniqueStep].strokes
-      );
+      prevStepAction();
     }
   }
 
@@ -373,12 +394,7 @@ export class HeadModelComponent {
   }
 
   saveSurgicalTechnique() {
-    // check if images were taken for all steps
-    if (this.techniqueSteps.map((step) => step.image).some((image) => !image)) {
-      this.snackbar.open('Please take a picture for all steps.', 'OK', {
-        duration: 2000,
-      });
-    } else {
+    const saveSurgicalTechniqueAction = () => {
       this.dialog.open(SaveDrawingComponent, {
         // height: '400px',
         width: '700px',
@@ -388,6 +404,15 @@ export class HeadModelComponent {
           kind: this.drawingKind,
         },
       });
+    };
+    // needed in case of the last step having no picture or the current step being edited
+    if (
+      !this.techniqueSteps[this.currentTechniqueStep].image ||
+      this.stepDrawingEdited
+    ) {
+      this.takePicture(saveSurgicalTechniqueAction);
+    } else {
+      saveSurgicalTechniqueAction();
     }
   }
 

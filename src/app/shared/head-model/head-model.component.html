@@ -104,7 +104,7 @@
     <mat-icon>clear</mat-icon>
     Clear drawing
   </button>
-  <button
+  <!-- <button
     *ngIf="drawingKind === 'technique'"
     fxFlexFill
     fxLayout="row"
@@ -115,7 +115,7 @@
   >
     <mat-icon>image</mat-icon>
     Take picture
-  </button>
+  </button> -->
   <button
     *ngIf="drawingKind === 'lesion'"
     fxFlexFill
@@ -259,21 +259,64 @@
     mat-raised-button
     [disabled]="currentTechniqueStep < 1"
   >
-    <mat-icon>chevron_left</mat-icon> <span>Previous step</span>
+    <mat-icon>chevron_left</mat-icon>
+    <span
+      *ngIf="
+        (techniqueSteps[currentTechniqueStep] &&
+          !techniqueSteps[currentTechniqueStep].image) ||
+        stepDrawingEdited
+      "
+      >Picture & previous step</span
+    >
+    <span
+      *ngIf="
+        techniqueSteps[currentTechniqueStep] &&
+        techniqueSteps[currentTechniqueStep].image &&
+        !stepDrawingEdited
+      "
+      >Previous step</span
+    >
   </button>
-  <button
-    (click)="nextStep()"
-    fxLayout="row"
-    fxLayoutAlign="space-between center"
-    mat-raised-button
-    [disabled]="uneditedNewStep"
+  <div
+    matTooltip="You can only add a new step after editing the drawing or textual information of the current step."
+    [matTooltipDisabled]="!uneditedNewStep"
   >
-    <span *ngIf="currentTechniqueStep < techniqueSteps.length - 1"
-      >Next step</span
+    <button
+      (click)="nextStep()"
+      fxLayout="row"
+      fxLayoutAlign="space-between center"
+      mat-raised-button
+      [disabled]="uneditedNewStep"
     >
-    <span *ngIf="currentTechniqueStep === techniqueSteps.length - 1"
-      >Add new step</span
-    >
-    <mat-icon>chevron_right</mat-icon>
-  </button>
+      <ng-container
+        *ngIf="
+          (techniqueSteps[currentTechniqueStep] &&
+            !techniqueSteps[currentTechniqueStep].image) ||
+          stepDrawingEdited
+        "
+      >
+        <span *ngIf="currentTechniqueStep < techniqueSteps.length - 1"
+          >Picture & next step</span
+        >
+        <span *ngIf="currentTechniqueStep === techniqueSteps.length - 1"
+          >Picture & new step</span
+        >
+      </ng-container>
+      <ng-container
+        *ngIf="
+          techniqueSteps[currentTechniqueStep] &&
+          techniqueSteps[currentTechniqueStep].image &&
+          !stepDrawingEdited
+        "
+      >
+        <span *ngIf="currentTechniqueStep < techniqueSteps.length - 1"
+          >Next step</span
+        >
+        <span *ngIf="currentTechniqueStep === techniqueSteps.length - 1"
+          >Add new step</span
+        >
+      </ng-container>
+      <mat-icon>chevron_right</mat-icon>
+    </button>
+  </div>
 </div>
